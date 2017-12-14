@@ -18,7 +18,7 @@ Then you can add the `RedirectAdministrator` role to the users who need access t
 
 
 ## Screenshot
-![Redirects Module Screenshot](Documentation/redirects-module-888.png?raw=true "Redirects Module Screenshot")
+![Redirects Module Screenshot](Documentation/redirects-module.png?raw=true "Redirects Module Screenshot")
 
 
 ------------------------------------------
