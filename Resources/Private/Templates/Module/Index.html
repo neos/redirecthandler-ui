@@ -1,0 +1,57 @@
+{namespace neos=Neos\Neos\ViewHelpers}
+<f:layout name="BackendSubModule" />
+
+<f:section name="content">
+	<link href="{f:uri.resource(path: 'Styles.css')}" rel="stylesheet" />
+	<script src="{f:uri.resource(path: 'Scripts.js')}"></script>
+
+	<div class="neos-row-fluid">
+		<f:form action="index">
+			<f:flashMessages class="flashmessages" />
+			<table class="neos-table">
+				<thead>
+					<tr>
+						<td>
+							<input name="moduleArguments[source]" type="text" placeholder="Source Uri Path" value="{arguments.source}">
+						</td>
+						<td>
+							<input name="moduleArguments[target]" type="text" placeholder="Target Uri Path" value="{arguments.target}">
+						</td>
+						<td class="statuscode-column">
+							<input name="moduleArguments[code]" type="number" placeholder="Status Code" value="{arguments.code}" min="100" max="599">
+						</td>
+						<td class="neos-action">
+							<div class="neos-pull-right">
+								<button type="submit" name="moduleArguments[action]" value="search" class="neos-button-primary">
+									<i class="icon-search icon-white"></i>
+								</button>
+								<button type="submit" name="moduleArguments[action]" value="create" class="neos-button-success">
+									<i class="icon-plus icon-white"></i>
+								</button>
+							</div>
+						</td>
+					</tr>
+				</thead>
+				<tbody>
+					<f:for each="{redirects}" key="identifier" as="redirect">
+						<tr class="row-view" data-id="{identifier}" data-redirect-id="{redirect.sourceUriPath},{redirect.host}" id="redirect-{identifier}-view">
+							<td title="{redirect.sourceUriPath}">{redirect.sourceUriPath}</td>
+							<td title="{redirect.targetUriPath}">{redirect.targetUriPath}</td>
+							<td>{redirect.statusCode}</td>
+							<td class="neos-action">
+								<div class="neos-pull-right">
+									<button type="submit" name="moduleArguments[remove]" value="{redirect.sourceUriPath},{redirect.host}" class="neos-button neos-button-danger" onclick="return confirm('Delete this Redirect?');">
+										<i class="icon-trash icon-white"></i>
+									</button>
+									<button type="button" class="neos-button" title="" onclick="showItemUpdate('{identifier}');">
+										<i class="icon-pencil icon-white"></i>
+									</button>
+								</div>
+							</td>
+						</tr>
+					</f:for>
+				</tbody>
+			</table>
+		</f:form>
+	</div>
+</f:section>

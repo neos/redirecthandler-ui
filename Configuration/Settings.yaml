@@ -1,0 +1,21 @@
+Neos:
+  RedirectHandler:
+    statusCode:
+      redirect: 301
+      gone: 410
+
+  Neos:
+    userInterface:
+      translation:
+        autoInclude:
+          'WebExcess.RedirectHandler.Backend': ['Modules']
+    modules:
+      management:
+        submodules:
+          redirectHandlerBackendModule:
+            label: 'WebExcess.RedirectHandler.Backend:Modules:module.label'
+            controller: '\WebExcess\RedirectHandler\Backend\Controller\ModuleController'
+            description: 'WebExcess.RedirectHandler.Backend:Modules:module.description'
+            icon: 'icon-mail-forward'
+            resource: 'WebExcess.RedirectHandler.Backend:Backend.Module'
+            privilegeTarget: 'WebExcess.RedirectHandler.Backend:Module'
