@@ -1,12 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file original="" product-name="WebExcess.Form" source-language="en" datatype="plaintext">
+	<file original="" product-name="WebExcess.RedirectHandler.Backend" source-language="en" datatype="plaintext">
 		<body>
 			<trans-unit id="module.label" xml:space="preserve">
 				<source>Redirects</source>
 			</trans-unit>
 			<trans-unit id="module.description" xml:space="preserve">
-				<source>Manage your redirects</source>
+				<source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
+			</trans-unit>
+			<trans-unit id="confirm" xml:space="preserve">
+				<source>Delete this redirect?</source>
 			</trans-unit>
 		</body>
 	</file>

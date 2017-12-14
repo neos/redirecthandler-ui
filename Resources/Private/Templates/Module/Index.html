@@ -40,7 +40,7 @@
 							<td>{redirect.statusCode}</td>
 							<td class="neos-action">
 								<div class="neos-pull-right">
-									<button type="submit" name="moduleArguments[remove]" value="{redirect.sourceUriPath},{redirect.host}" class="neos-button neos-button-danger" onclick="return confirm('Delete this Redirect?');">
+									<button type="submit" name="moduleArguments[remove]" value="{redirect.sourceUriPath},{redirect.host}" class="neos-button neos-button-danger" onclick="return confirm('{f:translate(id: 'confirm', source:'Modules', value: 'Delete this redirect?')}');">
 										<i class="icon-trash icon-white"></i>
 									</button>
 									<button type="button" class="neos-button" title="" onclick="showItemUpdate('{identifier}');">
