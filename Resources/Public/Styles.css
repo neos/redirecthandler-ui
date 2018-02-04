@@ -21,6 +21,10 @@
 	padding: 0 4px 4px 0 !important;
 }
 
+.neos.neos-module table.neos-table thead td.host-column {
+	width: 240px;
+}
+
 .neos.neos-module table.neos-table thead td.statuscode-column {
 	width: 120px;
 }

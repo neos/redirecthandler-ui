@@ -13,9 +13,10 @@ trait DatabaseStorageTrait
      * @param string $sourceUriPath
      * @param string $targetUriPath
      * @param string $statusCode
+     * @param string $host
      * @return QueryResultInterface
      */
-    public function search($sourceUriPath = null, $targetUriPath = null, $statusCode = null)
+    public function search($sourceUriPath = null, $targetUriPath = null, $statusCode = null, $host = null)
     {
 
         $searchParameters = [];
@@ -29,22 +30,32 @@ trait DatabaseStorageTrait
             $searchParameters['statusCode'] = $statusCode . '%';
         }
 
-        if (!$searchParameters) {
-            return $this->findAll();
-        }
-
         $searchSqlProperties = array_map(function ($name) {
             return sprintf('r.%s LIKE :%s', $name, $name);
         }, array_keys($searchParameters));
 
-        $sql = 'SELECT r FROM Neos\RedirectHandler\DatabaseStorage\Domain\Model\Redirect r WHERE ';
-        $sql .= implode(' AND ', $searchSqlProperties);
-        $sql .= ' AND (r.host = :host OR r.host IS NULL)';
+        $sql = 'SELECT r FROM Neos\RedirectHandler\DatabaseStorage\Domain\Model\Redirect r';
+        if ($searchParameters || $host) {
+            $sql .= ' WHERE';
+        }
+        if ($searchSqlProperties) {
+            $sql .= ' ' . implode(' AND ', $searchSqlProperties);
+        }
+        if ($host) {
+            if ($searchParameters) {
+                $sql .= ' AND (r.host LIKE :host OR r.host IS NULL)';
+            } else {
+                $sql .= ' (r.host LIKE :host)';
+            }
+        }
+        $sql .= ' ORDER BY r.host ASC, r.sourceUriPath ASC';
 
         /** @var QueryInterface $query */
         $query = $this->entityManager->createQuery($sql);
         $query->setParameters($searchParameters);
-        $query->setParameter('host', null);
+        if ($host) {
+            $query->setParameter('host', '%' . $host . '%');
+        }
 
         return $query->execute();
     }

@@ -48,7 +48,7 @@ class ModuleController extends AbstractModuleController
                 $this->request->getArgument('updateData')['source'],
                 $this->request->getArgument('updateData')['target'],
                 $this->request->getArgument('updateData')['code'],
-                $host
+                $this->request->getArgument('updateData')['host']
             );
 
             if ($status === false) {
@@ -60,6 +60,7 @@ class ModuleController extends AbstractModuleController
                 $this->request->setArgument('source', $this->request->getArgument('updateData')['source']);
                 $this->request->setArgument('target', '');
                 $this->request->setArgument('code', '');
+                $this->request->setArgument('host', '');
             }
         }
 
@@ -82,7 +83,7 @@ class ModuleController extends AbstractModuleController
                 $this->request->getArgument('source'),
                 $this->request->getArgument('target'),
                 $this->request->getArgument('code'),
-                $host
+                $this->request->getArgument('host')
             );
 
             if ($status === false) {
@@ -96,10 +97,11 @@ class ModuleController extends AbstractModuleController
             $redirects = $this->redirectRepository->search(
                 $this->request->getArgument('source'),
                 $this->request->getArgument('target'),
-                $this->request->getArgument('code')
+                $this->request->getArgument('code'),
+                $this->request->getArgument('host')
             );
         } else {
-            $redirects = $this->redirectStorage->getAll($host);
+            $redirects = $this->redirectRepository->search();
         }
 
         $this->view->assign('arguments', $this->request->getArguments());

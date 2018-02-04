@@ -1,4 +1,5 @@
 {namespace neos=Neos\Neos\ViewHelpers}
+{namespace rhb=WebExcess\RedirectHandler\Backend\ViewHelpers}
 <f:layout name="BackendSubModule" />
 
 <f:section name="content">
@@ -11,6 +12,9 @@
 			<table class="neos-table">
 				<thead>
 					<tr>
+						<td class="host-column">
+							<input name="moduleArguments[host]" type="text" placeholder="Host" value="{arguments.host}">
+						</td>
 						<td>
 							<input name="moduleArguments[source]" type="text" placeholder="Source Uri Path" value="{arguments.source}">
 						</td>
@@ -35,9 +39,10 @@
 				<tbody>
 					<f:for each="{redirects}" key="identifier" as="redirect">
 						<tr class="row-view" data-id="{identifier}" data-redirect-id="{redirect.sourceUriPath},{redirect.host}" id="redirect-{identifier}-view">
-							<td title="{redirect.sourceUriPath}">{redirect.sourceUriPath}</td>
-							<td title="{redirect.targetUriPath}">{redirect.targetUriPath}</td>
-							<td>{redirect.statusCode}</td>
+							<td title="{redirect.host}">{redirect.host}</td>
+							<td title="{redirect.sourceUriPath}">{rhb:shortAssetPath(assetPath: redirect.sourceUriPath)}</td>
+							<td title="{redirect.targetUriPath}">{rhb:shortAssetPath(assetPath: redirect.targetUriPath)}</td>
+							<td title="{redirect.hitCounter} hits, last at {f:format.date(date: redirect.lastHit, format: 'd.m.Y H:i')}">{redirect.statusCode}</td>
 							<td class="neos-action">
 								<div class="neos-pull-right">
 									<button type="submit" name="moduleArguments[remove]" value="{redirect.sourceUriPath},{redirect.host}" class="neos-button neos-button-danger" onclick="return confirm('{f:translate(id: 'confirm', source:'Modules', value: 'Delete this redirect?')}');">

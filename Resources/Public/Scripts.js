@@ -14,12 +14,21 @@ function showItemUpdate(itemIdentifier) {
     tr.setAttribute('id', 'redirect-' + itemIdentifier + '-form');
     tr.setAttribute('class', 'row-update');
 
+    var tdHost = document.createElement('td');
+    var inputHost = document.createElement('input');
+    inputHost.setAttribute('name', 'moduleArguments[updateData][host]');
+    inputHost.setAttribute('type', 'text');
+    inputHost.setAttribute('placeholder', 'Host');
+    inputHost.setAttribute('value', base.children[0].attributes.title.value);
+    tdHost.appendChild(inputHost);
+    tr.appendChild(tdHost);
+
     var tdSource = document.createElement('td');
     var inputSource = document.createElement('input');
     inputSource.setAttribute('name', 'moduleArguments[updateData][source]');
     inputSource.setAttribute('type', 'text');
     inputSource.setAttribute('placeholder', 'Source Uri Path');
-    inputSource.setAttribute('value', base.children[0].innerHTML);
+    inputSource.setAttribute('value', base.children[1].attributes.title.value);
     tdSource.appendChild(inputSource);
     tr.appendChild(tdSource);
 
@@ -28,7 +37,7 @@ function showItemUpdate(itemIdentifier) {
     inputTarget.setAttribute('name', 'moduleArguments[updateData][target]');
     inputTarget.setAttribute('type', 'text');
     inputTarget.setAttribute('placeholder', 'Target Uri Path');
-    inputTarget.setAttribute('value', base.children[1].innerHTML);
+    inputTarget.setAttribute('value', base.children[2].attributes.title.value);
     tdTarget.appendChild(inputTarget);
     tr.appendChild(tdTarget);
 
@@ -38,7 +47,7 @@ function showItemUpdate(itemIdentifier) {
     inputCode.setAttribute('name', 'moduleArguments[updateData][code]');
     inputCode.setAttribute('type', 'number');
     inputCode.setAttribute('placeholder', 'Status Code');
-    inputCode.setAttribute('value', base.children[2].innerHTML);
+    inputCode.setAttribute('value', base.children[3].innerHTML);
     inputCode.setAttribute('min', '100');
     inputCode.setAttribute('max', '599');
     tdCode.appendChild(inputCode);
