@@ -40,9 +40,9 @@
 					<f:for each="{redirects}" key="identifier" as="redirect">
 						<tr class="row-view" data-id="{identifier}" data-redirect-id="{redirect.sourceUriPath},{redirect.host}" id="redirect-{identifier}-view">
 							<td title="{redirect.host}">{redirect.host}</td>
-							<td title="{redirect.sourceUriPath}">{rhb:shortAssetPath(assetPath: redirect.sourceUriPath)}</td>
-							<td title="{redirect.targetUriPath}">{rhb:shortAssetPath(assetPath: redirect.targetUriPath)}</td>
-							<td title="{redirect.hitCounter} hits, last at {f:format.date(date: redirect.lastHit, format: 'd.m.Y H:i')}">{redirect.statusCode}</td>
+							<td title="{redirect.sourceUriPath}">{rhb:shortPath(path: redirect.sourceUriPath)}</td>
+							<td title="{redirect.targetUriPath}">{rhb:shortPath(path: redirect.targetUriPath)}</td>
+							<td title="{redirect.hitCounter} hits<f:if condition='{redirect.hitCounter}'>, last at {f:format.date(date: redirect.lastHit, format: 'd.m.Y H:i')}</f:if>">{redirect.statusCode}</td>
 							<td class="neos-action">
 								<div class="neos-pull-right">
 									<button type="submit" name="moduleArguments[remove]" value="{redirect.sourceUriPath},{redirect.host}" class="neos-button neos-button-danger" onclick="return confirm('{f:translate(id: 'confirm', source:'Modules', value: 'Delete this redirect?')}');">
