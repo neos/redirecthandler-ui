@@ -62,7 +62,7 @@ function showItemUpdate(itemIdentifier) {
     saveButton.setAttribute('name', 'moduleArguments[updateAction]');
     saveButton.setAttribute('value', base.getAttribute('data-redirect-id'));
     saveButton.setAttribute('class', 'neos-button-success update-redirect-submit');
-    saveButton.innerHTML = '<i class="icon-save icon-white"></i>';
+    saveButton.innerHTML = '<i class="fa fa-save icon-save icon-white"></i>';
     containerAction.appendChild(saveButton);
 
     containerAction.appendChild(document.createTextNode (" "));
@@ -74,7 +74,7 @@ function showItemUpdate(itemIdentifier) {
         base.classList.remove('row-view--hidden');
         base.parentNode.removeChild(tr);
     };
-    cancelButton.innerHTML = '<i class="icon-reply icon-white"></i>';
+    cancelButton.innerHTML = '<i class="fa fa-reply icon-reply icon-white"></i>';
     containerAction.appendChild(cancelButton);
     tdAction.appendChild(containerAction);
     tr.appendChild(tdAction);
