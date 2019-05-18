@@ -1,6 +1,6 @@
 <?php
 
-namespace WebExcess\RedirectHandler\Backend\Aspects;
+namespace Neos\RedirectHandler\Ui\Aspects;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\Persistence\QueryInterface;

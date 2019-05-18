@@ -8,14 +8,14 @@ Neos:
     userInterface:
       translation:
         autoInclude:
-          'WebExcess.RedirectHandler.Backend': ['Modules']
+          'Neos.RedirectHandler.Ui': ['Modules']
     modules:
       management:
         submodules:
-          redirectHandlerBackendModule:
-            label: 'WebExcess.RedirectHandler.Backend:Modules:module.label'
-            controller: '\WebExcess\RedirectHandler\Backend\Controller\ModuleController'
-            description: 'WebExcess.RedirectHandler.Backend:Modules:module.description'
+          redirectHandlerUiModule:
+            label: 'Neos.RedirectHandler.Ui:Modules:module.label'
+            controller: '\Neos\RedirectHandler\Ui\Controller\ModuleController'
+            description: 'Neos.RedirectHandler.Ui:Modules:module.description'
             icon: 'icon-mail-forward'
-            resource: 'WebExcess.RedirectHandler.Backend:Backend.Module'
-            privilegeTarget: 'WebExcess.RedirectHandler.Backend:Module'
+            resource: 'Neos.RedirectHandler.Ui:Backend.Module'
+            privilegeTarget: 'Neos.RedirectHandler.Ui:Module'

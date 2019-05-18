@@ -1,17 +1,17 @@
 privilegeTargets:
   'Neos\Flow\Security\Authorization\Privilege\Method\MethodPrivilege':
-    'WebExcess.RedirectHandler.Backend:Module':
-      matcher: 'method(WebExcess\RedirectHandler\Backend\Controller\ModuleController->(.*)Action())'
+    'Neos.RedirectHandler.Ui:Module':
+      matcher: 'method(Neos\RedirectHandler\Ui\Controller\ModuleController->(.*)Action())'
 
 roles:
   'Neos.Neos:Administrator':
     privileges:
       -
-        privilegeTarget: 'WebExcess.RedirectHandler.Backend:Module'
+        privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
         permission: GRANT
 
-  'WebExcess.RedirectHandler.Backend:RedirectAdministrator':
+  'Neos.RedirectHandler.Ui:RedirectAdministrator':
     privileges:
       -
-        privilegeTarget: 'WebExcess.RedirectHandler.Backend:Module'
+        privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
         permission: GRANT

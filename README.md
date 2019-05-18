@@ -1,7 +1,7 @@
-# WebExcess.RedirectHandler.Backend for Neos CMS
+# Neos.RedirectHandler.Ui
 [![Logo](logo.png)](Documentation/logo-512.png)
-[![Latest Stable Version](https://poser.pugx.org/webexcess/redirecthandler-backend/v/stable)](https://packagist.org/packages/webexcess/redirecthandler-backend)
-[![License](https://poser.pugx.org/webexcess/redirecthandler-backend/license)](https://packagist.org/packages/webexcess/redirecthandler-backend)
+[![Latest Stable Version](https://poser.pugx.org/neos/redirecthandler-ui/v/stable)](https://packagist.org/packages/neos/redirecthandler-ui)
+[![License](https://poser.pugx.org/neos/redirecthandler-ui/license)](https://packagist.org/packages/neos/redirecthandler-ui)
 
 This package provides a backend module to manage [Neos.RedirectHandler](https://github.com/neos/redirecthandler) redirects which are stored in [Neos.RedirectHandler.DatabaseStorage](https://github.com/neos/redirecthandler-databasestorage).
 
@@ -11,7 +11,7 @@ This package is compatible with Neos 3.x, 4.x and will be maintained for upcomin
 
 ## Installation
 ```
-composer require webexcess/redirecthandler-backend
+composer require neos/redirecthandler-ui
 ```
 
 Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.

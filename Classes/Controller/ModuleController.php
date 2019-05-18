@@ -1,6 +1,6 @@
 <?php
 
-namespace WebExcess\RedirectHandler\Backend\Controller;
+namespace Neos\RedirectHandler\Ui\Controller;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\Error\Messages\Message;

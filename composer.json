@@ -1,5 +1,5 @@
 {
-    "name": "webexcess/redirecthandler-backend",
+    "name": "neos/redirecthandler-ui",
     "type": "neos-package",
     "description": "This package provides a backend module to manage Neos.RedirectHandler redirects",
     "license": "MIT",
@@ -17,13 +17,13 @@
     ],
     "autoload": {
         "psr-4": {
-            "WebExcess\\RedirectHandler\\Backend\\": "Classes"
+            "Neos\\RedirectHandler\\Ui\\": "Classes"
         }
     },
     "extra": {
-        "installer-name": "WebExcess.RedirectHandler.Backend",
+        "installer-name": "Neos.RedirectHandler.Ui",
         "neos": {
-            "package-key": "WebExcess.RedirectHandler.Backend"
+            "package-key": "Neos.RedirectHandler.Ui"
         }
     }
 }

@@ -1,5 +1,5 @@
 <?php
-namespace WebExcess\RedirectHandler\Backend\ViewHelpers;
+namespace Neos\RedirectHandler\Ui\ViewHelpers;
 
 use Neos\Flow\Annotations as Flow;
 use Neos\FluidAdaptor\Core\ViewHelper\AbstractViewHelper;
