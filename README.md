@@ -1,5 +1,4 @@
 # Neos.RedirectHandler.Ui
-[![Logo](logo.png)](Documentation/logo-512.png)
 [![Latest Stable Version](https://poser.pugx.org/neos/redirecthandler-ui/v/stable)](https://packagist.org/packages/neos/redirecthandler-ui)
 [![License](https://poser.pugx.org/neos/redirecthandler-ui/license)](https://packagist.org/packages/neos/redirecthandler-ui)
 
@@ -19,10 +18,3 @@ Then you can add the `RedirectAdministrator` role to the users who need access t
 
 ## Screenshot
 ![Redirects Module Screenshot](Documentation/redirects-module.png?raw=true "Redirects Module Screenshot")
-
-
-------------------------------------------
-
-developed by [webexcess GmbH](https://webexcess.ch/)
-
-sponsored by [Blaser Swisslube AG](https://www.blaser.com/)
