@@ -2,7 +2,7 @@
     "name": "neos/redirecthandler-ui",
     "type": "neos-package",
     "description": "This package provides a backend module to manage Neos.RedirectHandler redirects",
-    "license": "MIT",
+    "license": "GPL-3.0-or-later",
     "replace": {
         "webexcess/redirecthandler-backend": "*"
     },
