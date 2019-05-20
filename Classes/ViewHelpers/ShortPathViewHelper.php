@@ -1,7 +1,16 @@
 <?php
-namespace WebExcess\RedirectHandler\Backend\ViewHelpers;
+namespace Neos\RedirectHandler\Ui\ViewHelpers;
 
-use Neos\Flow\Annotations as Flow;
+/*
+ * This file is part of the Neos.RedirectHandler.Ui package.
+ *
+ * (c) Contributors of the Neos Project - www.neos.io
+ *
+ * This package is Open Source Software. For the full copyright and license
+ * information, please view the LICENSE file which was distributed with this
+ * source code.
+ */
+
 use Neos\FluidAdaptor\Core\ViewHelper\AbstractViewHelper;
 
 class ShortPathViewHelper extends AbstractViewHelper

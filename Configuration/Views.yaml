@@ -1,5 +1,5 @@
 -
-  requestFilter: 'mainRequest.isPackage("Neos.Neos") && isPackage("WebExcess.RedirectHandler.Backend") && isController("Module")'
+  requestFilter: 'mainRequest.isPackage("Neos.Neos") && isPackage("Neos.RedirectHandler.Ui") && isController("Module")'
   options:
     'layoutRootPaths': ['resource://Neos.Neos/Private/Layouts']
-    'partialRootPaths': ['resource://WebExcess.RedirectHandler.Backend/Private/Partials', 'resource://Neos.Neos/Private/Partials']
+    'partialRootPaths': ['resource://Neos.RedirectHandler.Ui/Private/Partials', 'resource://Neos.Neos/Private/Partials']
