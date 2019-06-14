@@ -18,73 +18,49 @@
                 <source>301 - Moved Permanently</source>
             </trans-unit>
             <trans-unit id="statusCodes.301.tooltip" xml:space="preserve">
-                <source>
-                    A 301 HTTP header is used when the requested URL permanently moved to a new location.
-                </source>
+                <source>A 301 HTTP header is used when the requested URL permanently moved to a new location.</source>
             </trans-unit>
             <trans-unit id="statusCodes.302.label" xml:space="preserve">
                 <source>302 - Found</source>
             </trans-unit>
             <trans-unit id="statusCodes.302.tooltip" xml:space="preserve">
-                <source>
-                    A 302 means that the target destination has been found, but it lives under a different location.
-                    Use a 302 redirect only if you want to temporarily redirect a URL to a different source and you
-                    are sure that you will use the same URL again.
-                </source>
+                <source>A 302 means that the target destination has been found, but it lives under a different location. Use a 302 redirect only if you want to temporarily redirect a URL to a different source and you are sure that you will use the same URL again.</source>
             </trans-unit>
             <trans-unit id="statusCodes.303.label" xml:space="preserve">
                 <source>303 - See Other</source>
             </trans-unit>
             <trans-unit id="statusCodes.303.tooltip" xml:space="preserve">
-                <source>
-                    A 303 means that the response to the request can be found under another URI using the GET method.
-                    When received in response to a POST (or PUT/DELETE), the client should presume that the server has
-                    received the data and should issue a new GET request to the given URI.
-                </source>
+                <source>A 303 means that the response to the request can be found under another URI using the GET method. When received in response to a POST (or PUT/DELETE), the client should presume that the server has received the data and should issue a new GET request to the given URI.</source>
             </trans-unit>
             <trans-unit id="statusCodes.307.label" xml:space="preserve">
                 <source>307 - Temporary Redirect</source>
             </trans-unit>
             <trans-unit id="statusCodes.307.tooltip" xml:space="preserve">
-                <source>
-                    A 307 can be used to temporarily redirect a URL to a new one while keeping
-                    the original request method intact. A 307 behaves like a 302, except that it tells specifically
-                    that the URL has a temporary new location.
-                </source>
+                <source>A 307 can be used to temporarily redirect a URL to a new one while keeping the original request method intact. A 307 behaves like a 302, except that it tells specifically that the URL has a temporary new location.</source>
             </trans-unit>
             <trans-unit id="statusCodes.403.label" xml:space="preserve">
                 <source>403 - Forbidden</source>
             </trans-unit>
             <trans-unit id="statusCodes.403.tooltip" xml:space="preserve">
-                <source>
-                    A 403 tells the browser that the requested content is forbidden for the user.
-                </source>
+                <source>A 403 tells the browser that the requested content is forbidden for the user.</source>
             </trans-unit>
             <trans-unit id="statusCodes.404.label" xml:space="preserve">
                 <source>404 - Not Found</source>
             </trans-unit>
             <trans-unit id="statusCodes.404.tooltip" xml:space="preserve">
-                <source>
-                    A 404 tells the browser that the content has not been found and has been probably deleted.
-                </source>
+                <source>A 404 tells the browser that the content has not been found and has been probably deleted.</source>
             </trans-unit>
             <trans-unit id="statusCodes.410.label" xml:space="preserve">
                 <source>410 - Gone</source>
             </trans-unit>
             <trans-unit id="statusCodes.410.tooltip" xml:space="preserve">
-                <source>
-                    The result from a 410 status code is the same as a 404 since the content has not been found.
-                    However, with a 410 you tell search engines that the requested content has been deleted,
-                    thus it’s much more specific than a 404.
-                </source>
+                <source>The result from a 410 status code is the same as a 404 since the content has not been found. However, with a 410 you tell search engines that the requested content has been deleted, thus it’s much more specific than a 404.</source>
             </trans-unit>
             <trans-unit id="statusCodes.451.label" xml:space="preserve">
                 <source>451 - Unavailable for Legal Reasons</source>
             </trans-unit>
             <trans-unit id="statusCodes.451.tooltip" xml:space="preserve">
-                <source>
-                    The 451 HTTP status code shows that the requested content has been deleted because of legal reasons.
-                </source>
+                <source>The 451 HTTP status code shows that the requested content has been deleted because of legal reasons.</source>
             </trans-unit>
         </body>
     </file>

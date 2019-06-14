@@ -48,7 +48,8 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
                                     <label for="code">Status Code</label>
                                     <select name="moduleArguments[code]" id="code" value={props.defaultStatusCode}>
                                         <Neos.Fusion:Loop items={props.statusCodes} itemName="label" itemKey="code">
-                                            <option value={code} selected="selected" selected.@if.isSelected={props.defaultStatusCode == code}>
+                                            <option value={code} selected="selected" selected.@if.isSelected={props.defaultStatusCode == code}
+                                                title={label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.tooltip')}>
                                                 {label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.label')}
                                             </option>
                                         </Neos.Fusion:Loop>
