@@ -13,6 +13,13 @@ namespace Neos\RedirectHandler\Ui\Controller;
  */
 
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Mvc\Exception\InvalidArgumentNameException;
+use Neos\Flow\Mvc\Exception\InvalidArgumentTypeException;
+use Neos\Flow\Mvc\Exception\NoSuchArgumentException;
+use Neos\Flow\Mvc\Exception\StopActionException;
+use Neos\Flow\Mvc\View\ViewInterface;
+use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Error\Messages as Error;
@@ -26,6 +33,15 @@ use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
  */
 class ModuleController extends AbstractModuleController
 {
+    /**
+     * @var FusionView
+     */
+    protected $view;
+
+    /**
+     * @var string
+     */
+    protected $defaultViewObjectName = FusionView::class;
 
     /**
      * @Flow\Inject
@@ -45,10 +61,42 @@ class ModuleController extends AbstractModuleController
      */
     protected $persistenceManager;
 
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
+     * Renders the list of all redirects and allows modifying them.
+     */
     public function indexAction()
     {
-        $host = null;
+        $redirects = $this->redirectRepository->search();
 
+        $statusCodes = $this->settings['statusCodes'];
+        array_walk($statusCodes, function (&$label, $code) {
+            if ($label === 'i18n') {
+                $label = $this->translator->translateById('statusCodes.' . $code . '.label',
+                    [], null, null, 'Modules', 'Neos.RedirectHandler.Ui');
+            }
+        });
+
+        $defaultStatusCode = array_key_exists(307, $statusCodes) ? 307 : $statusCodes[0];
+
+        $this->view->assignMultiple([
+            'redirects' => $redirects,
+        ]);
+    }
+
+    /**
+     * @throws InvalidArgumentNameException
+     * @throws InvalidArgumentTypeException
+     * @throws NoSuchArgumentException
+     * @throws StopActionException
+     */
+    public function updateAction()
+    {
         if ($this->request->getArguments() && $this->request->hasArgument('updateAction')) {
             $removeArguments = explode(',', $this->request->getArgument('updateAction'));
             $status = $this->updateRedirect(
@@ -65,14 +113,21 @@ class ModuleController extends AbstractModuleController
             } else {
                 $this->addFlashMessage('Redirect updated', '', Error\Message::SEVERITY_OK);
 
-//                set new search values..
                 $this->request->setArgument('source', $this->request->getArgument('updateData')['source']);
                 $this->request->setArgument('target', '');
                 $this->request->setArgument('code', '');
                 $this->request->setArgument('host', '');
             }
         }
+        $this->redirect('index');
+    }
 
+    /**
+     * @throws NoSuchArgumentException
+     * @throws StopActionException
+     */
+    public function removeAction()
+    {
         if ($this->request->hasArgument('remove')) {
             $removeArguments = explode(',', $this->request->getArgument('remove'));
             $status = $this->removeRedirect(
@@ -86,7 +141,15 @@ class ModuleController extends AbstractModuleController
                 $this->addFlashMessage('Redirect removed', '', Error\Message::SEVERITY_OK);
             }
         }
+        $this->redirect('index');
+    }
 
+    /**
+     * @throws NoSuchArgumentException
+     * @throws StopActionException
+     */
+    public function createAction()
+    {
         if ($this->request->hasArgument('action') && $this->request->getArgument('action') == 'create') {
             $status = $this->addRedirect(
                 $this->request->getArgument('source'),
@@ -101,20 +164,7 @@ class ModuleController extends AbstractModuleController
                 $this->addFlashMessage('Redirect created', '', Error\Message::SEVERITY_OK);
             }
         }
-
-        if ($this->request->getArguments()) {
-            $redirects = $this->redirectRepository->search(
-                $this->request->getArgument('source'),
-                $this->request->getArgument('target'),
-                $this->request->getArgument('code'),
-                $this->request->getArgument('host')
-            );
-        } else {
-            $redirects = $this->redirectRepository->search();
-        }
-
-        $this->view->assign('arguments', $this->request->getArguments());
-        $this->view->assign('redirects', $redirects);
+        $this->redirect('index');
     }
 
     /**
@@ -159,7 +209,15 @@ class ModuleController extends AbstractModuleController
      * @param bool $force
      * @return bool
      */
-    protected function updateRedirect( $source, $host, $newSource, $newTarget, $newStatusCode, $newHost = null, $force = false) {
+    protected function updateRedirect(
+        $source,
+        $host,
+        $newSource,
+        $newTarget,
+        $newStatusCode,
+        $newHost = null,
+        $force = false
+    ) {
         $go = false;
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
         if ($redirect !== null && $force === false) {
@@ -210,6 +268,25 @@ class ModuleController extends AbstractModuleController
             return false;
         }
 
-        return $redirect->getSourceUriPath() === $sourceUriPath && $redirect->getTargetUriPath() === $targetUriPath && $redirect->getHost() === $host && $redirect->getStatusCode() === (integer)$statusCode;
+        return $redirect->getSourceUriPath() === $sourceUriPath
+            && $redirect->getTargetUriPath() === $targetUriPath
+            && $redirect->getHost() === $host
+            && $redirect->getStatusCode() === (integer)$statusCode;
+    }
+
+    /**
+     * Sets the Fusion path pattern on the view.
+     *
+     * @param ViewInterface $view
+     * @return void
+     */
+    protected function initializeView(ViewInterface $view)
+    {
+        parent::initializeView($view);
+
+        /** @var FusionView $view */
+        $view->disableFallbackView();
+        $view->setFusionPathPatterns(['resource://@package/Private/FusionModule']);
+        $view->setFusionPathPattern('resource://@package/Private/FusionModule');
     }
 }

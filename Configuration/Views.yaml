@@ -1,5 +1,0 @@
--
-  requestFilter: 'mainRequest.isPackage("Neos.Neos") && isPackage("Neos.RedirectHandler.Ui") && isController("Module")'
-  options:
-    'layoutRootPaths': ['resource://Neos.Neos/Private/Layouts']
-    'partialRootPaths': ['resource://Neos.RedirectHandler.Ui/Private/Partials', 'resource://Neos.Neos/Private/Partials']

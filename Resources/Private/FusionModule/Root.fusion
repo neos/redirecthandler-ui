@@ -1,0 +1,121 @@
+include: resource://Neos.Fusion/Private/Fusion/Root.fusion
+
+prototype(Neos.GoogleAnalytics:Component.FlashMessages) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+
+    renderer = afx`
+        <div id="neos-notification-container" class="neos-notification-top" @if.hasMessages={props.flashMessages}>
+            <Neos.Fusion:Loop items={props.flashMessages} itemName="message">
+                <div class="neos-notification neos-notification-error">
+                    <div class="neos-notification-content">
+                        <i class="fas fa-error"></i>
+                        <div class="neos-notification-heading" @if.hasTitle={message.title}>{message.message}</div>
+                    </div>
+                </div>
+            </Neos.Fusion:Loop>
+        </div>
+    `
+}
+
+prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+    defaultStatusCode = 307
+    redirects = ${[]}
+    statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
+
+    renderer = afx`
+        <div class="neos-content neos-container-fluid">
+            <link rel="stylesheet"><Neos.Fusion:ResourceUri @path="attributes.href" path="Styles.css"/></link>
+            <script><Neos.Fusion:ResourceUri @path="attributes.src" path="Styles.js"/></script>
+
+            <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={props.flashMessages}/>
+
+            <div class="neos-row-fluid">
+                <form action=".">
+                    <table class="neos-table">
+                        <thead>
+                            <tr>
+                                <td class="host-column">
+                                    <label for="host">{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</label>
+                                    <input name="moduleArguments[host]" id="host" type="text" placeholder="www.example.org"/>
+                                </td>
+                                <td>
+                                    <label for="source">Origin URL</label>
+                                    <input name="moduleArguments[source]" id="source" type="text"
+                                           placeholder="the-old-url/product-a"/>
+                                </td>
+                                <td class="statuscode-column">
+                                    <label for="code">Status Code</label>
+                                    <select name="moduleArguments[code]" id="code" value={props.defaultStatusCode}>
+                                        <Neos.Fusion:Loop items={props.statusCodes} itemName="label" itemKey="code">
+                                            <option value={code} selected="selected" selected.@if.isSelected={props.defaultStatusCode == code}>
+                                                {label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.label')}
+                                            </option>
+                                        </Neos.Fusion:Loop>
+                                    </select>
+                                </td>
+                                <td>
+                                    <label for="target">Target URL</label>
+                                    <input name="moduleArguments[target]" id="target" type="text"
+                                           placeholder="the-new-url/product-a"/>
+                                </td>
+                                <td>
+                                    <label for="date">Date</label>
+                                    <input name="moduleArguments[date]" id="date" type="text"
+                                           placeholder="No date set"/>
+                                </td>
+                                <td>
+                                    <label for="comment">Comment</label>
+                                    <textarea name="moduleArguments[comment]" id="comment" type="text"
+                                           placeholder="Campaign for new product a" rows="1"></textarea>
+                                </td>
+                                <td class="neos-action">
+                                    <div>
+                                        <button type="submit" name="moduleArguments[action]" value="create"
+                                                class="neos-button neos-button-primary">
+                                            <i class="fa fa-plus icon-plus icon-white"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
+                                <tr class="row-view" data-id={identifier}
+                                    data-redirect-id={redirect.sourceUriPath + redirect.host} id={'redirect-' + identifier + '-view'}>
+                                    <td title={redirect.host}>{redirect.host}</td>
+                                    <td title={redirect.sourceUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(redirect.sourceUriPath)}</td>
+                                    <td title={redirect.targetUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(redirect.targetUriPath)}</td>
+                                    <td title={redirect.lastHit}>Last hit at {redirect.lastHit}</td>
+                                    <td title={redirect.hitCounter}>Last hit at {redirect.hitCounter}</td>
+                                    <td title={redirect.statusCode}>{redirect.statusCode}</td>
+                                    <td class="neos-action">
+                                        <div class="neos-pull-right">
+                                            <button type="submit" name="moduleArguments[remove]"
+                                                    value="{redirect.sourceUriPath},{redirect.host}"
+                                                    class="neos-button neos-button-danger"
+                                                    onclick="return confirm('{f:translate(id: 'confirm', source:'Modules', value: 'Delete this redirect?')}');">
+                                                <i class="fa fa-trash-alt icon-trash icon-white"></i>
+                                            </button>
+                                            <button type="button" class="neos-button" title=""
+                                                    onclick="showItemUpdate('{identifier}');">
+                                                <i class="fa fa-pencil-alt icon-pencil icon-white"></i>
+                                            </button>
+                                        </div>
+                                    </td>
+                                </tr>
+                            </Neos.Fusion:Loop>
+                        </tbody>
+                    </table>
+                </form>
+            </div>
+        </div>
+    `
+}
+
+Neos.RedirectHandler.Ui.ModuleController {
+    index = Neos.RedirectHandler.Ui:Module.Index {
+        flashMessages = ${flashMessages}
+        redirects = ${redirects}
+    }
+}
