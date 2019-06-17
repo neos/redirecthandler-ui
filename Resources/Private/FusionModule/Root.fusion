@@ -25,9 +25,6 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
 
     renderer = afx`
         <div class="neos-content neos-container-fluid">
-            <link rel="stylesheet"><Neos.Fusion:ResourceUri @path="attributes.href" path="Styles.css"/></link>
-            <script><Neos.Fusion:ResourceUri @path="attributes.src" path="Styles.js"/></script>
-
             <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={props.flashMessages}/>
 
             <div class="neos-row-fluid">

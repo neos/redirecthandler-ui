@@ -30,6 +30,11 @@ Neos:
             icon: 'icon-mail-forward'
             resource: 'Neos.RedirectHandler.Ui:Backend.Module'
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
+            additionalResources:
+              styleSheets:
+                - 'resource://Neos.RedirectHandler.Ui/Public/Styles.css'
+              javaScripts:
+                - 'resource://Neos.RedirectHandler.Ui/Public/Scripts.js'
 
   Fusion:
     defaultContext:
