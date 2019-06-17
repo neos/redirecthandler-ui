@@ -8,6 +8,18 @@
             <trans-unit id="module.description" xml:space="preserve">
                 <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
             </trans-unit>
+            <trans-unit id="message.redirectNotCreated" xml:space="preserve">
+                <source>Redirect not created</source>
+            </trans-unit>
+            <trans-unit id="message.redirectCreated" xml:space="preserve">
+                <source>Redirect created</source>
+            </trans-unit>
+            <trans-unit id="message.redirectNotDeleted" xml:space="preserve">
+                <source>Redirect not removed</source>
+            </trans-unit>
+            <trans-unit id="message.redirectDeleted" xml:space="preserve">
+                <source>Redirect deleted</source>
+            </trans-unit>
             <trans-unit id="confirmDelete" xml:space="preserve">
                 <source>Delete this redirect?</source>
             </trans-unit>

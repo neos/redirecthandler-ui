@@ -1,5 +1,4 @@
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
-    flashMessages = ${[]}
     redirects = ${[]}
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
     csrfToken = ''
@@ -18,8 +17,6 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
 
     renderer = afx`
         <div class="neos-content neos-container-fluid">
-            <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={props.flashMessages}/>
-
             <div class="neos-row-fluid">
                 <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} action={props.actions.create}/>
             </div>

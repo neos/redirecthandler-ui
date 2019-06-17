@@ -13,6 +13,7 @@ namespace Neos\RedirectHandler\Ui\Controller;
  */
 
 use DateTime;
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\InvalidArgumentNameException;
@@ -81,20 +82,12 @@ class ModuleController extends AbstractModuleController
     public function indexAction()
     {
         $redirects = $this->redirectRepository->search();
-
-        $statusCodes = $this->settings['statusCodes'];
-        array_walk($statusCodes, function (&$label, $code) {
-            if ($label === 'i18n') {
-                $label = $this->translator->translateById('statusCodes.' . $code . '.label',
-                    [], null, null, 'Modules', 'Neos.RedirectHandler.Ui');
-            }
-        });
-
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
-            'flashMessages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            'flashMessages' => $flashMessages,
             'csrfToken' => $csrfToken,
         ]);
     }
@@ -128,9 +121,11 @@ class ModuleController extends AbstractModuleController
         );
 
         if ($status === false) {
-            $this->addFlashMessage('Redirect not created', '', Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage('', $this->translateById('message.redirectNotCreated'),
+                Error\Message::SEVERITY_ERROR);
         } else {
-            $this->addFlashMessage('Redirect created', '', Error\Message::SEVERITY_OK);
+            $this->addFlashMessage('', $this->translateById('message.redirectCreated'),
+                Error\Message::SEVERITY_OK);
         }
 
         $this->redirect('index');
@@ -182,9 +177,9 @@ class ModuleController extends AbstractModuleController
         $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
 
         if ($status === false) {
-            $this->addFlashMessage('Redirect not removed', '', Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage('', $this->translateById('message.redirectNotDeleted'), Error\Message::SEVERITY_ERROR);
         } else {
-            $this->addFlashMessage('Redirect removed', '', Error\Message::SEVERITY_OK);
+            $this->addFlashMessage('', $this->translateById('message.redirectDeleted'), Error\Message::SEVERITY_OK);
         }
 
         $this->redirect('index');
@@ -326,5 +321,17 @@ class ModuleController extends AbstractModuleController
         $view->disableFallbackView();
         $view->setFusionPathPatterns(['resource://@package/Private/FusionModule']);
         $view->setFusionPathPattern('resource://@package/Private/FusionModule');
+    }
+
+    /**
+     * Shorthand to translate labels for this package
+     *
+     * @param $id
+     * @return string
+     */
+    protected function translateById($id): string
+    {
+        return $this->translator->translateById($id, [], null, null, 'Modules',
+            'Neos.RedirectHandler.Ui');
     }
 }

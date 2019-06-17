@@ -4,21 +4,8 @@ include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Components/Flas
 include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Views/Index.fusion
 
 Neos.RedirectHandler.Ui.ModuleController {
-    index = Neos.RedirectHandler.Ui:Module.Index {
-        flashMessages = ${flashMessages}
-        redirects = ${redirects}
-        csrfToken = ${csrfToken}
-
-        @process.debug = Shel.NeosBase:Debug {
-            output = ${flashMessages}
-        }
-    }
-}
-
-// TODO: Remove debug tester
-prototype(Shel.NeosBase:Debug) < prototype(Neos.Fusion:Value) {
-    value = ${value}
-    title = ${node ? node.label : (documentNode ? documentNode.label : 'Untitled')}
-    output = ''
-    @process.addDebugOutput = ${value + '<script>console.log("' + this.title + ':",' + Json.stringify(this.output) + ');</script>'}
+    index = afx`
+        <Neos.RedirectHandler.Ui:Module.Index redirects={redirects} csrfToken={csrfToken}/>
+        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
+    `
 }
