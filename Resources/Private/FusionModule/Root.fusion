@@ -19,9 +19,9 @@ prototype(Neos.GoogleAnalytics:Component.FlashMessages) < prototype(Neos.Fusion:
 
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
     flashMessages = ${[]}
-    defaultStatusCode = 307
     redirects = ${[]}
     statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
+    defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
 
     renderer = afx`
         <div class="neos-content neos-container-fluid">

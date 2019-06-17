@@ -45,6 +45,12 @@ class ModuleController extends AbstractModuleController
 
     /**
      * @Flow\Inject
+     * @var SecurityContext
+     */
+    protected $securityContext;
+
+    /**
+     * @Flow\Inject
      * @var RedirectStorageInterface
      */
     protected $redirectStorage;
@@ -81,8 +87,6 @@ class ModuleController extends AbstractModuleController
                     [], null, null, 'Modules', 'Neos.RedirectHandler.Ui');
             }
         });
-
-        $defaultStatusCode = array_key_exists(307, $statusCodes) ? 307 : $statusCodes[0];
 
         $this->view->assignMultiple([
             'redirects' => $redirects,

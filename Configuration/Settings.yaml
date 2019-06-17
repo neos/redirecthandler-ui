@@ -5,6 +5,7 @@ Neos:
       gone: 410
 
     Ui:
+      defaultStatusCode: 307
       statusCodes:
         301: i18n
         302: i18n
