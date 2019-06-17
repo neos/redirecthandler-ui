@@ -8,7 +8,7 @@
             <trans-unit id="module.description" xml:space="preserve">
                 <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
             </trans-unit>
-            <trans-unit id="confirm" xml:space="preserve">
+            <trans-unit id="confirmDelete" xml:space="preserve">
                 <source>Delete this redirect?</source>
             </trans-unit>
             <trans-unit id="host" xml:space="preserve">

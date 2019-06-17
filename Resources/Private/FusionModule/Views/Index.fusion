@@ -1,0 +1,83 @@
+prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
+    flashMessages = ${[]}
+    redirects = ${[]}
+    showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
+    csrfToken = ''
+
+    actions = Neos.Fusion:DataStructure {
+        create = Neos.Fusion:UriBuilder {
+            action = 'create'
+        }
+        delete = Neos.Fusion:UriBuilder {
+            action = 'delete'
+        }
+        update = Neos.Fusion:UriBuilder {
+            action = 'update'
+        }
+    }
+
+    renderer = afx`
+        <div class="neos-content neos-container-fluid">
+            <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={props.flashMessages}/>
+
+            <div class="neos-row-fluid">
+                <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} action={props.actions.create}/>
+            </div>
+
+            <div class="neos-row-fluid">
+                <table class="neos-table redirect-table">
+                    <thead>
+                        <tr>
+                            <th class="statuscode-column">{I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCode')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</th>
+                            <th class="host-column">{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
+                            <th @if.enabled={props.showHitCount}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:hitCount')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creationDate')}</th>
+                            <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creator')}</th>
+                            <th class="neos-action">{I18n.translate('Neos.RedirectHandler.Ui:Modules:actions')}</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
+                            <tr class="row-view" data-id={identifier}
+                                data-redirect-id={redirect.sourceUriPath + redirect.host} id={'redirect-' + identifier + '-view'}>
+                                <td>{redirect.statusCode}</td>
+                                <td>{redirect.host || '&ndash;'}</td>
+                                <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(redirect.sourceUriPath)}</td>
+                                <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(redirect.targetUriPath)}</td>
+                                <td>{redirect.startDateTime ? Date.format(redirect.startDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
+                                <td>{redirect.endDateTime ? Date.format(redirect.endDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
+                                <td>{redirect.comment || '&ndash;'}</td>
+                                <td @if.enabled={props.showHitCount}>
+                                    {redirect.hitCounter}
+                                    <span @if.hit={redirect.lastHit}>(Last hit at {Date.format(redirect.lastHit, 'd.m.Y H:i:s')})</span>
+                                </td>
+                                <td title={Date.format(redirect.creationDateTime, 'd.m.Y H:i:s')}>{Date.format(redirect.creationDateTime, 'd.m.Y')}</td>
+                                <td>{redirect.creator}</td>
+                                <td class="neos-action">
+                                    <form action={props.actions.delete} type="POST">
+                                        <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
+                                        <input type="hidden" name="moduleArguments[sourceUriPath]" value={redirect.sourceUriPath}/>
+                                        <input type="hidden" name="moduleArguments[host]" value={redirect.host}/>
+                                        <button type="submit" class="neos-button neos-button-danger"
+                                                onclick={'return confirm("' + I18n.translate('Neos.RedirectHandler.Ui:Modules:confirmDelete') + '")'}>
+                                            <i class="fa fa-trash-alt icon-trash icon-white"></i>
+                                        </button>
+                                    </form>
+                                    <button type="button" class="neos-button" title=""
+                                            onclick="showItemUpdate('{identifier}');">
+                                        <i class="fa fa-pencil-alt icon-pencil icon-white"></i>
+                                    </button>
+                                </td>
+                            </tr>
+                        </Neos.Fusion:Loop>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    `
+}
