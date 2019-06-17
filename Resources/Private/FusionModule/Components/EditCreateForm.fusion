@@ -1,0 +1,60 @@
+prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fusion:Component) {
+    action = ''
+    csrfToken = ''
+    defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
+    statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
+
+    renderer = afx`
+        <form action={props.action} method="POST" class="add-redirect-form">
+            <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
+
+            <div class="row">
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="lastName">{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</label>
+                    <input name="moduleArguments[host]" id="host" type="text" placeholder="www.example.org"/>
+                </div>
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="sourceUriPath">{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</label>
+                    <input name="moduleArguments[sourceUriPath]" id="sourceUriPath" type="text"
+                           autofocus placeholder="the-old-url/product-a"/>
+                </div>
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="statusCode">{I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCode')}</label>
+                    <select name="moduleArguments[statusCode]" id="statusCode" value={props.defaultStatusCode}>
+                        <Neos.Fusion:Loop items={props.statusCodes} itemName="label" itemKey="code">
+                            <option value={code} selected="selected" selected.@if.isSelected={props.defaultStatusCode == code}
+                                title={label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.tooltip')}>
+                                {label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.label')}
+                            </option>
+                        </Neos.Fusion:Loop>
+                    </select>
+                </div>
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="targetUriPath">{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</label>
+                    <input name="moduleArguments[targetUriPath]" id="targetUriPath" type="text"
+                           placeholder="the-new-url/product-a"/>
+                </div>
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="startDateTime">{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</label>
+                    <input name="moduleArguments[startDateTime]" id="startDateTime" type="text"
+                           placeholder="No date set"/>
+                </div>
+                <div class="neos-control-group">
+                    <label class="neos-control-label" for="endDateTime">{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</label>
+                    <input name="moduleArguments[endDateTime]" id="endDateTime" type="text"
+                           placeholder="No date set"/>
+                </div>
+                <div class="neos-control-group neos-control-group--large">
+                    <label class="neos-control-label" for="comment">{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</label>
+                    <textarea name="moduleArguments[comment]" id="comment" type="text"
+                           placeholder="Campaign for new product" rows="1"></textarea>
+                </div>
+                <div class="neos-control-group neos-control-group--auto">
+                    <button type="submit" name="moduleArguments[action]" value="create"
+                            class="neos-button neos-button-primary">{I18n.translate('Neos.RedirectHandler.Ui:Modules:addRedirect')}
+                    </button>
+                </div>
+            </div>
+        </form>
+    `
+}

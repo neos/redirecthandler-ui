@@ -1,28 +1,19 @@
 include: resource://Neos.Fusion/Private/Fusion/Root.fusion
+include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Components/FlashMessages.fusion
+include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Components/EditCreateForm.fusion
 
-prototype(Neos.GoogleAnalytics:Component.FlashMessages) < prototype(Neos.Fusion:Component) {
-    flashMessages = ${[]}
-
-    renderer = afx`
-        <div id="neos-notification-container" class="neos-notification-top" @if.hasMessages={props.flashMessages}>
-            <Neos.Fusion:Loop items={props.flashMessages} itemName="message">
-                <div class="neos-notification neos-notification-error">
-                    <div class="neos-notification-content">
-                        <i class="fas fa-error"></i>
-                        <div class="neos-notification-heading" @if.hasTitle={message.title}>Severity {message.severity} Level {message.level} Message {message.message}</div>
-                    </div>
-                </div>
-            </Neos.Fusion:Loop>
-        </div>
-    `
+// TODO: Remove debug tester
+prototype(Shel.NeosBase:Debug) < prototype(Neos.Fusion:Value) {
+    value = ${value}
+    title = ${node ? node.label : (documentNode ? documentNode.label : 'Untitled')}
+    output = ''
+    @process.addDebugOutput = ${value + '<script>console.log("' + this.title + ':",' + Json.stringify(this.output) + ');</script>'}
 }
 
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
     flashMessages = ${[]}
     redirects = ${[]}
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
-    statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
-    defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
     csrfToken = ''
 
     actions = Neos.Fusion:DataStructure {
@@ -42,55 +33,7 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
             <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={props.flashMessages}/>
 
             <div class="neos-row-fluid">
-                <form action={props.actions.create} method="GET" class="add-redirect-form">
-                    <div class="row">
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="lastName">{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</label>
-                            <input name="moduleArguments[host]" id="host" type="text" placeholder="www.example.org"/>
-                        </div>
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="sourceUriPath">{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</label>
-                            <input name="moduleArguments[sourceUriPath]" id="sourceUriPath"
-                                   type="text" autofocus placeholder="the-old-url/product-a"/>
-                        </div>
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="statusCode">{I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCode')}</label>
-                            <select name="moduleArguments[statusCode]" id="statusCode" value={props.defaultStatusCode}>
-                                <Neos.Fusion:Loop items={props.statusCodes} itemName="label" itemKey="code">
-                                    <option value={code} selected="selected" selected.@if.isSelected={props.defaultStatusCode == code}
-                                        title={label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.tooltip')}>
-                                        {label != 'i18n' ? label : I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + code + '.label')}
-                                    </option>
-                                </Neos.Fusion:Loop>
-                            </select>
-                        </div>
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="targetUriPath">{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</label>
-                            <input name="moduleArguments[targetUriPath]" id="targetUriPath" type="text"
-                                   placeholder="the-new-url/product-a"/>
-                        </div>
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="startDateTime">{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</label>
-                            <input name="moduleArguments[startDateTime]" id="startDateTime" type="text"
-                                   placeholder="No date set"/>
-                        </div>
-                        <div class="neos-control-group">
-                            <label class="neos-control-label" for="endDateTime">{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</label>
-                            <input name="moduleArguments[endDateTime]" id="endDateTime" type="text"
-                                   placeholder="No date set"/>
-                        </div>
-                        <div class="neos-control-group neos-control-group--large">
-                            <label class="neos-control-label" for="comment">{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</label>
-                            <textarea name="moduleArguments[comment]" id="comment" type="text"
-                                   placeholder="Campaign for new product" rows="1"></textarea>
-                        </div>
-                        <div class="neos-control-group neos-control-group--auto">
-                            <button type="submit" name="moduleArguments[action]" value="create"
-                                    class="neos-button neos-button-primary">{I18n.translate('Neos.RedirectHandler.Ui:Modules:addRedirect')}
-                            </button>
-                        </div>
-                    </div>
-                </form>
+                <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} action={props.actions.create}/>
             </div>
 
             <div class="neos-row-fluid">
@@ -155,5 +98,9 @@ Neos.RedirectHandler.Ui.ModuleController {
         flashMessages = ${flashMessages}
         redirects = ${redirects}
         csrfToken = ${csrfToken}
+
+        @process.debug = Shel.NeosBase:Debug {
+            output = ${flashMessages}
+        }
     }
 }
