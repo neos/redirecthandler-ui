@@ -38,7 +38,7 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
                                 </td>
                                 <td>
                                     <label for="source">Origin URL</label>
-                                    <input name="moduleArguments[source]" id="source" type="text"
+                                    <input name="moduleArguments[source]" id="source" type="text" autofocus
                                            placeholder="the-old-url/product-a"/>
                                 </td>
                                 <td class="statuscode-column">
