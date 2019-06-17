@@ -12,6 +12,7 @@ namespace Neos\RedirectHandler\Ui\Controller;
  * source code.
  */
 
+use DateTime;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\InvalidArgumentNameException;
@@ -22,6 +23,7 @@ use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
+use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Error\Messages as Error;
 
 use Neos\RedirectHandler\RedirectInterface;
@@ -90,7 +92,45 @@ class ModuleController extends AbstractModuleController
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
+            'flashMessages' => $this->flashMessageContainer->getMessagesAndFlush(),
         ]);
+    }
+
+    /**
+     * @Flow\SkipCsrfProtection
+     * @throws NoSuchArgumentException
+     * @throws StopActionException
+     */
+    public function createAction(): void
+    {
+        [
+            'host' => $host,
+            'sourceUriPath' => $sourceUriPath,
+            'targetUriPath' => $targetUriPath,
+            'statusCode' => $statusCode,
+            'startDateTime' => $startDateTime,
+            'endDateTime' => $endDateTime,
+            'comment' => $comment,
+        ] = $this->request->getArguments();
+
+        if (empty($startDateTime)) {
+            $startDateTime = null;
+        }
+        if (empty($endDateTime)) {
+            $endDateTime = null;
+        }
+
+        $status = $this->addRedirect(
+            $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
+        );
+
+        if ($status === false) {
+            $this->addFlashMessage('Redirect not created', '', Error\Message::SEVERITY_ERROR);
+        } else {
+            $this->addFlashMessage('Redirect created', '', Error\Message::SEVERITY_OK);
+        }
+
+        $this->redirect('index');
     }
 
     /**
@@ -149,55 +189,47 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @throws NoSuchArgumentException
-     * @throws StopActionException
-     */
-    public function createAction()
-    {
-        if ($this->request->hasArgument('action') && $this->request->getArgument('action') == 'create') {
-            $status = $this->addRedirect(
-                $this->request->getArgument('source'),
-                $this->request->getArgument('target'),
-                $this->request->getArgument('code'),
-                $this->request->getArgument('host')
-            );
-
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not created', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect created', '', Error\Message::SEVERITY_OK);
-            }
-        }
-        $this->redirect('index');
-    }
-
-    /**
-     * @param string $source
-     * @param string $target
+     * @param string $sourceUriPath
+     * @param string $targetUriPath
      * @param string $statusCode
      * @param string|null $host
+     * @param string|null $comment
+     * @param DateTime|null $startDateTime
+     * @param DateTime|null $endDateTime
      * @param bool $force
-     * @return array|bool
+     * @return bool
      */
-    protected function addRedirect($source, $target, $statusCode, $host = null, $force = false)
-    {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
-        $isSame = $this->isSame($source, $target, $host, $statusCode, $redirect);
+    protected function addRedirect(
+        $sourceUriPath,
+        $targetUriPath,
+        $statusCode,
+        $host = null,
+        $comment = null,
+        DateTime $startDateTime = null,
+        DateTime $endDateTime = null,
+        $force = false
+    ): bool {
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host, false);
+        $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
         $go = true;
+
         if ($redirect !== null && $isSame === false && $force === false) {
             $go = false; // Ignore.. A redirect with the same source URI exist.
         } elseif ($redirect !== null && $isSame === false && $force === true) {
-            $this->redirectStorage->removeOneBySourceUriPathAndHost($source, $host);
+            $this->redirectStorage->removeOneBySourceUriPathAndHost($sourceUriPath, $host);
             $this->persistenceManager->persistAll();
         } elseif ($redirect !== null && $isSame === true) {
             $go = false; // Ignore.. Not valid.
         }
 
         if ($go) {
-            $redirects = $this->redirectStorage->addRedirect($source, $target, $statusCode, [$host]);
-            $this->persistenceManager->persistAll();
+            // TODO: Use full name instead of account identifier
+            $creator = $this->securityContext->getAccount()->getAccountIdentifier();
 
-            return $redirects;
+            $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host], $creator,
+                $comment, RedirectInterface::REDIRECT_TYPE_MANUAL, $startDateTime, $endDateTime);
+            $this->persistenceManager->persistAll();
+            return true;
         }
 
         return false;

@@ -14,6 +14,39 @@
             <trans-unit id="host" xml:space="preserve">
                 <source>Origin Domain</source>
             </trans-unit>
+            <trans-unit id="sourceUriPath" xml:space="preserve">
+                <source>Origin URL</source>
+            </trans-unit>
+            <trans-unit id="statusCode" xml:space="preserve">
+                <source>Status Code</source>
+            </trans-unit>
+            <trans-unit id="targetUriPath" xml:space="preserve">
+                <source>Target URL</source>
+            </trans-unit>
+            <trans-unit id="startDateTime" xml:space="preserve">
+                <source>Active from</source>
+            </trans-unit>
+            <trans-unit id="endDateTime" xml:space="preserve">
+                <source>Active until</source>
+            </trans-unit>
+            <trans-unit id="comment" xml:space="preserve">
+                <source>Comment</source>
+            </trans-unit>
+            <trans-unit id="creator" xml:space="preserve">
+                <source>Creator</source>
+            </trans-unit>
+            <trans-unit id="hitCount" xml:space="preserve">
+                <source>Hit Count</source>
+            </trans-unit>
+            <trans-unit id="creationDate" xml:space="preserve">
+                <source>Created</source>
+            </trans-unit>
+            <trans-unit id="actions" xml:space="preserve">
+                <source>Actions</source>
+            </trans-unit>
+            <trans-unit id="addRedirect" xml:space="preserve">
+                <source>Add Redirect</source>
+            </trans-unit>
             <trans-unit id="statusCodes.301.label" xml:space="preserve">
                 <source>301 - Moved Permanently</source>
             </trans-unit>

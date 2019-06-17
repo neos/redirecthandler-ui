@@ -1,0 +1,97 @@
+.add-redirect-form  {
+    $fieldSpacing: .3rem;
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        margin: 0 -#{$fieldSpacing};
+    }
+
+    .neos-control-group {
+        flex: 0 1 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-left: #{$fieldSpacing};
+        padding-right: #{$fieldSpacing};
+
+        &--large {
+            flex-basis: 300px;
+        }
+
+        &--auto {
+            flex-basis: auto;
+        }
+    }
+
+    textarea {
+        width: 100%;
+        height: 40px;
+        line-height: 36px;
+    }
+}
+
+.neos-table {
+    overflow-x: auto;
+    width: 100%;
+
+    input {
+        width: 100%;
+    }
+
+    .statuscode-column input {
+        padding-right: 0 !important;
+    }
+}
+
+.update-redirect-submit {
+    position: relative;
+    margin-top: -2px !important;
+}
+
+.neos.neos-module table.neos-table {
+    thead {
+        td:first-child,
+        td {
+            padding: 0 4px 4px 0 !important;
+        }
+
+        .host-column {
+            width: 240px;
+        }
+
+        .statuscode-column {
+            width: 120px;
+        }
+
+        .neos-action {
+            padding: 2px 0 4px !important;
+            width: 97px;
+        }
+    }
+
+    tbody {
+        td:first-child,
+        td {
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            max-width: 450px;
+        }
+    }
+}
+
+.neos.neos-module table.neos-table .row-update {
+    td:first-child,
+    td {
+        padding: 0 4px 0 0 !important;
+    }
+
+    td.neos-action {
+        padding: 2px 0 0 !important;
+    }
+}
+
+.row-view--hidden {
+    display: none;
+}
