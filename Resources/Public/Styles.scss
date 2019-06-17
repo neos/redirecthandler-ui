@@ -31,22 +31,12 @@
     }
 }
 
-.neos-table {
-    overflow-x: auto;
-    width: 100%;
-
-    input {
-        width: 100%;
+.redirect-table {
+    .neos-action {
+        form {
+            display: inline-block;
+        }
     }
-
-    .statuscode-column input {
-        padding-right: 0 !important;
-    }
-}
-
-.update-redirect-submit {
-    position: relative;
-    margin-top: -2px !important;
 }
 
 .neos.neos-module table.neos-table {
@@ -79,19 +69,15 @@
             max-width: 450px;
         }
     }
-}
 
-.neos.neos-module table.neos-table .row-update {
-    td:first-child,
-    td {
-        padding: 0 4px 0 0 !important;
+    .row-update {
+        td:first-child,
+        td {
+            padding: 0 4px 0 0 !important;
+        }
+
+        td.neos-action {
+            padding: 2px 0 0 !important;
+        }
     }
-
-    td.neos-action {
-        padding: 2px 0 0 !important;
-    }
-}
-
-.row-view--hidden {
-    display: none;
 }

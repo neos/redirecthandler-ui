@@ -100,8 +100,6 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @Flow\SkipCsrfProtection
-     * @throws NoSuchArgumentException
      * @throws StopActionException
      */
     public function createAction(): void
@@ -115,6 +113,8 @@ class ModuleController extends AbstractModuleController
             'endDateTime' => $endDateTime,
             'comment' => $comment,
         ] = $this->request->getArguments();
+
+        // TODO: Catch redirects without sourceUri or when source and target are the same
 
         if (empty($startDateTime)) {
             $startDateTime = null;
@@ -170,24 +170,23 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @throws NoSuchArgumentException
      * @throws StopActionException
      */
-    public function removeAction()
+    public function deleteAction(): void
     {
-        if ($this->request->hasArgument('remove')) {
-            $removeArguments = explode(',', $this->request->getArgument('remove'));
-            $status = $this->removeRedirect(
-                $removeArguments[0],
-                $removeArguments[1] ? $removeArguments[1] : null
-            );
+        [
+            'host' => $host,
+            'sourceUriPath' => $sourceUriPath,
+        ] = $this->request->getArguments();
 
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not removed', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect removed', '', Error\Message::SEVERITY_OK);
-            }
+        $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
+
+        if ($status === false) {
+            $this->addFlashMessage('Redirect not removed', '', Error\Message::SEVERITY_ERROR);
+        } else {
+            $this->addFlashMessage('Redirect removed', '', Error\Message::SEVERITY_OK);
         }
+
         $this->redirect('index');
     }
 
@@ -260,7 +259,7 @@ class ModuleController extends AbstractModuleController
         $go = false;
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
         if ($redirect !== null && $force === false) {
-            $this->removeRedirect($source, $host);
+            $this->deleteRedirect($source, $host);
 
             $go = true;
         } elseif ($force === true) {
@@ -277,17 +276,17 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param string $source
+     * @param string $sourceUriPath
      * @param string|null $host
      * @return bool
      */
-    protected function removeRedirect($source, $host = null)
+    protected function deleteRedirect($sourceUriPath, $host = null)
     {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host);
         if ($redirect === null) {
             return false;
         }
-        $this->redirectStorage->removeOneBySourceUriPathAndHost($source, $host);
+        $this->redirectStorage->removeOneBySourceUriPathAndHost($sourceUriPath, $host);
         $this->persistenceManager->persistAll();
 
         return true;
