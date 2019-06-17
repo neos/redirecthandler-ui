@@ -23,6 +23,7 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
     statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
     defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
+    csrfToken = ''
 
     actions = Neos.Fusion:DataStructure {
         create = Neos.Fusion:UriBuilder {
@@ -153,5 +154,6 @@ Neos.RedirectHandler.Ui.ModuleController {
     index = Neos.RedirectHandler.Ui:Module.Index {
         flashMessages = ${flashMessages}
         redirects = ${redirects}
+        csrfToken = ${csrfToken}
     }
 }

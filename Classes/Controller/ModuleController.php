@@ -90,9 +90,12 @@ class ModuleController extends AbstractModuleController
             }
         });
 
+        $csrfToken = $this->securityContext->getCsrfProtectionToken();
+
         $this->view->assignMultiple([
             'redirects' => $redirects,
             'flashMessages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            'csrfToken' => $csrfToken,
         ]);
     }
 
