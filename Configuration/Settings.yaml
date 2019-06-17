@@ -23,7 +23,7 @@ Neos:
     modules:
       management:
         submodules:
-          redirectHandlerUiModule:
+          redirects:
             label: 'Neos.RedirectHandler.Ui:Modules:module.label'
             controller: '\Neos\RedirectHandler\Ui\Controller\ModuleController'
             description: 'Neos.RedirectHandler.Ui:Modules:module.description'
