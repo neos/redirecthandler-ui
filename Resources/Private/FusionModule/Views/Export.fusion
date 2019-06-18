@@ -1,0 +1,19 @@
+prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Component) {
+    indexAction = Neos.Fusion:UriBuilder {
+        action = 'index'
+    }
+
+    renderer = afx`
+        <div class="neos-content neos-container-fluid">
+            <div class="neos-row-fluid">
+                TODO: Implement export actions
+            </div>
+
+            <div class="neos-footer">
+                <a class="neos-button" href={props.indexAction}>
+                    Back to list
+                </a>
+            </div>
+        </div>
+    `
+}

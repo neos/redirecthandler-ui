@@ -5,4 +5,14 @@ Neos.RedirectHandler.Ui.ModuleController {
         <Neos.RedirectHandler.Ui:Module.Index redirects={redirects} csrfToken={csrfToken}/>
         <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
     `
+
+    import = afx`
+        <Neos.RedirectHandler.Ui:Module.Import redirects={redirects} csrfToken={csrfToken}/>
+        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
+    `
+
+    export = afx`
+        <Neos.RedirectHandler.Ui:Module.Export redirects={redirects} csrfToken={csrfToken}/>
+        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
+    `
 }

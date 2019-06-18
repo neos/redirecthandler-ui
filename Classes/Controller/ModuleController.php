@@ -198,6 +198,22 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     *
+     */
+    public function importAction(): void
+    {
+
+    }
+
+    /**
+     *
+     */
+    public function exportAction(): void
+    {
+
+    }
+
+    /**
      * @param string $sourceUriPath
      * @param string $targetUriPath
      * @param integer $statusCode

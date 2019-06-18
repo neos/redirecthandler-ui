@@ -2,6 +2,13 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
     redirects = ${[]}
     csrfToken = ''
 
+    importAction = Neos.Fusion:UriBuilder {
+        action = 'import'
+    }
+    exportAction = Neos.Fusion:UriBuilder {
+        action = 'export'
+    }
+
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
@@ -10,6 +17,15 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
 
             <div class="neos-row-fluid">
                 <Neos.RedirectHandler.Ui:Component.Redirect.List redirects={props.redirects} csrfToken={props.csrfToken}/>
+            </div>
+
+            <div class="neos-footer">
+                <a class="neos-button neos-button-success" href={props.exportAction}>
+                    Export redirects
+                </a>
+                <a class="neos-button neos-button-danger" href={props.importAction}>
+                    Import redirects
+                </a>
             </div>
         </div>
     `
