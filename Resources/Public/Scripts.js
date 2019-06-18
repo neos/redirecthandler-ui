@@ -10,7 +10,9 @@
             redirectEditButton.addEventListener('click', function (e) {
                 row.parentNode.insertBefore(redirectEditForm, row.nextSibling);
                 redirectEditForm.querySelector('#edit-host').value = redirectProps.host || '';
+                redirectEditForm.querySelector('#edit-originalHost').value = redirectProps.host || '';
                 redirectEditForm.querySelector('#edit-sourceUriPath').value = redirectProps.sourceUriPath || '';
+                redirectEditForm.querySelector('#edit-originalSourceUriPath').value = redirectProps.sourceUriPath || '';
                 redirectEditForm.querySelector('#edit-targetUriPath').value = redirectProps.targetUriPath || '';
                 redirectEditForm.querySelector('#edit-statusCode').value = redirectProps.statusCode;
                 redirectEditForm.querySelector('#edit-comment').value = redirectProps.comment || '';

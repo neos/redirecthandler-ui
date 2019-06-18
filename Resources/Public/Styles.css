@@ -31,11 +31,11 @@
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 450px; }
-.neos .redirect-table tbody tr:nth-child(2n) td {
+.neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td {
   background-color: #3f3f3f; }
-  .neos .redirect-table tbody tr:nth-child(2n) td .neos-button {
+  .neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td .neos-button {
     background-color: #3f3f3f; }
-    .neos .redirect-table tbody tr:nth-child(2n) td .neos-button:hover {
+    .neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td .neos-button:hover {
       background-color: #00b5ff; }
 .neos .redirect-table tbody .neos-action {
   width: 92px; }

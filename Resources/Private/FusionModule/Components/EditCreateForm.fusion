@@ -4,6 +4,7 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
     statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
     idPrefix = ''
     submitLabel = ${I18n.translate('Neos.RedirectHandler.Ui:Modules:addRedirect')}
+    mode = 'create'
 
     action = Neos.Fusion:UriBuilder {
         action = 'create'
@@ -12,6 +13,8 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
     renderer = afx`
         <form action={props.action} method="POST" class="add-redirect-form">
             <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
+            <input type="hidden" name="moduleArguments[originalSourceUriPath]" id={props.idPrefix + 'originalSourceUriPath'} @if.editMode={props.mode == 'edit'}/>
+            <input type="hidden" name="moduleArguments[originalHost]" id={props.idPrefix + 'originalHost'} @if.editMode={props.mode == 'edit'}/>
 
             <div class="row">
                 <div class="neos-control-group">

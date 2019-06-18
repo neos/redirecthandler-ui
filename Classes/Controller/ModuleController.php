@@ -109,6 +109,7 @@ class ModuleController extends AbstractModuleController
 
         // TODO: Catch redirects without sourceUri or when source and target are the same
 
+        // TODO: Convert strings to actual date time objects
         if (empty($startDateTime)) {
             $startDateTime = null;
         }
@@ -132,35 +133,45 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @throws InvalidArgumentNameException
-     * @throws InvalidArgumentTypeException
-     * @throws NoSuchArgumentException
      * @throws StopActionException
      */
     public function updateAction()
     {
-        if ($this->request->getArguments() && $this->request->hasArgument('updateAction')) {
-            $removeArguments = explode(',', $this->request->getArgument('updateAction'));
-            $status = $this->updateRedirect(
-                $removeArguments[0],
-                $removeArguments[1] ? $removeArguments[1] : null,
-                $this->request->getArgument('updateData')['source'],
-                $this->request->getArgument('updateData')['target'],
-                $this->request->getArgument('updateData')['code'],
-                $this->request->getArgument('updateData')['host']
-            );
+        [
+            'host' => $host,
+            'originalHost' => $originalHost,
+            'sourceUriPath' => $sourceUriPath,
+            'originalSourceUriPath' => $originalSourceUriPath,
+            'targetUriPath' => $targetUriPath,
+            'statusCode' => $statusCode,
+            'startDateTime' => $startDateTime,
+            'endDateTime' => $endDateTime,
+            'comment' => $comment,
+        ] = $this->request->getArguments();
 
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not updated', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect updated', '', Error\Message::SEVERITY_OK);
+        // TODO: Catch redirects without sourceUri or when source and target are the same
 
-                $this->request->setArgument('source', $this->request->getArgument('updateData')['source']);
-                $this->request->setArgument('target', '');
-                $this->request->setArgument('code', '');
-                $this->request->setArgument('host', '');
-            }
+        // TODO: Convert strings to actual date time objects
+        if (empty($startDateTime)) {
+            $startDateTime = null;
         }
+        if (empty($endDateTime)) {
+            $endDateTime = null;
+        }
+
+        $status = $this->updateRedirect(
+            $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
+            $startDateTime, $endDateTime
+        );
+
+        if ($status === false) {
+            $this->addFlashMessage('', $this->translateById('message.redirectNotUpdated'),
+                Error\Message::SEVERITY_ERROR);
+        } else {
+            $this->addFlashMessage('', $this->translateById('message.redirectUpdated'),
+                Error\Message::SEVERITY_OK);
+        }
+
         $this->redirect('index');
     }
 
@@ -177,7 +188,8 @@ class ModuleController extends AbstractModuleController
         $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
 
         if ($status === false) {
-            $this->addFlashMessage('', $this->translateById('message.redirectNotDeleted'), Error\Message::SEVERITY_ERROR);
+            $this->addFlashMessage('', $this->translateById('message.redirectNotDeleted'),
+                Error\Message::SEVERITY_ERROR);
         } else {
             $this->addFlashMessage('', $this->translateById('message.redirectDeleted'), Error\Message::SEVERITY_OK);
         }
@@ -188,7 +200,7 @@ class ModuleController extends AbstractModuleController
     /**
      * @param string $sourceUriPath
      * @param string $targetUriPath
-     * @param string $statusCode
+     * @param integer $statusCode
      * @param string|null $host
      * @param string|null $comment
      * @param DateTime|null $startDateTime
@@ -206,7 +218,7 @@ class ModuleController extends AbstractModuleController
         DateTime $endDateTime = null,
         $force = false
     ): bool {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host, false);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
         $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
         $go = true;
 
@@ -220,7 +232,6 @@ class ModuleController extends AbstractModuleController
         }
 
         if ($go) {
-            // TODO: Use full name instead of account identifier
             $creator = $this->securityContext->getAccount()->getAccountIdentifier();
 
             $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host], $creator,
@@ -233,38 +244,43 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param string $source
-     * @param string $host
-     * @param string $newSource
-     * @param string $newTarget
-     * @param string $newStatusCode
-     * @param string|null $newHost
+     * @param string $originalSourceUriPath
+     * @param string|null $originalHost
+     * @param string $sourceUriPath
+     * @param string|null $targetUriPath
+     * @param integer $statusCode
+     * @param string|null $host
+     * @param string|null $comment
+     * @param DateTime|null $startDateTime
+     * @param DateTime|null $endDateTime
      * @param bool $force
      * @return bool
      */
     protected function updateRedirect(
-        $source,
-        $host,
-        $newSource,
-        $newTarget,
-        $newStatusCode,
-        $newHost = null,
+        $originalSourceUriPath,
+        $originalHost,
+        $sourceUriPath,
+        $targetUriPath,
+        $statusCode,
+        $host = null,
+        $comment = null,
+        DateTime $startDateTime = null,
+        DateTime $endDateTime = null,
         $force = false
     ) {
+        // TODO: Actually update redirect instead of deleting and creating it?
         $go = false;
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath, $originalHost ? $originalHost : null, false);
         if ($redirect !== null && $force === false) {
-            $this->deleteRedirect($source, $host);
-
+            $this->deleteRedirect($originalSourceUriPath, $originalHost);
             $go = true;
         } elseif ($force === true) {
             $go = true;
         }
 
         if ($go) {
-            $this->addRedirect($newSource, $newTarget, $newStatusCode, $newHost, $force);
-
-            return true;
+            return $this->addRedirect($sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime,
+                $endDateTime, $force);
         }
 
         return false;
@@ -277,7 +293,7 @@ class ModuleController extends AbstractModuleController
      */
     protected function deleteRedirect($sourceUriPath, $host = null)
     {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null);
         if ($redirect === null) {
             return false;
         }

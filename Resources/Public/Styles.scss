@@ -54,7 +54,7 @@
       max-width: 450px;
     }
 
-    tr:nth-child(2n) td {
+    tr:nth-child(2n):not(#redirect-edit-form) td {
       $alternatingBackgroundColor: #3f3f3f;
       background-color: #{$alternatingBackgroundColor};
 

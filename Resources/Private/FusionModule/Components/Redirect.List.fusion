@@ -27,7 +27,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
                 <tr id="redirect-edit-form">
                     <td colspan="11">
                         <h6>Edit redirect</h6>
-                        <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} idPrefix="edit-"
+                        <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} idPrefix="edit-" mode="edit"
                             action.action="update" submitLabel={I18n.translate('Neos.RedirectHandler.Ui:Modules:updateRedirect')}/>
                     </td>
                 </tr>
