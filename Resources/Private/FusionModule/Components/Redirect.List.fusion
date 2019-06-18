@@ -1,0 +1,30 @@
+prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusion:Component) {
+    redirects = ${[]}
+    showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
+    csrfToken = null
+
+    renderer = afx`
+        <table class="neos-table redirect-table">
+            <thead>
+                <tr>
+                    <th class="statuscode-column">{I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCode')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</th>
+                    <th class="host-column">{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
+                    <th @if.enabled={props.showHitCount}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:hitCount')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creationDate')}</th>
+                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creator')}</th>
+                    <th class="neos-action">{I18n.translate('Neos.RedirectHandler.Ui:Modules:actions')}</th>
+                </tr>
+            </thead>
+            <tbody>
+                <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
+                    <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken} showHitCount={props.showHitCount}/>
+                </Neos.Fusion:Loop>
+            </tbody>
+        </table>
+    `
+}

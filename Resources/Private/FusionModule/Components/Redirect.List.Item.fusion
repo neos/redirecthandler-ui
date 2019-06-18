@@ -1,0 +1,44 @@
+prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos.Fusion:Component) {
+    showHitCount = false
+    redirect = null
+    csrfToken = null
+    deleteAction = Neos.Fusion:UriBuilder {
+        action = 'delete'
+    }
+    updateAction = Neos.Fusion:UriBuilder {
+        action = 'update'
+    }
+
+    renderer = afx`
+        <tr class="row-view" data-id={identifier}
+            data-redirect-id={redirect.sourceUriPath + props.redirect.host} id={'redirect-' + identifier + '-view'}>
+            <td>{props.redirect.statusCode}</td>
+            <td>{props.redirect.host || '&ndash;'}</td>
+            <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
+            <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
+            <td>{props.redirect.startDateTime ? Date.format(props.redirect.startDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
+            <td>{props.redirect.endDateTime ? Date.format(props.redirect.endDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
+            <td>{props.redirect.comment || '&ndash;'}</td>
+            <td @if.enabled={props.showHitCount}>
+                {props.redirect.hitCounter}
+                <span @if.hit={props.redirect.lastHit}>(Last hit at {Date.format(props.redirect.lastHit, 'd.m.Y H:i:s')})</span>
+            </td>
+            <td title={Date.format(props.redirect.creationDateTime, 'd.m.Y H:i:s')}>{Date.format(props.redirect.creationDateTime, 'd.m.Y')}</td>
+            <td>{props.redirect.creator}</td>
+            <td class="neos-action">
+                <button type="button" class="neos-button" title="" onclick="showItemUpdate('{props.identifier}');">
+                    <i class="fa fa-pencil-alt icon-pencil icon-white"></i>
+                </button>
+                <form action={props.deleteAction} type="POST">
+                    <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
+                    <input type="hidden" name="moduleArguments[sourceUriPath]" value={props.redirect.sourceUriPath}/>
+                    <input type="hidden" name="moduleArguments[host]" value={props.redirect.host}/>
+                    <button type="submit" class="neos-button neos-button-danger"
+                            onclick={'return confirm("' + I18n.translate('Neos.RedirectHandler.Ui:Modules:confirmDelete') + '")'}>
+                        <i class="fa fa-trash-alt icon-trash icon-white"></i>
+                    </button>
+                </form>
+            </td>
+        </tr>
+    `
+}

@@ -1,7 +1,4 @@
 include: resource://Neos.Fusion/Private/Fusion/Root.fusion
-include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Components/FlashMessages.fusion
-include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Components/FlashMessages.fusion
-include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Views/Index.fusion
 
 Neos.RedirectHandler.Ui.ModuleController {
     index = afx`
