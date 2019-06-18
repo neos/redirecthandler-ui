@@ -40,6 +40,23 @@ class RedirectHelper implements ProtectedContextAwareInterface
     }
 
     /**
+     * @param RedirectInterface $redirect
+     * @return string
+     */
+    public function serialize(RedirectInterface $redirect): string
+    {
+        return json_encode([
+            'host' => $redirect->getHost(),
+            'sourceUriPath' => $redirect->getSourceUriPath(),
+            'targetUriPath' => $redirect->getTargetUriPath(),
+            'statusCode' => $redirect->getStatusCode(),
+            'startDateTime' => $redirect->getStartDateTime(),
+            'endDateTime' => $redirect->getEndDateTime(),
+            'comment' => $redirect->getComment(),
+        ]);
+    }
+
+    /**
      * All methods are considered safe
      *
      * @param string $methodName

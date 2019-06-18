@@ -9,9 +9,10 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
         action = 'update'
     }
     identifier = ${Neos.RedirectHandler.Ui.Redirect.createIdentifier(this.redirect)}
+    redirectData = ${Neos.RedirectHandler.Ui.Redirect.serialize(this.redirect)}
 
     renderer = afx`
-        <tr class="redirect-table__row" data-redirect-id={props.identifier}>
+        <tr class="redirect-table__row" data-redirect-id={props.identifier} data-redirect-props={props.redirectData}>
             <td class="redirect-table__row__column-status-code">{props.redirect.statusCode}</td>
             <td>{props.redirect.host || '&ndash;'}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
@@ -31,7 +32,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
             </td>
             <td class="neos-action">
                 <button type="button" class="neos-button" title={I18n.translate('Neos.RedirectHandler.Ui:Modules:edit')}
-                        onclick={'showEditItemDialog("' + props.identifier + '");'}>
+                        data-edit-redirect-id={props.identifier}>
                     <i class="fa fa-pencil-alt icon-pencil icon-white"></i>
                 </button>
                 <form action={props.deleteAction} type="POST">

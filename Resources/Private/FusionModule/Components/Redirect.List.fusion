@@ -24,6 +24,13 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
                 <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
                     <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken} showHitCount={props.showHitCount}/>
                 </Neos.Fusion:Loop>
+                <tr id="redirect-edit-form">
+                    <td colspan="11">
+                        <h6>Edit redirect</h6>
+                        <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} idPrefix="edit-"
+                            action.action="update" submitLabel={I18n.translate('Neos.RedirectHandler.Ui:Modules:updateRedirect')}/>
+                    </td>
+                </tr>
             </tbody>
         </table>
     `

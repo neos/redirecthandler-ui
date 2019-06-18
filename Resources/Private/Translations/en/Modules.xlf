@@ -14,6 +14,12 @@
             <trans-unit id="message.redirectCreated" xml:space="preserve">
                 <source>Redirect created</source>
             </trans-unit>
+            <trans-unit id="message.redirectNotUpdated" xml:space="preserve">
+                <source>Redirect not updated</source>
+            </trans-unit>
+            <trans-unit id="message.redirectUpdated" xml:space="preserve">
+                <source>Redirect updated</source>
+            </trans-unit>
             <trans-unit id="message.redirectNotDeleted" xml:space="preserve">
                 <source>Redirect not removed</source>
             </trans-unit>
@@ -57,7 +63,10 @@
                 <source>Actions</source>
             </trans-unit>
             <trans-unit id="addRedirect" xml:space="preserve">
-                <source>Add Redirect</source>
+                <source>Add redirect</source>
+            </trans-unit>
+            <trans-unit id="updateRedirect" xml:space="preserve">
+                <source>Update redirect</source>
             </trans-unit>
             <trans-unit id="edit" xml:space="preserve">
                 <source>Edit redirect</source>

@@ -22,6 +22,8 @@
 
 .neos .redirect-table thead th {
   padding: 0 4px 4px 0; }
+  .neos .redirect-table thead th.redirect-table__heading-actions {
+    text-align: center; }
 .neos .redirect-table tbody td {
   padding: 0 4px 0 0;
   height: auto;
@@ -39,5 +41,16 @@
   width: 92px; }
   .neos .redirect-table tbody .neos-action form {
     display: inline-block; }
+.neos .redirect-table__row__column-status-code, .neos .redirect-table__row__column-hit-count {
+  width: 70px; }
+.neos .redirect-table__row__column-creation-date-time {
+  width: 90px; }
+
+#redirect-edit-form {
+  display: none; }
+  #redirect-edit-form.open {
+    display: table-row; }
+  #redirect-edit-form td {
+    padding: 1rem; }
 
 /*# sourceMappingURL=Styles.css.map */
