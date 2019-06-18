@@ -12,6 +12,7 @@ namespace Neos\RedirectHandler\Ui\Fusion\Helper;
  */
 
 use Neos\Eel\ProtectedContextAwareInterface;
+use Neos\RedirectHandler\RedirectInterface;
 
 class RedirectHelper implements ProtectedContextAwareInterface
 {
@@ -27,6 +28,15 @@ class RedirectHelper implements ProtectedContextAwareInterface
         } else {
             return $path;
         }
+    }
+
+    /**
+     * @param RedirectInterface $redirect
+     * @return string
+     */
+    public function createIdentifier(RedirectInterface $redirect): string
+    {
+        return $redirect->getSourceUriPath() . $redirect->getHost();
     }
 
     /**

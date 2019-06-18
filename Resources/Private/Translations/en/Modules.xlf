@@ -30,7 +30,7 @@
                 <source>Origin URL</source>
             </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
-                <source>Status Code</source>
+                <source>Code</source>
             </trans-unit>
             <trans-unit id="targetUriPath" xml:space="preserve">
                 <source>Target URL</source>
@@ -48,7 +48,7 @@
                 <source>Creator</source>
             </trans-unit>
             <trans-unit id="hitCount" xml:space="preserve">
-                <source>Hit Count</source>
+                <source>Hits</source>
             </trans-unit>
             <trans-unit id="creationDate" xml:space="preserve">
                 <source>Created</source>
@@ -58,6 +58,12 @@
             </trans-unit>
             <trans-unit id="addRedirect" xml:space="preserve">
                 <source>Add Redirect</source>
+            </trans-unit>
+            <trans-unit id="edit" xml:space="preserve">
+                <source>Edit redirect</source>
+            </trans-unit>
+            <trans-unit id="delete" xml:space="preserve">
+                <source>Delete redirect</source>
             </trans-unit>
             <trans-unit id="statusCodes.301.label" xml:space="preserve">
                 <source>301 - Moved Permanently</source>
