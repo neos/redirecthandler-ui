@@ -1,5 +1,6 @@
-.add-redirect-form {
+.neos .add-redirect-form {
   $fieldSpacing: .3rem;
+  margin-bottom: 2rem;
 
   .row {
     display: flex;
@@ -31,38 +32,17 @@
   }
 }
 
-.redirect-table {
-  .neos-action {
-    form {
-      display: inline-block;
-    }
-  }
-}
-
-.neos.neos-module table.neos-table {
+.neos .redirect-table {
   thead {
-    td:first-child,
-    td {
-      padding: 0 4px 4px 0 !important;
-    }
-
-    .host-column {
-      width: 240px;
-    }
-
-    .statuscode-column {
-      width: 120px;
-    }
-
-    .neos-action {
-      padding: 2px 0 4px !important;
-      width: 97px;
+    th {
+      padding: 0 4px 4px 0;
     }
   }
 
   tbody {
-    td:first-child,
     td {
+      padding: 0 4px 0 0;
+      height: auto;
       white-space: nowrap;
       text-overflow: ellipsis;
       overflow: hidden;
@@ -70,18 +50,24 @@
     }
 
     tr:nth-child(2n) td {
-      background-color: #3f3f3f;
-    }
-  }
+      $alternatingBackgroundColor: #3f3f3f;
+      background-color: #{$alternatingBackgroundColor};
 
-  .row-update {
-    td:first-child,
-    td {
-      padding: 0 4px 0 0 !important;
+      .neos-button {
+        background-color: #{$alternatingBackgroundColor};
+
+        &:hover {
+          background-color: #00b5ff;
+        }
+      }
     }
 
-    td.neos-action {
-      padding: 2px 0 0 !important;
+    .neos-action {
+      width: #{2 * 46px};
+
+      form {
+        display: inline-block;
+      }
     }
   }
 }

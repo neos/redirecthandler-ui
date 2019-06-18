@@ -1,48 +1,43 @@
-.add-redirect-form .row {
-  display: flex;
-  flex-wrap: wrap;
-  margin: 0 -0.3rem; }
-.add-redirect-form .neos-control-group {
-  flex: 0 1 200px;
-  display: flex;
-  flex-direction: column;
-  justify-content: flex-end;
-  padding-left: 0.3rem;
-  padding-right: 0.3rem; }
-  .add-redirect-form .neos-control-group--large {
-    flex-basis: 300px; }
-  .add-redirect-form .neos-control-group--auto {
-    flex-basis: auto; }
-.add-redirect-form textarea {
-  width: 100%;
-  height: 40px;
-  line-height: 36px; }
+.neos .add-redirect-form {
+  margin-bottom: 2rem; }
+  .neos .add-redirect-form .row {
+    display: flex;
+    flex-wrap: wrap;
+    margin: 0 -0.3rem; }
+  .neos .add-redirect-form .neos-control-group {
+    flex: 0 1 200px;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding-left: 0.3rem;
+    padding-right: 0.3rem; }
+    .neos .add-redirect-form .neos-control-group--large {
+      flex-basis: 300px; }
+    .neos .add-redirect-form .neos-control-group--auto {
+      flex-basis: auto; }
+  .neos .add-redirect-form textarea {
+    width: 100%;
+    height: 40px;
+    line-height: 36px; }
 
-.redirect-table .neos-action form {
-  display: inline-block; }
-
-.neos.neos-module table.neos-table thead td:first-child,
-.neos.neos-module table.neos-table thead td {
-  padding: 0 4px 4px 0 !important; }
-.neos.neos-module table.neos-table thead .host-column {
-  width: 240px; }
-.neos.neos-module table.neos-table thead .statuscode-column {
-  width: 120px; }
-.neos.neos-module table.neos-table thead .neos-action {
-  padding: 2px 0 4px !important;
-  width: 97px; }
-.neos.neos-module table.neos-table tbody td:first-child,
-.neos.neos-module table.neos-table tbody td {
+.neos .redirect-table thead th {
+  padding: 0 4px 4px 0; }
+.neos .redirect-table tbody td {
+  padding: 0 4px 0 0;
+  height: auto;
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 450px; }
-.neos.neos-module table.neos-table tbody tr:nth-child(2n) td {
+.neos .redirect-table tbody tr:nth-child(2n) td {
   background-color: #3f3f3f; }
-.neos.neos-module table.neos-table .row-update td:first-child,
-.neos.neos-module table.neos-table .row-update td {
-  padding: 0 4px 0 0 !important; }
-.neos.neos-module table.neos-table .row-update td.neos-action {
-  padding: 2px 0 0 !important; }
+  .neos .redirect-table tbody tr:nth-child(2n) td .neos-button {
+    background-color: #3f3f3f; }
+    .neos .redirect-table tbody tr:nth-child(2n) td .neos-button:hover {
+      background-color: #00b5ff; }
+.neos .redirect-table tbody .neos-action {
+  width: 92px; }
+  .neos .redirect-table tbody .neos-action form {
+    display: inline-block; }
 
 /*# sourceMappingURL=Styles.css.map */
