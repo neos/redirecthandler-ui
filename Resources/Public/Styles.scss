@@ -33,6 +33,8 @@
 }
 
 .neos .redirect-table {
+  $alternatingBackgroundColor: #3f3f3f;
+
   thead {
     th {
       padding: 0 4px 4px 0;
@@ -54,8 +56,7 @@
       max-width: 450px;
     }
 
-    tr:nth-child(2n):not(#redirect-edit-form) td {
-      $alternatingBackgroundColor: #3f3f3f;
+    tr.odd td {
       background-color: #{$alternatingBackgroundColor};
 
       .neos-button {
@@ -96,5 +97,6 @@
 
   td {
     padding: 1rem;
+    border-top: 0;
   }
 }

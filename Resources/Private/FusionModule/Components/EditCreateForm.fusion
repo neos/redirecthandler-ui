@@ -4,6 +4,7 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
     statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
     idPrefix = ''
     submitLabel = ${I18n.translate('Neos.RedirectHandler.Ui:Modules:addRedirect')}
+    cancelLabel = ${I18n.translate('Neos.RedirectHandler.Ui:Modules:cancel')}
     mode = 'create'
 
     action = Neos.Fusion:UriBuilder {
@@ -58,9 +59,14 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
                            placeholder="Campaign for new product" rows="1"></textarea>
                 </div>
                 <div class="neos-control-group neos-control-group--auto">
-                    <button type="submit" name="moduleArguments[action]" class="neos-button neos-button-primary">
+                    <button type="submit" class="neos-button neos-button-primary">
                         {props.submitLabel}
                     </button>
+                </div>
+                <div class="neos-control-group neos-control-group--auto" @if.editMode={props.mode == 'edit'}>
+                    <a class="neos-button add-redirect-form__cancel">
+                        {props.cancelLabel}
+                    </a>
                 </div>
             </div>
         </form>

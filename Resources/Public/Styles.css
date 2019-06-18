@@ -31,11 +31,11 @@
   text-overflow: ellipsis;
   overflow: hidden;
   max-width: 450px; }
-.neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td {
+.neos .redirect-table tbody tr.odd td {
   background-color: #3f3f3f; }
-  .neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td .neos-button {
+  .neos .redirect-table tbody tr.odd td .neos-button {
     background-color: #3f3f3f; }
-    .neos .redirect-table tbody tr:nth-child(2n):not(#redirect-edit-form) td .neos-button:hover {
+    .neos .redirect-table tbody tr.odd td .neos-button:hover {
       background-color: #00b5ff; }
 .neos .redirect-table tbody .neos-action {
   width: 92px; }
@@ -51,6 +51,7 @@
   #redirect-edit-form.open {
     display: table-row; }
   #redirect-edit-form td {
-    padding: 1rem; }
+    padding: 1rem;
+    border-top: 0; }
 
 /*# sourceMappingURL=Styles.css.map */

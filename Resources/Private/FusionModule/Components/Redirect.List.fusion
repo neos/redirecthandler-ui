@@ -22,7 +22,8 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
             </thead>
             <tbody>
                 <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
-                    <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken} showHitCount={props.showHitCount}/>
+                    <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken}
+                        showHitCount={props.showHitCount} className={iterator.isEven ? 'even' : 'odd'}/>
                 </Neos.Fusion:Loop>
                 <tr id="redirect-edit-form">
                     <td colspan="11">

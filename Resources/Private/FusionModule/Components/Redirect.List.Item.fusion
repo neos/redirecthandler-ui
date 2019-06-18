@@ -10,9 +10,11 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
     }
     identifier = ${Neos.RedirectHandler.Ui.Redirect.createIdentifier(this.redirect)}
     redirectData = ${Neos.RedirectHandler.Ui.Redirect.serialize(this.redirect)}
+    className = ''
+    className.@process.addBaseClass = ${value + ' redirect-table__row'}
 
     renderer = afx`
-        <tr class="redirect-table__row" data-redirect-id={props.identifier} data-redirect-props={props.redirectData}>
+        <tr class={props.className} data-redirect-id={props.identifier} data-redirect-props={props.redirectData}>
             <td class="redirect-table__row__column-status-code">{props.redirect.statusCode}</td>
             <td>{props.redirect.host || '&ndash;'}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
