@@ -15,7 +15,10 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
 
     renderer = afx`
         <tr class={props.className} data-redirect-id={props.identifier} data-redirect-props={props.redirectData}>
-            <td class="redirect-table__row__column-status-code">{props.redirect.statusCode}</td>
+            <td class="redirect-table__row__column-status-code"
+                title={I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + props.redirect.statusCode + '.tooltip')}>
+                {props.redirect.statusCode}
+            </td>
             <td>{props.redirect.host || '&ndash;'}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
