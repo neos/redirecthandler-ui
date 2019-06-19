@@ -11,7 +11,7 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
 
             <div class="neos-footer">
                 <a class="neos-button" href={props.indexAction}>
-                    Back to list
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:backToList')}
                 </a>
             </div>
         </div>

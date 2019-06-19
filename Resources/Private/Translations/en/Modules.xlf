@@ -77,6 +77,15 @@
             <trans-unit id="cancel" xml:space="preserve">
                 <source>Cancel</source>
             </trans-unit>
+            <trans-unit id="backToList" xml:space="preserve">
+                <source>Back to redirect list</source>
+            </trans-unit>
+            <trans-unit id="export" xml:space="preserve">
+                <source>Export redirect rules</source>
+            </trans-unit>
+            <trans-unit id="import" xml:space="preserve">
+                <source>Import redirect rules</source>
+            </trans-unit>
             <trans-unit id="statusCodes.301.label" xml:space="preserve">
                 <source>301 - Moved Permanently</source>
             </trans-unit>
