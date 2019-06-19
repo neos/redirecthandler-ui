@@ -18,6 +18,7 @@ use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\View\ViewInterface;
+use Neos\Flow\Utility\Environment;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -25,6 +26,7 @@ use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Error\Messages as Error;
 
 use Neos\RedirectHandler\RedirectInterface;
+use Neos\RedirectHandler\Service\RedirectExportService;
 use Neos\RedirectHandler\Storage\RedirectStorageInterface;
 use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 
@@ -78,6 +80,18 @@ class ModuleController extends AbstractModuleController
      * @var LocalizationService
      */
     protected $localizationService;
+
+    /**
+     * @Flow\Inject
+     * @var RedirectExportService
+     */
+    protected $redirectExportService;
+
+    /**
+     * @Flow\Inject
+     * @var Environment
+     */
+    protected $environment;
 
     /**
      * Renders the list of all redirects and allows modifying them.
@@ -241,7 +255,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     *
+     * Shows the import interface with its options and actions
      */
     public function importAction(): void
     {
@@ -249,11 +263,39 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     *
+     * Shows the export interface with its options and actions
      */
     public function exportAction(): void
     {
+    }
 
+    /**
+     *
+     */
+    public function exportCsvAction(): void
+    {
+        $csvWriter = $this->redirectExportService->exportCsv();
+        $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
+
+        $filePath = $this->environment->getPathToTemporaryDirectory() . $filename;
+
+        file_put_contents($filePath, $csvWriter->getContent());
+
+        header("Pragma: no-cache");
+        header("Content-type: application/text");
+        header("Content-Length: " . filesize($filePath));
+        header("Content-Disposition: attachment; filename=" . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+
+        readfile($filePath);
+
+        // Remove file again
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        exit;
     }
 
     /**

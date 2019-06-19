@@ -2,11 +2,16 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
     indexAction = Neos.Fusion:UriBuilder {
         action = 'index'
     }
+    exportCsvAction = Neos.Fusion:UriBuilder {
+        action = 'exportCsv'
+    }
 
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
-                TODO: Implement export actions
+                <a class="neos-button neos-button-primary" href={props.exportCsvAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:exportCsv')}
+                </a>
             </div>
 
             <div class="neos-footer">

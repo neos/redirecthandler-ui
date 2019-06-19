@@ -95,6 +95,9 @@
             <trans-unit id="backToList" xml:space="preserve">
                 <source>Back to redirect list</source>
             </trans-unit>
+            <trans-unit id="exportCsv" xml:space="preserve">
+                <source>Export CSV file</source>
+            </trans-unit>
             <trans-unit id="export" xml:space="preserve">
                 <source>Export redirect rules</source>
             </trans-unit>
