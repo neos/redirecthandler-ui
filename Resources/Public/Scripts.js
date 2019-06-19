@@ -4,8 +4,8 @@
         var redirectEditForm = document.getElementById('redirect-edit-form');
         var activeEditRow = null;
 
-        redirectEditForm.querySelector('.add-redirect-form__cancel');
-        redirectEditForm.addEventListener('click', function(e) {
+        var cancelButton = redirectEditForm.querySelector('.add-redirect-form__cancel');
+        cancelButton.addEventListener('click', function(e) {
             redirectEditForm.classList.remove('open');
             activeEditRow = null;
         });
