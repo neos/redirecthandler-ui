@@ -48,11 +48,20 @@
             <trans-unit id="startDateTime" xml:space="preserve">
                 <source>Active from</source>
             </trans-unit>
+            <trans-unit id="startDateTime.placeholder" xml:space="preserve">
+                <source>E.g. 2019-08-30 13:45</source>
+            </trans-unit>
             <trans-unit id="endDateTime" xml:space="preserve">
                 <source>Active until</source>
             </trans-unit>
+            <trans-unit id="endDateTime.placeholder" xml:space="preserve">
+                <source>E.g. 2021-08-30 08:30</source>
+            </trans-unit>
             <trans-unit id="comment" xml:space="preserve">
                 <source>Comment</source>
+            </trans-unit>
+            <trans-unit id="comment.placeholder" xml:space="preserve">
+                <source>Campaign for new product</source>
             </trans-unit>
             <trans-unit id="creator" xml:space="preserve">
                 <source>Creator</source>

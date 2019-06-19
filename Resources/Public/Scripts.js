@@ -10,6 +10,17 @@
             activeEditRow = null;
         });
 
+        // Initialize datetime pickers
+        tail.DateTime('input[data-component="dateTimePicker"]', {
+            dateStart: new Date(),
+            timeSeconds: 0,
+            weekStart: 1,
+            //locale: currentLocale,
+        });
+
+        /**
+         * Initializes a row and adds listeners to actions
+         */
         function setupRow(row) {
             var rowId = row.dataset.redirectId;
             var redirectEditButton = row.querySelector('[data-edit-redirect-id]');
@@ -22,6 +33,7 @@
                 } else {
                     activeEditRow = rowId;
                     row.parentNode.insertBefore(redirectEditForm, row.nextSibling);
+                    // Copy values from hidden data field into edit form fields
                     redirectEditForm.querySelector('#edit-host').value = redirectProps.host || '';
                     redirectEditForm.querySelector('#edit-originalHost').value = redirectProps.host || '';
                     redirectEditForm.querySelector('#edit-sourceUriPath').value = redirectProps.sourceUriPath || '';

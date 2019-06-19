@@ -1,0 +1,23 @@
+{
+  "name": "neos.redirecthandler.ui",
+  "version": "1.0.0",
+  "description": "",
+  "license": "GNU GPLv3",
+  "author": "Contributors of the Neos Project - www.neos.io",
+  "private": true,
+  "main": "index.js",
+  "scripts": {
+    "build": "cp node_modules/tail.datetime/js/tail.datetime.min.js node_modules/tail.datetime/langs/tail.datetime-all.min.js node_modules/tail.datetime/css/tail.datetime-harx*.css Resources/Public/"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/neos/redirecthandler-ui.git"
+  },
+  "bugs": {
+    "url": "https://github.com/neos/redirecthandler-ui/issues"
+  },
+  "homepage": "https://github.com/neos/redirecthandler-ui#readme",
+  "devDependencies": {
+    "tail.datetime": "^0.4.12"
+  }
+}

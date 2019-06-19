@@ -30,7 +30,8 @@
   white-space: nowrap;
   text-overflow: ellipsis;
   overflow: hidden;
-  max-width: 450px; }
+  max-width: 450px;
+  font-size: 80%; }
 .neos .redirect-table tbody tr.odd td {
   background-color: #3f3f3f; }
   .neos .redirect-table tbody tr.odd td .neos-button {
@@ -53,5 +54,12 @@
   #redirect-edit-form td {
     padding: 1rem;
     border-top: 0; }
+
+.tail-datetime-calendar .calendar-timepicker .timepicker-field:first-child input[type=number],
+.tail-datetime-calendar .calendar-timepicker .timepicker-field:last-child input[type=number],
+.tail-datetime-calendar .calendar-timepicker .timepicker-field input[type=number] {
+  background-color: #101418; }
+.tail-datetime-calendar .calendar-datepicker table tr td.date-disabled:after {
+  display: none; }
 
 /*# sourceMappingURL=Styles.css.map */

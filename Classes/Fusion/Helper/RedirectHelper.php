@@ -45,13 +45,16 @@ class RedirectHelper implements ProtectedContextAwareInterface
      */
     public function serialize(RedirectInterface $redirect): string
     {
+        $formattedStartDateTime = $redirect->getStartDateTime() ? $redirect->getStartDateTime()->format('Y-m-d H:i:s') : null;
+        $formattedEndDateTime = $redirect->getEndDateTime() ? $redirect->getEndDateTime()->format('Y-m-d H:i:s') : null;
+
         return json_encode([
             'host' => $redirect->getHost(),
             'sourceUriPath' => $redirect->getSourceUriPath(),
             'targetUriPath' => $redirect->getTargetUriPath(),
             'statusCode' => $redirect->getStatusCode(),
-            'startDateTime' => $redirect->getStartDateTime(),
-            'endDateTime' => $redirect->getEndDateTime(),
+            'startDateTime' => $formattedStartDateTime,
+            'endDateTime' => $formattedEndDateTime,
             'comment' => $redirect->getComment(),
         ]);
     }

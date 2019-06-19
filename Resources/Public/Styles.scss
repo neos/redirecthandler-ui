@@ -54,6 +54,7 @@
       text-overflow: ellipsis;
       overflow: hidden;
       max-width: 450px;
+      font-size: 80%;
     }
 
     tr.odd td {
@@ -82,6 +83,7 @@
     &__column-hit-count {
       width: 70px;
     }
+
     &__column-creation-date-time {
       width: 90px;
     }
@@ -98,5 +100,17 @@
   td {
     padding: 1rem;
     border-top: 0;
+  }
+}
+
+.tail-datetime-calendar {
+  .calendar-timepicker .timepicker-field:first-child input[type=number],
+  .calendar-timepicker .timepicker-field:last-child input[type=number],
+  .calendar-timepicker .timepicker-field input[type=number] {
+    background-color: #101418;
+  }
+
+  .calendar-datepicker table tr td.date-disabled:after {
+    display: none;
   }
 }

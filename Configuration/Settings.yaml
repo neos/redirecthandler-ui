@@ -33,8 +33,12 @@ Neos:
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
             additionalResources:
               styleSheets:
+                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-harx.css'
+                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-harx-black.css'
                 - 'resource://Neos.RedirectHandler.Ui/Public/Styles.css'
               javaScripts:
+                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-all.min.js'
+                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime.min.js'
                 - 'resource://Neos.RedirectHandler.Ui/Public/Scripts.js'
 
   Fusion:

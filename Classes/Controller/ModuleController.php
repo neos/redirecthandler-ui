@@ -13,12 +13,9 @@ namespace Neos\RedirectHandler\Ui\Controller;
  */
 
 use DateTime;
-use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
-use Neos\Flow\Mvc\Exception\InvalidArgumentNameException;
-use Neos\Flow\Mvc\Exception\InvalidArgumentTypeException;
-use Neos\Flow\Mvc\Exception\NoSuchArgumentException;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Fusion\View\FusionView;
@@ -77,6 +74,12 @@ class ModuleController extends AbstractModuleController
     protected $translator;
 
     /**
+     * @Flow\Inject
+     * @var LocalizationService
+     */
+    protected $localizationService;
+
+    /**
      * Renders the list of all redirects and allows modifying them.
      */
     public function indexAction()
@@ -84,11 +87,13 @@ class ModuleController extends AbstractModuleController
         $redirects = $this->redirectRepository->search();
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
         $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
         $this->view->assignMultiple([
             'redirects' => $redirects,
             'flashMessages' => $flashMessages,
             'csrfToken' => $csrfToken,
+            'locale' => $currentLocale,
         ]);
     }
 
@@ -97,6 +102,8 @@ class ModuleController extends AbstractModuleController
      */
     public function createAction(): void
     {
+        $status = true;
+
         [
             'host' => $host,
             'sourceUriPath' => $sourceUriPath,
@@ -109,17 +116,34 @@ class ModuleController extends AbstractModuleController
 
         // TODO: Catch redirects without sourceUri or when source and target are the same
 
-        // TODO: Convert strings to actual date time objects
         if (empty($startDateTime)) {
             $startDateTime = null;
+        } else {
+            try {
+                $startDateTime = new \DateTime($startDateTime);
+            } catch (\Exception $e) {
+                $status = false;
+                $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
+                    Error\Message::SEVERITY_ERROR);
+            }
         }
         if (empty($endDateTime)) {
             $endDateTime = null;
+        } else {
+            try {
+                $endDateTime = new \DateTime($endDateTime);
+            } catch (\Exception $e) {
+                $status = false;
+                $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
+                    Error\Message::SEVERITY_ERROR);
+            }
         }
 
-        $status = $this->addRedirect(
-            $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
-        );
+        if ($status) {
+            $status = $this->addRedirect(
+                $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
+            );
+        }
 
         if ($status === false) {
             $this->addFlashMessage('', $this->translateById('message.redirectNotCreated'),
@@ -137,6 +161,8 @@ class ModuleController extends AbstractModuleController
      */
     public function updateAction()
     {
+        $status = true;
+
         [
             'host' => $host,
             'originalHost' => $originalHost,
@@ -151,18 +177,35 @@ class ModuleController extends AbstractModuleController
 
         // TODO: Catch redirects without sourceUri or when source and target are the same
 
-        // TODO: Convert strings to actual date time objects
         if (empty($startDateTime)) {
             $startDateTime = null;
+        } else {
+            try {
+                $startDateTime = new \DateTime($startDateTime);
+            } catch (\Exception $e) {
+                $status = false;
+                $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
+                    Error\Message::SEVERITY_ERROR);
+            }
         }
         if (empty($endDateTime)) {
             $endDateTime = null;
+        } else {
+            try {
+                $endDateTime = new \DateTime($endDateTime);
+            } catch (\Exception $e) {
+                $status = false;
+                $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
+                    Error\Message::SEVERITY_ERROR);
+            }
         }
 
-        $status = $this->updateRedirect(
-            $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
-            $startDateTime, $endDateTime
-        );
+        if ($status) {
+            $status = $this->updateRedirect(
+                $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
+                $startDateTime, $endDateTime
+            );
+        }
 
         if ($status === false) {
             $this->addFlashMessage('', $this->translateById('message.redirectNotUpdated'),
@@ -286,7 +329,8 @@ class ModuleController extends AbstractModuleController
     ) {
         // TODO: Actually update redirect instead of deleting and creating it?
         $go = false;
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath, $originalHost ? $originalHost : null, false);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath,
+            $originalHost ? $originalHost : null, false);
         if ($redirect !== null && $force === false) {
             $this->deleteRedirect($originalSourceUriPath, $originalHost);
             $go = true;

@@ -19,12 +19,12 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
             <td>{props.redirect.host || '&ndash;'}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
             <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
-            <td>{props.redirect.startDateTime ? Date.format(props.redirect.startDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
-            <td>{props.redirect.endDateTime ? Date.format(props.redirect.endDateTime, 'd.m.Y H:i:s') : '&ndash;'}</td>
+            <td>{props.redirect.startDateTime ? Date.format(props.redirect.startDateTime, 'd.m.Y H:i') : '&ndash;'}</td>
+            <td>{props.redirect.endDateTime ? Date.format(props.redirect.endDateTime, 'd.m.Y H:i') : '&ndash;'}</td>
             <td>{props.redirect.comment || '&ndash;'}</td>
             <td class="redirect-table__row__column-hit-count" @if.enabled={props.showHitCount}>
                 {props.redirect.hitCounter}
-                <span @if.hit={props.redirect.lastHit}>(Last hit at {Date.format(props.redirect.lastHit, 'd.m.Y H:i:s')})</span>
+                <span @if.hit={props.redirect.lastHit}>(Last hit at {Date.format(props.redirect.lastHit, 'd.m.Y H:i')})</span>
             </td>
             <td class="redirect-table__row__column-creation-date-time" title={Date.format(props.redirect.creationDateTime, 'd.m.Y H:i:s')}>
                 {Date.format(props.redirect.creationDateTime, 'd.m.Y')}
