@@ -13,11 +13,16 @@ namespace Neos\RedirectHandler\Ui\Controller;
  */
 
 use DateTime;
+use Exception;
+use League\Csv\Exception as CsvException;
+use League\Csv\Reader;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\View\ViewInterface;
+use Neos\Flow\ResourceManagement\PersistentResource;
+use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Utility\Environment;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
@@ -27,6 +32,7 @@ use Neos\Error\Messages as Error;
 
 use Neos\RedirectHandler\RedirectInterface;
 use Neos\RedirectHandler\Service\RedirectExportService;
+use Neos\RedirectHandler\Service\RedirectImportService;
 use Neos\RedirectHandler\Storage\RedirectStorageInterface;
 use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 
@@ -89,9 +95,21 @@ class ModuleController extends AbstractModuleController
 
     /**
      * @Flow\Inject
+     * @var RedirectImportService
+     */
+    protected $redirectImportService;
+
+    /**
+     * @Flow\Inject
      * @var Environment
      */
     protected $environment;
+
+    /**
+     * @Flow\Inject
+     * @var ResourceManager
+     */
+    protected $resourceManager;
 
     /**
      * Renders the list of all redirects and allows modifying them.
@@ -112,6 +130,8 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * Creates a single redirect and goes back to the list
+     *
      * @throws StopActionException
      */
     public function createAction(): void
@@ -134,8 +154,8 @@ class ModuleController extends AbstractModuleController
             $startDateTime = null;
         } else {
             try {
-                $startDateTime = new \DateTime($startDateTime);
-            } catch (\Exception $e) {
+                $startDateTime = new DateTime($startDateTime);
+            } catch (Exception $e) {
                 $status = false;
                 $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
                     Error\Message::SEVERITY_ERROR);
@@ -145,8 +165,8 @@ class ModuleController extends AbstractModuleController
             $endDateTime = null;
         } else {
             try {
-                $endDateTime = new \DateTime($endDateTime);
-            } catch (\Exception $e) {
+                $endDateTime = new DateTime($endDateTime);
+            } catch (Exception $e) {
                 $status = false;
                 $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
                     Error\Message::SEVERITY_ERROR);
@@ -171,6 +191,8 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * Updates a single redirect and goes back to the list
+     *
      * @throws StopActionException
      */
     public function updateAction()
@@ -195,8 +217,8 @@ class ModuleController extends AbstractModuleController
             $startDateTime = null;
         } else {
             try {
-                $startDateTime = new \DateTime($startDateTime);
-            } catch (\Exception $e) {
+                $startDateTime = new DateTime($startDateTime);
+            } catch (Exception $e) {
                 $status = false;
                 $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
                     Error\Message::SEVERITY_ERROR);
@@ -206,8 +228,8 @@ class ModuleController extends AbstractModuleController
             $endDateTime = null;
         } else {
             try {
-                $endDateTime = new \DateTime($endDateTime);
-            } catch (\Exception $e) {
+                $endDateTime = new DateTime($endDateTime);
+            } catch (Exception $e) {
                 $status = false;
                 $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
                     Error\Message::SEVERITY_ERROR);
@@ -233,6 +255,8 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * Deletes a single redirect and goes back to the list
+     *
      * @throws StopActionException
      */
     public function deleteAction(): void
@@ -255,11 +279,16 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * Shows the import interface with its options and actions
+     * Shows the import interface with its options, actions and a protocol after an action
      */
     public function importAction(): void
     {
-
+        $csrfToken = $this->securityContext->getCsrfProtectionToken();
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $this->view->assignMultiple([
+            'csrfToken' => $csrfToken,
+            'flashMessages' => $flashMessages,
+        ]);
     }
 
     /**
@@ -270,7 +299,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     *
+     * Exports all redirects into a CSV file and starts its download
      */
     public function exportCsvAction(): void
     {
@@ -296,6 +325,41 @@ class ModuleController extends AbstractModuleController
         }
 
         exit;
+    }
+
+    /**
+     * Tries to import redirects from the given CSV file and then shows a protocol
+     *
+     * @param PersistentResource $csvFile
+     * @param string $delimiter
+     * @throws StopActionException
+     */
+    public function importCsvAction(PersistentResource $csvFile = null, $delimiter = ','): void
+    {
+        $protocol = [];
+
+        if (!$csvFile) {
+            $this->addFlashMessage('', $this->translateById('error.csvFileNotSet'),
+                Error\Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        }
+
+        try {
+            $reader = Reader::createFromStream($csvFile->getStream());
+            $reader->setDelimiter($delimiter);
+            $protocol = $this->redirectImportService->import($reader->getIterator());
+            $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'), Error\Message::SEVERITY_OK);
+        } catch (CsvException $e) {
+            $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
+                Error\Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        }
+
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $this->view->assignMultiple([
+            'protocol' => $protocol,
+            'flashMessages' => $flashMessages,
+        ]);
     }
 
     /**

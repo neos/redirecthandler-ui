@@ -32,11 +32,23 @@
             <trans-unit id="message.endDateTimeError" xml:space="preserve">
                 <source>An error occurred parsing the start date</source>
             </trans-unit>
+            <trans-unit id="message.importCsvSuccess" xml:space="preserve">
+                <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
+            </trans-unit>
+            <trans-unit id="error.importCsvFailed" xml:space="preserve">
+                <source>An error occurred while reading the csv file</source>
+            </trans-unit>
+            <trans-unit id="error.csvFileNotSet" xml:space="preserve">
+                <source>You have to select a CSV file to import</source>
+            </trans-unit>
             <trans-unit id="confirmDelete" xml:space="preserve">
                 <source>Delete this redirect?</source>
             </trans-unit>
             <trans-unit id="host" xml:space="preserve">
                 <source>Origin Domain</source>
+            </trans-unit>
+            <trans-unit id="csvFile" xml:space="preserve">
+                <source>CSV File</source>
             </trans-unit>
             <trans-unit id="sourceUriPath" xml:space="preserve">
                 <source>Origin URL</source>
@@ -74,8 +86,29 @@
             <trans-unit id="creationDate" xml:space="preserve">
                 <source>Created</source>
             </trans-unit>
+            <trans-unit id="field.delimiter.label" xml:space="preserve">
+                <source>Delimiter</source>
+            </trans-unit>
             <trans-unit id="actions" xml:space="preserve">
                 <source>Actions</source>
+            </trans-unit>
+            <trans-unit id="header.importCsvForm" xml:space="preserve">
+                <source>Import redirects from a CSV file</source>
+            </trans-unit>
+            <trans-unit id="header.importProtocol" xml:space="preserve">
+                <source>Import protocol</source>
+            </trans-unit>
+            <trans-unit id="action.importCsvFile" xml:space="preserve">
+                <source>Import redirects from CSV file</source>
+            </trans-unit>
+            <trans-unit id="hint.importCsvFile" xml:space="preserve">
+                <source>
+                    It is recommended to do an export of the existing redirects as CSV and work on that file, before importing again.
+                    This way the structure and required columns are already set up.
+                </source>
+            </trans-unit>
+            <trans-unit id="hint.importGetHelp" xml:space="preserve">
+                <source>Get more help.</source>
             </trans-unit>
             <trans-unit id="addRedirect" xml:space="preserve">
                 <source>Add redirect</source>
