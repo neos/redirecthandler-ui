@@ -1,18 +1,4 @@
 include: resource://Neos.Fusion/Private/Fusion/Root.fusion
+include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/**/*.fusion
+include: resource://Neos.RedirectHandler.Ui/Private/FusionModule/Routing.fusion
 
-Neos.RedirectHandler.Ui.ModuleController {
-    index = afx`
-        <Neos.RedirectHandler.Ui:Module.Index redirects={redirects} csrfToken={csrfToken}/>
-        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
-    `
-
-    import = afx`
-        <Neos.RedirectHandler.Ui:Module.Import redirects={redirects} csrfToken={csrfToken}/>
-        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
-    `
-
-    export = afx`
-        <Neos.RedirectHandler.Ui:Module.Export redirects={redirects} csrfToken={csrfToken}/>
-        <Neos.GoogleAnalytics:Component.FlashMessages flashMessages={flashMessages}/>
-    `
-}
