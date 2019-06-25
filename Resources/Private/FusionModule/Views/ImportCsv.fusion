@@ -13,7 +13,11 @@ prototype(Neos.RedirectHandler.Ui:Module.ImportCsv) < prototype(Neos.Fusion:Comp
                 <ul class="redirects-protocol-list">
                     <Neos.Fusion:Loop items={props.protocol} itemName="entry">
                         <li class={'redirects-protocol-entry--' + entry.type}>
-                            <strong>{entry.type}:</strong> {entry.message}
+                            <i class="fas fa-exclamation-triangle" @if.type={entry.type == 'error'}></i>
+                            <i class="fas fa-trash" @if.type={entry.type == 'deleted'}></i>
+                            <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
+                            <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
+                            &nbsp;<strong>{String.firstLetterToUpperCase(entry.type)}:</strong> {entry.message}
                             <span @if.hasRedirect={entry.redirect}>
                                 {entry.redirect.sourceUriPath} &rarr; {entry.redirect.targetUriPath} ({entry.redirect.statusCode})
                             </span>
