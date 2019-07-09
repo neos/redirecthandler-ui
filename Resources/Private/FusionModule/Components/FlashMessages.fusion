@@ -1,16 +1,16 @@
-prototype(Neos.GoogleAnalytics:Component.FlashMessages) < prototype(Neos.Fusion:Component) {
+prototype(Neos.RedirectHandler.Ui:Component.FlashMessages) < prototype(Neos.Fusion:Component) {
     flashMessages = ${[]}
 
     renderer = afx`
         <div id="neos-notification-container" class="neos-notification-top" @if.hasMessages={props.flashMessages}>
             <Neos.Fusion:Loop items={props.flashMessages} itemName="message">
-                <Neos.GoogleAnalytics:Component.FlashMessages.Message message={message}/>
+                <Neos.RedirectHandler.Ui:Component.FlashMessages.Message message={message}/>
             </Neos.Fusion:Loop>
         </div>
     `
 }
 
-prototype(Neos.GoogleAnalytics:Component.FlashMessages.Message) < prototype(Neos.Fusion:Component) {
+prototype(Neos.RedirectHandler.Ui:Component.FlashMessages.Message) < prototype(Neos.Fusion:Component) {
     message = ${{}}
 
     severity = ${String.toLowerCase(this.message.severity)}
