@@ -25,6 +25,9 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
                     <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken}
                         showHitCount={props.showHitCount} className={iterator.isEven ? 'even' : 'odd'}/>
                 </Neos.Fusion:Loop>
+                <tr @if.isEmpty={!props.redirects}>
+                    <td colspan="11"><p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:emptyList')}</p></td>
+                </tr>
                 <tr id="redirect-edit-form">
                     <td colspan="11">
                         <h6>Edit redirect</h6>
