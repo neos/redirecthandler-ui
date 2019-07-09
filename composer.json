@@ -7,8 +7,8 @@
         "webexcess/redirecthandler-backend": "*"
     },
     "require": {
-        "neos/redirecthandler": "~2.0 || dev-master",
-        "neos/neos": "~3.0 || ~4.0 || dev-master"
+        "neos/redirecthandler": "~3.0 || dev-master",
+        "neos/neos": "~4.3 || dev-master"
     },
     "autoload": {
         "psr-4": {
