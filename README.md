@@ -12,7 +12,7 @@ This package is compatible with Neos 3.x, 4.x and will be maintained for upcomin
 
 1. Run the following command in your site package
 
-    composer require neos/redirecthandler-ui
+    `composer require neos/redirecthandler-ui --no-update`
     
 2. Then run `composer update` in your projects root folder.
 3. Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.
