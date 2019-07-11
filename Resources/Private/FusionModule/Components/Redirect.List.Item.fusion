@@ -20,8 +20,8 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
                 {props.redirect.statusCode}
             </td>
             <td>{props.redirect.host || '&ndash;'}</td>
-            <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
-            <td>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
+            <td title={props.redirect.sourceUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
+            <td title={props.redirect.targetUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
             <td>{props.redirect.startDateTime ? Date.format(props.redirect.startDateTime, 'd.m.Y H:i') : '&ndash;'}</td>
             <td>{props.redirect.endDateTime ? Date.format(props.redirect.endDateTime, 'd.m.Y H:i') : '&ndash;'}</td>
             <td>{props.redirect.comment || '&ndash;'}</td>
