@@ -9,9 +9,27 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
-                <a class="neos-button neos-button-primary" href={props.exportCsvAction}>
-                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:exportCsv')}
-                </a>
+                <form action={props.exportCsvAction} method="GET" class="export-redirects-form">
+                    <div class="neos-control-group neos-control-group--checkbox">
+                        <label class="neos-control-label" for="includeInactiveRedirects">
+                            <input name="moduleArguments[includeInactiveRedirects]" id="includeInactiveRedirects"
+                                   type="checkbox" checked="checked"/>
+                            {I18n.translate('Neos.RedirectHandler.Ui:Modules:field.includeInactiveRedirects.label')}
+                        </label>
+                    </div>
+                    <div class="neos-control-group neos-control-group--checkbox">
+                        <label class="neos-control-label" for="includeGeneratedRedirects">
+                            <input name="moduleArguments[includeGeneratedRedirects]" id="includeGeneratedRedirects"
+                                   type="checkbox" checked="checked"/>
+                            {I18n.translate('Neos.RedirectHandler.Ui:Modules:field.includeGeneratedRedirects.label')}
+                        </label>
+                    </div>
+                    <div class="neos-control-group neos-control-group--auto">
+                        <button type="submit" class="neos-button neos-button-primary">
+                            {I18n.translate('Neos.RedirectHandler.Ui:Modules:exportCsv')}
+                        </button>
+                    </div>
+                </form>
             </div>
 
             <div class="neos-footer">

@@ -19,6 +19,11 @@
     width: 100%;
     height: 40px;
     line-height: 36px; }
+.neos .export-redirects-form .neos-control-group--checkbox label {
+  padding-left: 1.2rem; }
+.neos .export-redirects-form .neos-control-group--checkbox input {
+  position: absolute;
+  margin-left: -1.2rem; }
 .neos .redirect-table thead th {
   padding: 0 4px 4px 0; }
   .neos .redirect-table thead th.redirect-table__heading-actions {

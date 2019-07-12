@@ -42,6 +42,20 @@ $fieldSpacing: .3rem;
     }
   }
 
+  .export-redirects-form {
+    .neos-control-group {
+      &--checkbox {
+        label {
+          padding-left: 1.2rem;
+        }
+        input {
+          position: absolute;
+          margin-left: -1.2rem;
+        }
+      }
+    }
+  }
+
   .redirect-table {
     thead {
       th {

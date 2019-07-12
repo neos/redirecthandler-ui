@@ -89,6 +89,12 @@
             <trans-unit id="field.delimiter.label" xml:space="preserve">
                 <source>Delimiter</source>
             </trans-unit>
+            <trans-unit id="field.includeInactiveRedirects.label" xml:space="preserve">
+                <source>Include inactive redirects</source>
+            </trans-unit>
+            <trans-unit id="field.includeGeneratedRedirects.label" xml:space="preserve">
+                <source>Include automatically generated redirects</source>
+            </trans-unit>
             <trans-unit id="actions" xml:space="preserve">
                 <source>Actions</source>
             </trans-unit>

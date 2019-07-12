@@ -305,7 +305,18 @@ class ModuleController extends AbstractModuleController
      */
     public function exportCsvAction(): void
     {
-        $csvWriter = $this->redirectExportService->exportCsv();
+        $includeInactiveRedirects = $this->request->hasArgument('includeInactiveRedirects');
+        $includeGeneratedRedirects = $this->request->hasArgument('includeGeneratedRedirects');
+
+        // TODO: Make host selectable from distinct list of existing hosts
+        $host = null;
+
+        $csvWriter = $this->redirectExportService->exportCsv(
+            $host,
+            !$includeInactiveRedirects,
+            $includeGeneratedRedirects ? null : RedirectInterface::REDIRECT_TYPE_MANUAL,
+            true
+        );
         $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
 
         $filePath = $this->environment->getPathToTemporaryDirectory() . $filename;
@@ -401,7 +412,8 @@ class ModuleController extends AbstractModuleController
         if ($go) {
             $creator = $this->securityContext->getAccount()->getAccountIdentifier();
 
-            $redirects = $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host], $creator,
+            $redirects = $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host],
+                $creator,
                 $comment, RedirectInterface::REDIRECT_TYPE_MANUAL, $startDateTime, $endDateTime);
             $this->persistenceManager->persistAll();
             return $redirects;
