@@ -11,6 +11,8 @@ namespace Neos\RedirectHandler\Ui\Fusion\Helper;
  * source code.
  */
 
+use DateTime;
+use Exception;
 use Neos\Eel\ProtectedContextAwareInterface;
 use Neos\RedirectHandler\RedirectInterface;
 
@@ -37,6 +39,22 @@ class RedirectHelper implements ProtectedContextAwareInterface
     public function createIdentifier(RedirectInterface $redirect): string
     {
         return $redirect->getSourceUriPath() . $redirect->getHost();
+    }
+
+    /**
+     * @param DateTime $startDateTime
+     * @param DateTime $endDateTime
+     * @return bool
+     * @throws Exception
+     */
+    public function isActive(RedirectInterface $redirect): bool
+    {
+        $now = new DateTime();
+        if (($redirect->getStartDateTime() && $redirect->getStartDateTime() > $now)
+            || ($redirect->getEndDateTime() && $redirect->getEndDateTime() < $now)) {
+            return false;
+        }
+        return true;
     }
 
     /**
