@@ -1,0 +1,7 @@
+-
+  requestFilter: 'isPackage("Neos.RedirectHandler.Ui") && isController("Module")'
+  viewObjectName: 'Neos\Fusion\View\FusionView'
+  options:
+    fusionPathPatterns:
+      - 'resource://Neos.Fusion/Private/Fusion'
+      - 'resource://Neos.RedirectHandler.Ui/Private/FusionModule'

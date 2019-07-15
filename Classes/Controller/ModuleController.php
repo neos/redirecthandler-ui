@@ -20,7 +20,6 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
-use Neos\Flow\Mvc\View\ViewInterface;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Utility\Environment;
@@ -501,22 +500,6 @@ class ModuleController extends AbstractModuleController
             && $redirect->getTargetUriPath() === $targetUriPath
             && $redirect->getHost() === $host
             && $redirect->getStatusCode() === (integer)$statusCode;
-    }
-
-    /**
-     * Sets the Fusion path pattern on the view.
-     *
-     * @param ViewInterface $view
-     * @return void
-     */
-    protected function initializeView(ViewInterface $view)
-    {
-        parent::initializeView($view);
-
-        /** @var FusionView $view */
-        $view->disableFallbackView();
-        $view->setFusionPathPatterns(['resource://@package/Private/FusionModule']);
-        $view->setFusionPathPattern('resource://@package/Private/FusionModule');
     }
 
     /**
