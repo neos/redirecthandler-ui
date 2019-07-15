@@ -9,8 +9,11 @@ privilegeTargets:
 
 roles:
   'Neos.Neos:Administrator':
-    parentRoles:
-      - 'Neos.RedirectHandler.Ui:RedirectAdministrator'
+    privileges:
+      - privilegeTarget: 'Neos.RedirectHandler.Ui:Backend.Module.Management.Redirects'
+        permission: GRANT
+      - privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
+        permission: GRANT
 
   'Neos.RedirectHandler.Ui:RedirectAdministrator':
     privileges:
