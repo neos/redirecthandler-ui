@@ -6,6 +6,8 @@ Neos:
 
     Ui:
       defaultStatusCode: 307
+      csv:
+        delimiterOptions: [';', ',', '|']
       statusCodes:
         301: i18n
         302: i18n

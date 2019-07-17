@@ -1,6 +1,6 @@
 prototype(Neos.RedirectHandler.Ui:Module.Import) < prototype(Neos.Fusion:Component) {
     csrfToken = ''
-    delimiterOptions = ${[',', ';', '|']}
+    delimiterOptions = ${Configuration.setting('Neos.RedirectHandler.Ui.csv.delimiterOptions')}
     importDocumentationUrl = 'https://neos-redirecthandler-adapter.readthedocs.io/en/latest/'
 
     indexAction = Neos.Fusion:UriBuilder {
