@@ -26,7 +26,7 @@ class RedirectHelper implements ProtectedContextAwareInterface
     {
         $exploded = explode('/', $path);
         if (count($exploded) > 3) {
-            return $exploded[0] . (strlen($exploded[0]) < 6 ? '/' . $exploded[1] : '') . '/.../' . $exploded[count($exploded) - 1];
+            return $exploded[0] . (strlen($exploded[0]) < 6 ? '/' . $exploded[1] : '') . '/&#8230;/' . $exploded[count($exploded) - 1];
         } else {
             return $path;
         }

@@ -58,7 +58,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
                 <td class={props.mainClassName + '__column-end'}>
                     {props.redirect.endDateTime ? Date.format(props.redirect.endDateTime, 'd.m.Y H:i') : '&ndash;'}
                 </td>
-                <td>{props.redirect.comment || '&ndash;'}</td>
+                <td title={props.redirect.comment}>{String.crop(props.redirect.comment, 25, '&#8230;') || '&ndash;'}</td>
                 <td class={props.mainClassName + '__column-hit-count'} @if.enabled={props.showHitCount}
                     title={props.redirect.lastHit ? 'Last hit at ' + Date.format(props.redirect.lastHit, 'd.m.Y H:i') : 'Never hit'}>
                     {props.redirect.hitCounter}

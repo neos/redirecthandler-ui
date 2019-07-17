@@ -178,12 +178,15 @@ class ModuleController extends AbstractModuleController
             );
         }
 
-        if (!$status) {
+        if (count($status) < 1) {
             $this->addFlashMessage('', $this->translateById('message.redirectNotCreated'),
                 Error\Message::SEVERITY_ERROR);
         } else {
             // TODO: Render list of changed redirects
-            $this->addFlashMessage('', $this->translateById('message.redirectCreated'),
+            $message = array_reduce($status, function ($carry, RedirectInterface $redirect) {
+                return $carry . '<li>' . $redirect->getHost() . $redirect->getSourceUriPath() . '</li>';
+            }, '');
+            $this->addFlashMessage($message ? '<ul>' . $message . '</ul>' : '', $this->translateById('message.redirectCreated'),
                 Error\Message::SEVERITY_OK);
         }
 

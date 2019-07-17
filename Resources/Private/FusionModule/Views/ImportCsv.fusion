@@ -4,31 +4,64 @@ prototype(Neos.RedirectHandler.Ui:Module.ImportCsv) < prototype(Neos.Fusion:Comp
     indexAction = Neos.Fusion:UriBuilder {
         action = 'index'
     }
+    importAction = Neos.Fusion:UriBuilder {
+        action = 'import'
+    }
 
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid" @if.protocolNotEmpty={props.protocol}>
                 <h2>{I18n.translate('Neos.RedirectHandler.Ui:Modules:header.importProtocol')}</h2>
                 <br/>
-                <ul class="redirects-protocol-list">
+                <table class="redirects-protocol-list">
+                    <tr>
+                        <th>Status</th>
+                        <th>Redirect</th>
+                        <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</th>
+                        <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</th>
+                        <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
+                    </tr>
                     <Neos.Fusion:Loop items={props.protocol} itemName="entry">
-                        <li class={'redirects-protocol-entry--' + entry.type}>
-                            <i class="fas fa-exclamation-triangle" @if.type={entry.type == 'error'}></i>
-                            <i class="fas fa-trash" @if.type={entry.type == 'deleted'}></i>
-                            <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
-                            <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
-                            &nbsp;<strong>{String.firstLetterToUpperCase(entry.type)}:</strong> {entry.message}
-                            <span @if.hasRedirect={entry.redirect}>
-                                {entry.redirect.sourceUriPath} &rarr; {entry.redirect.targetUriPath} ({entry.redirect.statusCode})
-                            </span>
-                        </li>
+                        <tr class={'redirects-protocol-entry--' + entry.type}>
+                            <td>
+                                <i class="fas fa-exclamation-triangle" @if.type={entry.type == 'error'}></i>
+                                <i class="fas fa-trash" @if.type={entry.type == 'deleted'}></i>
+                                <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
+                                <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
+                                &nbsp;<strong>{String.firstLetterToUpperCase(entry.type)}</strong>
+                            </td>
+                            <td width="500px">
+                                {entry.message}
+                                <span @if.hasRedirect={entry.redirect}>
+                                    {entry.redirect.sourceUriPath} &rarr; {entry.redirect.targetUriPath} ({entry.redirect.statusCode})
+                                </span>
+                            </td>
+                            <td>
+                                <span @if.hasStartDateTime={entry.redirect.startDateTime}>
+                                    {Date.format(entry.redirect.startDateTime, 'd.m.Y H:i')}
+                                </span>
+                            </td>
+                            <td>
+                                <span @if.hasEndDateTime={entry.redirect.endDateTime}>
+                                    {Date.format(entry.redirect.endDateTime, 'd.m.Y H:i')}
+                                </span>
+                            </td>
+                            <td title={entry.redirect.comment}>
+                                <span @if.comment={entry.redirect.comment}>
+                                    {String.crop(entry.redirect.comment, 25, '&#8230;') || '&ndash;'}
+                                </span>
+                            </td>
+                        </tr>
                     </Neos.Fusion:Loop>
-                </ul>
+                </table>
             </div>
 
             <div class="neos-footer">
                 <a class="neos-button" href={props.indexAction}>
                     {I18n.translate('Neos.RedirectHandler.Ui:Modules:backToList')}
+                </a>
+                <a class="neos-button neos-button-danger" href={props.importAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:import')}
                 </a>
             </div>
         </div>

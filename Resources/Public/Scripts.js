@@ -18,6 +18,13 @@
             //locale: currentLocale,
         });
 
+        var notificationHeadings = document.querySelectorAll('.expandable .neos-notification-heading');
+        for (var i = 0; i < notificationHeadings.length; i++) {
+            notificationHeadings[i].addEventListener('click', function (e) {
+                this.parentNode.classList.add('expanded');
+            });
+        }
+
         /**
          * Initializes a row and adds listeners to actions
          */

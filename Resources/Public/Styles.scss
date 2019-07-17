@@ -93,7 +93,7 @@ $fieldSpacing: .3rem;
         background-color: #{$alternatingBackgroundColor};
 
         .neos-button {
-          background-color: #{$alternatingBackgroundColor};
+          background-color: #{$alternatingBackgroundColor} !important;
 
           &:hover {
             background-color: #{$primaryColor};
@@ -134,6 +134,10 @@ $fieldSpacing: .3rem;
       }
 
       &--inactive {
+        td {
+          color: #{$inactiveColor};
+        }
+
         .redirect-table__row__column-status-code {
           border-left: 3px solid #{$inactiveColor};
         }
@@ -156,9 +160,13 @@ $fieldSpacing: .3rem;
     }
   }
 
-  .redirects-protocol-list {
-    li {
-      margin: 0 0 .5rem;
+  table.redirects-protocol-list {
+    td {
+      height: auto;
+      padding-top: .2rem;
+      padding-bottom: .2rem;
+      line-height: 1.3em;
+      vertical-align: top;
     }
   }
 
@@ -203,6 +211,14 @@ $fieldSpacing: .3rem;
 
   .calendar-datepicker table tr td.date-disabled:after {
     display: none;
+  }
+}
+
+.neos-notification-content {
+  &.expandable.expanded {
+    .neos-expand-content {
+      display: block !important;
+    }
   }
 }
 

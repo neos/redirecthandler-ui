@@ -23,7 +23,7 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
                     <input name="moduleArguments[host]" id={props.idPrefix + 'host'} type="text" placeholder="www.example.org"/>
                 </div>
                 <div class="neos-control-group">
-                    <label class="neos-control-label" for={props.idPrefix + 'sourceUriPath'}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</label>
+                    <label class="neos-control-label" for={props.idPrefix + 'sourceUriPath'}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}*</label>
                     <input name="moduleArguments[sourceUriPath]" id={props.idPrefix + 'sourceUriPath'} type="text"
                            autofocus required="required" placeholder="the-old-url/product-a"/>
                 </div>
@@ -39,7 +39,7 @@ prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fus
                     </select>
                 </div>
                 <div class="neos-control-group">
-                    <label class="neos-control-label" for={props.idPrefix + 'targetUriPath'}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</label>
+                    <label class="neos-control-label" for={props.idPrefix + 'targetUriPath'}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}*</label>
                     <input name="moduleArguments[targetUriPath]" id={props.idPrefix + 'targetUriPath'} type="text"
                            required="required" placeholder="the-new-url/product-a"/>
                 </div>
