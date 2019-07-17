@@ -49,7 +49,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List.Item) < prototype(Neos
                     title={I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCodes.' + props.redirect.statusCode + '.tooltip')}>
                     {props.redirect.statusCode}
                 </td>
-                <td>{props.redirect.host || '&ndash;'}</td>
+                <td>{props.redirect.host || '*'}</td>
                 <td title={props.redirect.sourceUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.sourceUriPath)}</td>
                 <td title={props.redirect.targetUriPath}>{Neos.RedirectHandler.Ui.Redirect.shortenPath(props.redirect.targetUriPath)}</td>
                 <td class={props.mainClassName + '__column-start'}>
