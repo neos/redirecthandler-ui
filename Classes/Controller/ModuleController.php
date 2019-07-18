@@ -20,6 +20,7 @@ use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
+use Neos\Flow\ResourceManagement\Exception as ResourceException;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
 use Neos\Flow\Utility\Environment;
@@ -135,7 +136,7 @@ class ModuleController extends AbstractModuleController
      */
     public function createAction(): void
     {
-        $status = true;
+        $creationStatus = true;
 
         [
             'host' => $host,
@@ -155,8 +156,8 @@ class ModuleController extends AbstractModuleController
             try {
                 $startDateTime = new DateTime($startDateTime);
             } catch (Exception $e) {
-                $status = false;
-                $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
+                $creationStatus = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
                     Error\Message::SEVERITY_ERROR);
             }
         }
@@ -166,25 +167,34 @@ class ModuleController extends AbstractModuleController
             try {
                 $endDateTime = new DateTime($endDateTime);
             } catch (Exception $e) {
-                $status = false;
-                $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
+                $creationStatus = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidEndDateTime'),
                     Error\Message::SEVERITY_ERROR);
             }
         }
 
-        if ($status) {
-            $status = $this->addRedirect(
+        // Remove any unwanted characters from paths
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
+
+        if ($sourceUriPath === $targetUriPath) {
+            $creationStatus = false;
+            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
+                Error\Message::SEVERITY_ERROR);
+        }
+
+        if ($creationStatus) {
+            $creationStatus = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
             );
         }
 
-        if (count($status) < 1) {
-            $this->addFlashMessage('', $this->translateById('message.redirectNotCreated'),
+        if (!$creationStatus || count($creationStatus) < 1) {
+            $this->addFlashMessage('', $this->translateById('error.redirectNotCreated'),
                 Error\Message::SEVERITY_ERROR);
         } else {
-            // TODO: Render list of changed redirects
-            $message = array_reduce($status, function ($carry, RedirectInterface $redirect) {
-                return $carry . '<li>' . $redirect->getHost() . $redirect->getSourceUriPath() . '</li>';
+            $message = array_reduce($creationStatus, function ($carry, RedirectInterface $redirect) {
+                return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . '</li>';
             }, '');
             $this->addFlashMessage($message ? '<ul>' . $message . '</ul>' : '', $this->translateById('message.redirectCreated'),
                 Error\Message::SEVERITY_OK);
@@ -200,7 +210,7 @@ class ModuleController extends AbstractModuleController
      */
     public function updateAction()
     {
-        $status = true;
+        $updateStatus = true;
 
         [
             'host' => $host,
@@ -214,16 +224,14 @@ class ModuleController extends AbstractModuleController
             'comment' => $comment,
         ] = $this->request->getArguments();
 
-        // TODO: Catch redirects without sourceUri or when source and target are the same
-
         if (empty($startDateTime)) {
             $startDateTime = null;
         } else {
             try {
                 $startDateTime = new DateTime($startDateTime);
             } catch (Exception $e) {
-                $status = false;
-                $this->addFlashMessage('', $this->translateById('message.startDateTimeError'),
+                $updateStatus = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
                     Error\Message::SEVERITY_ERROR);
             }
         }
@@ -233,21 +241,31 @@ class ModuleController extends AbstractModuleController
             try {
                 $endDateTime = new DateTime($endDateTime);
             } catch (Exception $e) {
-                $status = false;
-                $this->addFlashMessage('', $this->translateById('message.endDateTimeError'),
+                $updateStatus = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
                     Error\Message::SEVERITY_ERROR);
             }
         }
 
-        if ($status) {
-            $status = $this->updateRedirect(
+        // Remove any unwanted characters from paths
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
+
+        if ($sourceUriPath === $targetUriPath) {
+            $updateStatus = false;
+            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
+                Error\Message::SEVERITY_ERROR);
+        }
+
+        if ($updateStatus) {
+            $updateStatus = $this->updateRedirect(
                 $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
                 $startDateTime, $endDateTime
             );
         }
 
-        if (!$status) {
-            $this->addFlashMessage('', $this->translateById('message.redirectNotUpdated'),
+        if (!$updateStatus) {
+            $this->addFlashMessage('', $this->translateById('error.redirectNotUpdated'),
                 Error\Message::SEVERITY_ERROR);
         } else {
             // TODO: Render list of changed redirects
@@ -411,6 +429,8 @@ class ModuleController extends AbstractModuleController
         DateTime $endDateTime = null,
         $force = false
     ): array {
+        // TODO: Validate all argument types and check for special characters
+
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
         $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
         $go = true;
