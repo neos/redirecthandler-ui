@@ -360,12 +360,25 @@ class ModuleController extends AbstractModuleController
         }
 
         try {
-            $reader = Reader::createFromStream($csvFile->getStream());
+            // Use temporary local copy as stream doesn't work reliably with cloud based storage
+            $reader = Reader::createFromPath($csvFile->createTemporaryLocalCopy());
             $reader->setDelimiter($delimiter);
+
             $protocol = $this->redirectImportService->import($reader->getIterator());
-            $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'), Error\Message::SEVERITY_OK);
+
+            $this->resourceManager->deleteResource($csvFile);
+
+            if (count($protocol) === 0) {
+                $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Error\Message::SEVERITY_OK);
+            } else {
+                $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'), Error\Message::SEVERITY_OK);
+            }
         } catch (CsvException $e) {
             $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
+                Error\Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        } catch (ResourceException $e) {
+            $this->addFlashMessage('', $this->translateById('error.importResourceFailed'),
                 Error\Message::SEVERITY_ERROR);
             $this->redirect('import');
         }
