@@ -8,14 +8,9 @@
             <trans-unit id="module.description" xml:space="preserve">
                 <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
             </trans-unit>
-            <trans-unit id="message.redirectNotCreated" xml:space="preserve">
-                <source>Redirect not created</source>
-            </trans-unit>
+
             <trans-unit id="message.redirectCreated" xml:space="preserve">
                 <source>Redirect created</source>
-            </trans-unit>
-            <trans-unit id="message.redirectNotUpdated" xml:space="preserve">
-                <source>Redirect not updated</source>
             </trans-unit>
             <trans-unit id="message.redirectUpdated" xml:space="preserve">
                 <source>Redirect updated</source>
@@ -26,38 +21,55 @@
             <trans-unit id="message.redirectDeleted" xml:space="preserve">
                 <source>Redirect deleted</source>
             </trans-unit>
-            <trans-unit id="message.startDateTimeError" xml:space="preserve">
-                <source>An error occurred parsing the start date</source>
-            </trans-unit>
-            <trans-unit id="message.endDateTimeError" xml:space="preserve">
-                <source>An error occurred parsing the start date</source>
-            </trans-unit>
             <trans-unit id="message.importCsvSuccess" xml:space="preserve">
                 <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
             </trans-unit>
+
+            <trans-unit id="error.redirectNotCreated" xml:space="preserve">
+                <source>Redirect not created</source>
+            </trans-unit>
+            <trans-unit id="error.redirectNotUpdated" xml:space="preserve">
+                <source>Redirect not updated</source>
+            </trans-unit>
+            <trans-unit id="error.invalidStartDateTime" xml:space="preserve">
+                <source>The start datetime is invalid</source>
+            </trans-unit>
+            <trans-unit id="error.invalidEndDateTime" xml:space="preserve">
+                <source>The end datetime is invalid</source>
+            </trans-unit>
+            <trans-unit id="error.sameSourceAndTarget" xml:space="preserve">
+                <source>The source and target paths cannot be the same</source>
+            </trans-unit>
             <trans-unit id="error.importCsvFailed" xml:space="preserve">
-                <source>An error occurred while reading the csv file</source>
+                <source>An error occurred while reading the csv file content</source>
+            </trans-unit>
+            <trans-unit id="error.importResourceFailed" xml:space="preserve">
+                <source>An error occurred while reading the uploaded file</source>
             </trans-unit>
             <trans-unit id="error.csvFileNotSet" xml:space="preserve">
                 <source>You have to select a CSV file to import</source>
             </trans-unit>
+            <trans-unit id="error.importCsvEmpty" xml:space="preserve">
+                <source>No entries were found in the CSV file</source>
+            </trans-unit>
+
             <trans-unit id="confirmDelete" xml:space="preserve">
                 <source>Delete this redirect?</source>
             </trans-unit>
             <trans-unit id="host" xml:space="preserve">
-                <source>Origin Domain</source>
+                <source>Origin domain</source>
             </trans-unit>
             <trans-unit id="csvFile" xml:space="preserve">
                 <source>CSV File</source>
             </trans-unit>
             <trans-unit id="sourceUriPath" xml:space="preserve">
-                <source>Origin URL</source>
+                <source>Source path</source>
             </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
                 <source>Code</source>
             </trans-unit>
             <trans-unit id="targetUriPath" xml:space="preserve">
-                <source>Target URL</source>
+                <source>Target path</source>
             </trans-unit>
             <trans-unit id="startDateTime" xml:space="preserve">
                 <source>Active from</source>
@@ -86,6 +98,7 @@
             <trans-unit id="creationDate" xml:space="preserve">
                 <source>Created</source>
             </trans-unit>
+
             <trans-unit id="field.delimiter.label" xml:space="preserve">
                 <source>Delimiter</source>
             </trans-unit>
@@ -95,26 +108,19 @@
             <trans-unit id="field.includeGeneratedRedirects.label" xml:space="preserve">
                 <source>Include automatically generated redirects</source>
             </trans-unit>
-            <trans-unit id="actions" xml:space="preserve">
-                <source>Actions</source>
-            </trans-unit>
+
             <trans-unit id="header.importCsvForm" xml:space="preserve">
                 <source>Import redirects from a CSV file</source>
             </trans-unit>
             <trans-unit id="header.importProtocol" xml:space="preserve">
                 <source>Import protocol</source>
             </trans-unit>
+
+            <trans-unit id="actions" xml:space="preserve">
+                <source>Actions</source>
+            </trans-unit>
             <trans-unit id="action.importCsvFile" xml:space="preserve">
                 <source>Import redirects from CSV file</source>
-            </trans-unit>
-            <trans-unit id="hint.importCsvFile" xml:space="preserve">
-                <source>
-                    It is recommended to do an export of the existing redirects as CSV and work on that file, before importing again.
-                    This way the structure and required columns are already set up.
-                </source>
-            </trans-unit>
-            <trans-unit id="hint.importGetHelp" xml:space="preserve">
-                <source>Get more help.</source>
             </trans-unit>
             <trans-unit id="addRedirect" xml:space="preserve">
                 <source>Add redirect</source>
@@ -146,6 +152,17 @@
             <trans-unit id="import" xml:space="preserve">
                 <source>Import redirect rules</source>
             </trans-unit>
+
+            <trans-unit id="hint.importCsvFile" xml:space="preserve">
+                <source>
+                    It is recommended to do an export of the existing redirects as CSV and work on that file, before importing again.
+                    This way the structure and required columns are already set up.
+                </source>
+            </trans-unit>
+            <trans-unit id="hint.importGetHelp" xml:space="preserve">
+                <source>Get more help.</source>
+            </trans-unit>
+
             <trans-unit id="statusCodes.301.label" xml:space="preserve">
                 <source>301 - Moved Permanently</source>
             </trans-unit>

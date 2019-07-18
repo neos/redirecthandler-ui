@@ -20,7 +20,7 @@
                 <target>Ursprungsdomäne</target>
             </trans-unit>
             <trans-unit id="sourceUriPath" xml:space="preserve">
-                <source>Origin path</source>
+                <source>Source path</source>
                 <target>Quellpfad</target>
             </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
