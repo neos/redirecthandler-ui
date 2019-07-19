@@ -42,10 +42,8 @@
     display: inline-block; }
 .neos .redirect-table__row.odd td {
   background-color: #3f3f3f; }
-  .neos .redirect-table__row.odd td .neos-button {
+  .neos .redirect-table__row.odd td .neos-button:not(:hover) {
     background-color: #3f3f3f !important; }
-    .neos .redirect-table__row.odd td .neos-button:hover {
-      background-color: #00b5ff; }
 .neos .redirect-table__row__column-status-code, .neos .redirect-table__row__column-hit-count {
   width: 70px; }
 .neos .redirect-table__row__column-creation-date-time {

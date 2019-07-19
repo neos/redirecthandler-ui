@@ -93,10 +93,8 @@ $fieldSpacing: .3rem;
         background-color: #{$alternatingBackgroundColor};
 
         .neos-button {
-          background-color: #{$alternatingBackgroundColor} !important;
-
-          &:hover {
-            background-color: #{$primaryColor};
+          &:not(:hover) {
+            background-color: #{$alternatingBackgroundColor} !important;
           }
         }
       }
