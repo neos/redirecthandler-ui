@@ -193,10 +193,14 @@ class ModuleController extends AbstractModuleController
             $this->addFlashMessage('', $this->translateById('error.redirectNotCreated'),
                 Error\Message::SEVERITY_ERROR);
         } else {
+            // Build list of changed redirects for feedback to user
             $message = array_reduce($creationStatus, function ($carry, RedirectInterface $redirect) {
-                return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . '</li>';
+                return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . ' &rarr; /' . $redirect->getTargetUriPath() . '</li>';
             }, '');
-            $this->addFlashMessage($message ? '<ul>' . $message . '</ul>' : '', $this->translateById('message.redirectCreated'),
+            $message = $message ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $message . '</ul>' : '';
+
+            $this->addFlashMessage($message,
+                $this->translateById('message.redirectCreated', [$host, $sourceUriPath, $targetUriPath, $statusCode]),
                 Error\Message::SEVERITY_OK);
         }
 
@@ -294,7 +298,8 @@ class ModuleController extends AbstractModuleController
             $this->addFlashMessage('', $this->translateById('message.redirectNotDeleted'),
                 Error\Message::SEVERITY_ERROR);
         } else {
-            $this->addFlashMessage('', $this->translateById('message.redirectDeleted'), Error\Message::SEVERITY_OK);
+            $this->addFlashMessage('', $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]),
+                Error\Message::SEVERITY_OK);
         }
 
         $this->redirect('index');
@@ -389,7 +394,8 @@ class ModuleController extends AbstractModuleController
             if (count($protocol) === 0) {
                 $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Error\Message::SEVERITY_OK);
             } else {
-                $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'), Error\Message::SEVERITY_OK);
+                $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'),
+                    Error\Message::SEVERITY_OK);
             }
         } catch (CsvException $e) {
             $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
@@ -429,7 +435,7 @@ class ModuleController extends AbstractModuleController
         DateTime $endDateTime = null,
         $force = false
     ): array {
-        // TODO: Validate all argument types and check for special characters
+        // TODO: Validate all argument types and match paths with url regex
 
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
         $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
@@ -450,6 +456,7 @@ class ModuleController extends AbstractModuleController
             $redirects = $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host],
                 $creator,
                 $comment, RedirectInterface::REDIRECT_TYPE_MANUAL, $startDateTime, $endDateTime);
+
             $this->persistenceManager->persistAll();
             return $redirects;
         }
@@ -542,11 +549,12 @@ class ModuleController extends AbstractModuleController
      * Shorthand to translate labels for this package
      *
      * @param $id
+     * @param array $arguments
      * @return string
      */
-    protected function translateById($id): string
+    protected function translateById($id, array $arguments = []): string
     {
-        return $this->translator->translateById($id, [], null, null, 'Modules',
+        return $this->translator->translateById($id, $arguments, null, null, 'Modules',
             'Neos.RedirectHandler.Ui');
     }
 }

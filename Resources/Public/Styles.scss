@@ -218,6 +218,15 @@ $fieldSpacing: .3rem;
   &.expandable.expanded {
     .neos-expand-content {
       display: block !important;
+
+      ul {
+        padding-left: 1rem;
+        line-height: 1.3;
+      }
+
+      li {
+        list-style: disc;
+      }
     }
   }
 }

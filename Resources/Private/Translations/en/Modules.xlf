@@ -10,7 +10,10 @@
             </trans-unit>
 
             <trans-unit id="message.redirectCreated" xml:space="preserve">
-                <source>Redirect created</source>
+                <source>Redirect from "{0}/{1}" to "{2}" ({3}) has been created</source>
+            </trans-unit>
+            <trans-unit id="message.relatedChanges" xml:space="preserve">
+                <source>Related changes:</source>
             </trans-unit>
             <trans-unit id="message.redirectUpdated" xml:space="preserve">
                 <source>Redirect updated</source>
@@ -19,7 +22,7 @@
                 <source>Redirect not removed</source>
             </trans-unit>
             <trans-unit id="message.redirectDeleted" xml:space="preserve">
-                <source>Redirect deleted</source>
+                <source>Redirect from "{0}/{1}" has been deleted</source>
             </trans-unit>
             <trans-unit id="message.importCsvSuccess" xml:space="preserve">
                 <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>

@@ -102,5 +102,10 @@
 
 .neos-notification-content.expandable.expanded .neos-expand-content {
   display: block !important; }
+  .neos-notification-content.expandable.expanded .neos-expand-content ul {
+    padding-left: 1rem;
+    line-height: 1.3; }
+  .neos-notification-content.expandable.expanded .neos-expand-content li {
+    list-style: disc; }
 
 /*# sourceMappingURL=Styles.css.map */
