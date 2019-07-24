@@ -14,6 +14,7 @@ namespace Neos\RedirectHandler\Ui\Controller;
 
 use DateTime;
 use Exception;
+use League\Csv\CannotInsertRecord;
 use League\Csv\Exception as CsvException;
 use League\Csv\Reader;
 use Neos\Flow\Annotations as Flow;
@@ -112,6 +113,12 @@ class ModuleController extends AbstractModuleController
     protected $resourceManager;
 
     /**
+     * @Flow\InjectConfiguration(path="validation", package="Neos.RedirectHandler")
+     * @var array
+     */
+    protected $validationOptions;
+
+    /**
      * Renders the list of all redirects and allows modifying them.
      */
     public function indexAction()
@@ -148,8 +155,6 @@ class ModuleController extends AbstractModuleController
             'comment' => $comment,
         ] = $this->request->getArguments();
 
-        // TODO: Catch redirects without sourceUri or when source and target are the same
-
         if (empty($startDateTime)) {
             $startDateTime = null;
         } else {
@@ -173,16 +178,6 @@ class ModuleController extends AbstractModuleController
             }
         }
 
-        // Remove any unwanted characters from paths
-        $sourceUriPath = trim($sourceUriPath);
-        $targetUriPath = trim($targetUriPath);
-
-        if ($sourceUriPath === $targetUriPath) {
-            $creationStatus = false;
-            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
-                Error\Message::SEVERITY_ERROR);
-        }
-
         if ($creationStatus) {
             $creationStatus = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
@@ -199,8 +194,16 @@ class ModuleController extends AbstractModuleController
             }, '');
             $message = $message ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $message . '</ul>' : '';
 
+            /** @var RedirectInterface $createdRedirect */
+            $createdRedirect = $creationStatus[0];
+
             $this->addFlashMessage($message,
-                $this->translateById('message.redirectCreated', [$host, $sourceUriPath, $targetUriPath, $statusCode]),
+                $this->translateById('message.redirectCreated', [
+                    $createdRedirect->getHost(),
+                    $createdRedirect->getSourceUriPath(),
+                    $createdRedirect->getTargetUriPath(),
+                    $createdRedirect->getStatusCode()
+                ]),
                 Error\Message::SEVERITY_OK);
         }
 
@@ -249,16 +252,6 @@ class ModuleController extends AbstractModuleController
                 $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
                     Error\Message::SEVERITY_ERROR);
             }
-        }
-
-        // Remove any unwanted characters from paths
-        $sourceUriPath = trim($sourceUriPath);
-        $targetUriPath = trim($targetUriPath);
-
-        if ($sourceUriPath === $targetUriPath) {
-            $updateStatus = false;
-            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
-                Error\Message::SEVERITY_ERROR);
         }
 
         if ($updateStatus) {
@@ -327,6 +320,7 @@ class ModuleController extends AbstractModuleController
 
     /**
      * Exports all redirects into a CSV file and starts its download
+     * @throws CannotInsertRecord
      */
     public function exportCsvAction(): void
     {
@@ -435,7 +429,12 @@ class ModuleController extends AbstractModuleController
         DateTime $endDateTime = null,
         $force = false
     ): array {
-        // TODO: Validate all argument types and match paths with url regex
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
+
+        if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
+            return [];
+        }
 
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
         $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
@@ -489,7 +488,13 @@ class ModuleController extends AbstractModuleController
         DateTime $endDateTime = null,
         $force = false
     ): array {
-        // TODO: Actually update redirect instead of deleting and creating it?
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
+
+        if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
+            return [];
+        }
+
         $go = false;
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath,
             $originalHost ? $originalHost : null, false);
@@ -513,7 +518,7 @@ class ModuleController extends AbstractModuleController
      * @param string|null $host
      * @return bool
      */
-    protected function deleteRedirect($sourceUriPath, $host = null)
+    protected function deleteRedirect($sourceUriPath, $host = null): bool
     {
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null);
         if ($redirect === null) {
@@ -526,6 +531,31 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * @param $host
+     * @param $sourceUriPath
+     * @param $targetUriPath
+     * @return bool
+     */
+    protected function validateRedirectAttributes($host, $sourceUriPath, $targetUriPath): bool
+    {
+        if ($sourceUriPath === $targetUriPath) {
+            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
+                Error\Message::SEVERITY_WARNING);
+        } elseif (!preg_match($this->validationOptions['path'], $sourceUriPath)) {
+            $this->addFlashMessage('',
+                $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['path']]),
+                Error\Message::SEVERITY_WARNING);
+        } elseif (!preg_match($this->validationOptions['path'], $targetUriPath)) {
+            $this->addFlashMessage('',
+                $this->translateById('error.targetUriPathNotValid', [$this->validationOptions['path']]),
+                Error\Message::SEVERITY_WARNING);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    /**
      * @param string $sourceUriPath
      * @param string $targetUriPath
      * @param string $host
@@ -533,8 +563,13 @@ class ModuleController extends AbstractModuleController
      * @param RedirectInterface|null $redirect
      * @return bool
      */
-    protected function isSame($sourceUriPath, $targetUriPath, $host, $statusCode, RedirectInterface $redirect = null)
-    {
+    protected function isSame(
+        $sourceUriPath,
+        $targetUriPath,
+        $host,
+        $statusCode,
+        RedirectInterface $redirect = null
+    ): bool {
         if ($redirect === null) {
             return false;
         }

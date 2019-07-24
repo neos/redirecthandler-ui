@@ -10,7 +10,7 @@
             </trans-unit>
 
             <trans-unit id="message.redirectCreated" xml:space="preserve">
-                <source>Redirect from "{0}/{1}" to "{2}" ({3}) has been created</source>
+                <source>Redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
             </trans-unit>
             <trans-unit id="message.relatedChanges" xml:space="preserve">
                 <source>Related changes:</source>
@@ -54,6 +54,12 @@
             </trans-unit>
             <trans-unit id="error.importCsvEmpty" xml:space="preserve">
                 <source>No entries were found in the CSV file</source>
+            </trans-unit>
+            <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
+                <source>Source path doesn't match the expression {0}</source>
+            </trans-unit>
+            <trans-unit id="error.targetUriPathNotValid" xml:space="preserve">
+                <source>Target path doesn't match the expression {0}</source>
             </trans-unit>
 
             <trans-unit id="confirmDelete" xml:space="preserve">
