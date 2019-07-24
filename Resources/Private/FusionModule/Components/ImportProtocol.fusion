@@ -1,8 +1,9 @@
 prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fusion:Component) {
     protocol = ${[]}
+    className = 'redirects-protocol'
 
     renderer = afx`
-        <table class="redirects-protocol-list">
+        <table class={props.className}>
             <tr>
                 <th>Status</th>
                 <th>Redirect</th>
@@ -11,14 +12,14 @@ prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fus
                 <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
             </tr>
             <Neos.Fusion:Loop items={props.protocol} itemName="entry">
-                <tr class={'redirects-protocol-entry--' + entry.type}>
+                <tr class={props.className + '-entry--' + entry.type}>
                     <td title={String.firstLetterToUpperCase(entry.type)}>
                         <i class="fas fa-exclamation-triangle" @if.type={entry.type == 'error'}></i>
                         <i class="fas fa-trash" @if.type={entry.type == 'deleted'}></i>
                         <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
                         <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
                     </td>
-                    <td width="500px">
+                    <td class={props.className + '-entry-label'}>
                         {entry.message}
                         <span @if.hasRedirect={entry.redirect}>
                             {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; /{entry.redirect.targetUriPath} ({entry.redirect.statusCode})

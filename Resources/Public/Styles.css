@@ -68,7 +68,7 @@
   color: #9e9e9e; }
 .neos .redirects-hint a {
   color: #00b5ff; }
-.neos table.redirects-protocol-list td {
+.neos table.redirects-protocol td {
   height: auto;
   padding-top: .2rem;
   padding-bottom: .2rem;
@@ -82,6 +82,9 @@
   color: #ff8700; }
 .neos .redirects-protocol-entry--error {
   color: #ff4500; }
+.neos .redirects-protocol-entry-label {
+  width: 500px;
+  max-width: 50%; }
 
 #redirect-edit-form {
   display: none; }

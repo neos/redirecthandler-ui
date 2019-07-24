@@ -158,7 +158,7 @@ $fieldSpacing: .3rem;
     }
   }
 
-  table.redirects-protocol-list {
+  table.redirects-protocol {
     td {
       height: auto;
       padding-top: .2rem;
@@ -183,6 +183,11 @@ $fieldSpacing: .3rem;
 
     &--error {
       color: #{$warningColor};
+    }
+
+    &-label {
+      width: 500px;
+      max-width: 50%;
     }
   }
 }
