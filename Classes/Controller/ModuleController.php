@@ -382,11 +382,17 @@ class ModuleController extends AbstractModuleController
             $reader->setDelimiter($delimiter);
 
             $protocol = $this->redirectImportService->import($reader->getIterator());
+            $protocolErrors = array_filter($protocol, function ($entry) {
+                return $entry['type'] === RedirectImportService::REDIRECT_IMPORT_MESSAGE_TYPE_ERROR;
+            });
 
             $this->resourceManager->deleteResource($csvFile);
 
             if (count($protocol) === 0) {
                 $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Error\Message::SEVERITY_OK);
+            } elseif (count($protocolErrors) > 0) {
+                $this->addFlashMessage('', $this->translateById('message.importCsvSuccessWithErrors'),
+                    Error\Message::SEVERITY_WARNING);
             } else {
                 $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'),
                     Error\Message::SEVERITY_OK);

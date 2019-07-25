@@ -27,6 +27,9 @@
             <trans-unit id="message.importCsvSuccess" xml:space="preserve">
                 <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
             </trans-unit>
+            <trans-unit id="message.importCsvSuccessWithErrors" xml:space="preserve">
+                <source>The redirects from the CSV file were imported but there were some errors. See the protocol for details.</source>
+            </trans-unit>
 
             <trans-unit id="error.redirectNotCreated" xml:space="preserve">
                 <source>Redirect not created</source>
