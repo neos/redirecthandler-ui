@@ -547,13 +547,9 @@ class ModuleController extends AbstractModuleController
         if ($sourceUriPath === $targetUriPath) {
             $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
                 Error\Message::SEVERITY_WARNING);
-        } elseif (!preg_match($this->validationOptions['path'], $sourceUriPath)) {
+        } elseif (!preg_match($this->validationOptions['sourceUriPath'], $sourceUriPath)) {
             $this->addFlashMessage('',
-                $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['path']]),
-                Error\Message::SEVERITY_WARNING);
-        } elseif (!preg_match($this->validationOptions['path'], $targetUriPath)) {
-            $this->addFlashMessage('',
-                $this->translateById('error.targetUriPathNotValid', [$this->validationOptions['path']]),
+                $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['sourceUriPath']]),
                 Error\Message::SEVERITY_WARNING);
         } else {
             return true;

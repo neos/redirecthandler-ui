@@ -61,9 +61,6 @@
             <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
                 <source>Source path doesn't match the expression {0}</source>
             </trans-unit>
-            <trans-unit id="error.targetUriPathNotValid" xml:space="preserve">
-                <source>Target path doesn't match the expression {0}</source>
-            </trans-unit>
 
             <trans-unit id="confirmDelete" xml:space="preserve">
                 <source>Delete this redirect?</source>
@@ -81,7 +78,7 @@
                 <source>Code</source>
             </trans-unit>
             <trans-unit id="targetUriPath" xml:space="preserve">
-                <source>Target path</source>
+                <source>Target uri or path</source>
             </trans-unit>
             <trans-unit id="startDateTime" xml:space="preserve">
                 <source>Active from</source>

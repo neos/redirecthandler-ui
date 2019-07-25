@@ -8,7 +8,7 @@ Neos:
       defaultStatusCode: 307
       validation:
         # This is the pattern for matching the input in the HTML forms
-        path: '^[a-zA-Z0-9\-\/\.]+$'
+        sourceUriPath: '^[a-zA-Z0-9\-\/\.]+$'
       csv:
         delimiterOptions: [';', ',', '|']
       statusCodes:
