@@ -1,7 +1,7 @@
 prototype(Neos.RedirectHandler.Ui:Component.EditCreateForm) < prototype(Neos.Fusion:Component) {
     csrfToken = ''
     defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
-    statusCodes = ${Configuration.setting('Neos.RedirectHandler.Ui.statusCodes')}
+    statusCodes = ${Array.filter(Configuration.setting('Neos.RedirectHandler.Ui.statusCodes'), x => !!x)}
     validPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.path')}
     idPrefix = ''
     submitLabel = ${I18n.translate('Neos.RedirectHandler.Ui:Modules:addRedirect')}
