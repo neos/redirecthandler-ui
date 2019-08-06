@@ -16,6 +16,9 @@
         }
     },
     "extra": {
+        "branch-alias": {
+            "dev-master": "2.0.x-dev"
+        },
         "installer-name": "Neos.RedirectHandler.Ui",
         "neos": {
             "package-key": "Neos.RedirectHandler.Ui"
