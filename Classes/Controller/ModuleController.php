@@ -386,7 +386,11 @@ class ModuleController extends AbstractModuleController
                 return $entry['type'] === RedirectImportService::REDIRECT_IMPORT_MESSAGE_TYPE_ERROR;
             });
 
-            $this->resourceManager->deleteResource($csvFile);
+            try {
+                $this->resourceManager->deleteResource($csvFile);
+            } catch (\Exception $e) {
+                $this->logger->warning('Could not delete csv file after importing redirects', [$e->getMessage()]);
+            }
 
             if (count($protocol) === 0) {
                 $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Error\Message::SEVERITY_OK);
