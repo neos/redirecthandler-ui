@@ -5,7 +5,11 @@ Neos:
       gone: 410
 
     Ui:
+      # The preselected status code for the dropdown when creating new redirects
       defaultStatusCode: 307
+      # Only show redirects with the given redirects when the module is opened
+      initialStatusCodeFilter: -1
+      initialTypeFilter: 'manual'
       validation:
         # This is the pattern for matching the input in the HTML forms
         sourceUriPath: '^[a-zA-Z0-9\-\/\.]+$'
@@ -38,14 +42,6 @@ Neos:
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
             additionalResources:
               styleSheets:
-                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-harx.css'
-                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-harx-black.css'
-                - 'resource://Neos.RedirectHandler.Ui/Public/Styles.css'
+                - 'resource://Neos.RedirectHandler.Ui/Public/Styles/main.css'
               javaScripts:
-                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime-all.min.js'
-                - 'resource://Neos.RedirectHandler.Ui/Public/tail.datetime.min.js'
-                - 'resource://Neos.RedirectHandler.Ui/Public/Scripts.js'
-
-  Fusion:
-    defaultContext:
-      'Neos.RedirectHandler.Ui.Redirect': 'Neos\RedirectHandler\Ui\Fusion\Helper\RedirectHelper'
+                - 'resource://Neos.RedirectHandler.Ui/Public/JavaScript/main.bundle.js'

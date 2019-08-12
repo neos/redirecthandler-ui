@@ -1,41 +1,39 @@
 prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusion:Component) {
-    redirects = ${[]}
+    redirectsJson = '[]'
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
     csrfToken = null
+    initialStatusCodeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialStatusCodeFilter')}
+    initialTypeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialTypeFilter')}
+    validSourceUriPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.sourceUriPath')}
+    // Don't render disabled status codes
+    statusCodes = ${Array.filter(Configuration.setting('Neos.RedirectHandler.Ui.statusCodes'), x => !!x)}
+
+    actions = Neos.Fusion:DataStructure {
+        delete = Neos.Fusion:UriBuilder {
+            action = 'delete'
+            format = 'json'
+        }
+        update = Neos.Fusion:UriBuilder {
+            action = 'update'
+            format = 'json'
+        }
+        create = Neos.Fusion:UriBuilder {
+            action = 'create'
+            format = 'json'
+        }
+    }
 
     renderer = afx`
-        <table class="neos-table redirect-table">
-            <thead>
-                <tr>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:statusCode')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:host')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:sourceUriPath')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:targetUriPath')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
-                    <th @if.enabled={props.showHitCount}>{I18n.translate('Neos.RedirectHandler.Ui:Modules:hitCount')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creationDate')}</th>
-                    <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:creator')}</th>
-                    <th class="redirect-table__heading-actions">{I18n.translate('Neos.RedirectHandler.Ui:Modules:actions')}</th>
-                </tr>
-            </thead>
-            <tbody>
-                <Neos.Fusion:Loop items={props.redirects} itemName="redirect" itemKey="identifier">
-                    <Neos.RedirectHandler.Ui:Component.Redirect.List.Item redirect={redirect} csrfToken={props.csrfToken}
-                        showHitCount={props.showHitCount} className={iterator.isEven ? 'even' : 'odd'}/>
-                </Neos.Fusion:Loop>
-                <tr @if.isEmpty={!props.redirects}>
-                    <td colspan="11"><p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:emptyList')}</p></td>
-                </tr>
-                <tr id="redirect-edit-form">
-                    <td colspan="11">
-                        <h6>Edit redirect</h6>
-                        <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken} idPrefix="edit-" mode="edit"
-                            action.action="update" submitLabel={I18n.translate('Neos.RedirectHandler.Ui:Modules:updateRedirect')}/>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
+        <div id="redirects-list-app"
+             data-show-hit-count={props.showHitCount ? 'true' : 'false'}
+             data-initial-status-code-filter={props.initialStatusCodeFilter}
+             data-initial-type-filter={props.initialTypeFilter}
+             data-csrf-token={props.csrfToken}
+             data-actions={Json.stringify(props.actions)}
+             data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
+             data-status-codes={Json.stringify(props.statusCodes)}
+             data-redirects-json={props.redirectsJson}>
+            <p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:list.loading')}</p>
+        </div>
     `
 }

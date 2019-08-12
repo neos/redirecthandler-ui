@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Neos\RedirectHandler\Ui\Controller;
 
 /*
@@ -17,10 +19,12 @@ use Exception;
 use League\Csv\CannotInsertRecord;
 use League\Csv\Exception as CsvException;
 use League\Csv\Reader;
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
+use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\ResourceManagement\Exception as ResourceException;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
@@ -35,7 +39,6 @@ use Neos\RedirectHandler\RedirectInterface;
 use Neos\RedirectHandler\Service\RedirectExportService;
 use Neos\RedirectHandler\Service\RedirectImportService;
 use Neos\RedirectHandler\Storage\RedirectStorageInterface;
-use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 
 /**
  * @Flow\Scope("singleton")
@@ -53,6 +56,19 @@ class ModuleController extends AbstractModuleController
     protected $defaultViewObjectName = FusionView::class;
 
     /**
+     * @var array
+     */
+    protected $supportedMediaTypes = ['application/json', 'text/html'];
+
+    /**
+     * @var array
+     */
+    protected $viewFormatToObjectNameMap = [
+        'html' => FusionView::class,
+        'json' => JsonView::class,
+    ];
+
+    /**
      * @Flow\Inject
      * @var SecurityContext
      */
@@ -63,12 +79,6 @@ class ModuleController extends AbstractModuleController
      * @var RedirectStorageInterface
      */
     protected $redirectStorage;
-
-    /**
-     * @Flow\Inject
-     * @var RedirectRepository
-     */
-    protected $redirectRepository;
 
     /**
      * @Flow\Inject
@@ -123,13 +133,21 @@ class ModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        $redirects = $this->redirectRepository->search();
+        $redirects = $this->redirectStorage->getAll();
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
         $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
         $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
+        // Serialize redirects for the filterable list in the frontend
+        $redirectsJson = '';
+        /** @var RedirectInterface $redirect */
+        foreach ($redirects as $redirect) {
+            $redirectsJson .= json_encode($redirect) . ',';
+        }
+        $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
+
         $this->view->assignMultiple([
-            'redirects' => $redirects,
+            'redirectsJson' => $redirectsJson,
             'flashMessages' => $flashMessages,
             'csrfToken' => $csrfToken,
             'locale' => $currentLocale,
@@ -139,9 +157,10 @@ class ModuleController extends AbstractModuleController
     /**
      * Creates a single redirect and goes back to the list
      *
+     * @return void|string
      * @throws StopActionException
      */
-    public function createAction(): void
+    public function createAction(): ?string
     {
         $creationStatus = true;
 
@@ -162,8 +181,8 @@ class ModuleController extends AbstractModuleController
                 $startDateTime = new DateTime($startDateTime);
             } catch (Exception $e) {
                 $creationStatus = false;
-                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
-                    Error\Message::SEVERITY_ERROR);
+                $message = $this->translateById('error.invalidStartDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
             }
         }
         if (empty($endDateTime)) {
@@ -173,49 +192,61 @@ class ModuleController extends AbstractModuleController
                 $endDateTime = new DateTime($endDateTime);
             } catch (Exception $e) {
                 $creationStatus = false;
-                $this->addFlashMessage('', $this->translateById('error.invalidEndDateTime'),
-                    Error\Message::SEVERITY_ERROR);
+                $message = $this->translateById('error.invalidEndDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
             }
         }
 
         if ($creationStatus) {
-            $creationStatus = $this->addRedirect(
+            $changedRedirects = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
             );
+            $creationStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+        } else {
+            $changedRedirects = [];
         }
 
-        if (!$creationStatus || count($creationStatus) < 1) {
-            $this->addFlashMessage('', $this->translateById('error.redirectNotCreated'),
-                Error\Message::SEVERITY_ERROR);
+        if (!$creationStatus) {
+            $messageTitle = '';
+            $message = $this->translateById('error.redirectNotCreated');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         } else {
             // Build list of changed redirects for feedback to user
-            $message = array_reduce($creationStatus, function ($carry, RedirectInterface $redirect) {
-                return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . ' &rarr; /' . $redirect->getTargetUriPath() . '</li>';
-            }, '');
-            $message = $message ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $message . '</ul>' : '';
+            $message = $this->createChangedRedirectList($changedRedirects);
 
             /** @var RedirectInterface $createdRedirect */
-            $createdRedirect = $creationStatus[0];
+            $createdRedirect = $changedRedirects[0];
 
-            $this->addFlashMessage($message,
-                $this->translateById('message.redirectCreated', [
-                    $createdRedirect->getHost(),
-                    $createdRedirect->getSourceUriPath(),
-                    $createdRedirect->getTargetUriPath(),
-                    $createdRedirect->getStatusCode()
-                ]),
-                Error\Message::SEVERITY_OK);
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges', [
+                $createdRedirect->getHost(),
+                $createdRedirect->getSourceUriPath(),
+                $createdRedirect->getTargetUriPath(),
+                $createdRedirect->getStatusCode()
+            ]);
+
+            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
-        $this->redirect('index');
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $creationStatus,
+                'message' => $messageTitle ?? $message,
+                'changedRedirects' => $changedRedirects,
+                // FIXME: The returned flash messages are empty
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
     }
 
     /**
      * Updates a single redirect and goes back to the list
      *
+     * @return void|string
      * @throws StopActionException
      */
-    public function updateAction()
+    public function updateAction(): ?string
     {
         $updateStatus = true;
 
@@ -238,8 +269,8 @@ class ModuleController extends AbstractModuleController
                 $startDateTime = new DateTime($startDateTime);
             } catch (Exception $e) {
                 $updateStatus = false;
-                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
-                    Error\Message::SEVERITY_ERROR);
+                $message = $this->translateById('error.invalidStartDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
             }
         }
         if (empty($endDateTime)) {
@@ -249,36 +280,61 @@ class ModuleController extends AbstractModuleController
                 $endDateTime = new DateTime($endDateTime);
             } catch (Exception $e) {
                 $updateStatus = false;
-                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'),
-                    Error\Message::SEVERITY_ERROR);
+                $message = $this->translateById('error.invalidEndDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
             }
         }
 
         if ($updateStatus) {
-            $updateStatus = $this->updateRedirect(
+            $changedRedirects = $this->updateRedirect(
                 $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
                 $startDateTime, $endDateTime
             );
+            $updateStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+        } else {
+            $changedRedirects = [];
         }
 
         if (!$updateStatus) {
-            $this->addFlashMessage('', $this->translateById('error.redirectNotUpdated'),
-                Error\Message::SEVERITY_ERROR);
+            $message = $this->translateById('error.redirectNotUpdated');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         } else {
-            // TODO: Render list of changed redirects
-            $this->addFlashMessage('', $this->translateById('message.redirectUpdated'),
-                Error\Message::SEVERITY_OK);
+            // Build list of changed redirects for feedback to user
+            $message = $this->createChangedRedirectList($changedRedirects);
+
+            /** @var RedirectInterface $createdRedirect */
+            $createdRedirect = $changedRedirects[0];
+
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges', [
+                $createdRedirect->getHost(),
+                $createdRedirect->getSourceUriPath(),
+                $createdRedirect->getTargetUriPath(),
+                $createdRedirect->getStatusCode()
+            ]);
+
+            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
-        $this->redirect('index');
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $updateStatus,
+                'message' => $messageTitle ?? $message,
+                'changedRedirects' => $changedRedirects,
+                // FIXME: The returned flash messages are empty
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
     }
 
     /**
      * Deletes a single redirect and goes back to the list
      *
+     * @return void|string
      * @throws StopActionException
      */
-    public function deleteAction(): void
+    public function deleteAction(): ?string
     {
         [
             'host' => $host,
@@ -288,14 +344,22 @@ class ModuleController extends AbstractModuleController
         $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
 
         if ($status === false) {
-            $this->addFlashMessage('', $this->translateById('message.redirectNotDeleted'),
-                Error\Message::SEVERITY_ERROR);
+            $message = $this->translateById('error.redirectNotDeleted');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         } else {
-            $this->addFlashMessage('', $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]),
-                Error\Message::SEVERITY_OK);
+            $message = $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]);
+            $this->addFlashMessage('', $message, Message::SEVERITY_OK);
         }
 
-        $this->redirect('index');
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $status,
+                'message' => $message,
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
     }
 
     /**
@@ -372,7 +436,7 @@ class ModuleController extends AbstractModuleController
 
         if (!$csvFile) {
             $this->addFlashMessage('', $this->translateById('error.csvFileNotSet'),
-                Error\Message::SEVERITY_ERROR);
+                Message::SEVERITY_ERROR);
             $this->redirect('import');
         }
 
@@ -388,26 +452,26 @@ class ModuleController extends AbstractModuleController
 
             try {
                 $this->resourceManager->deleteResource($csvFile);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->logger->warning('Could not delete csv file after importing redirects', [$e->getMessage()]);
             }
 
             if (count($protocol) === 0) {
-                $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Error\Message::SEVERITY_OK);
+                $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Message::SEVERITY_OK);
             } elseif (count($protocolErrors) > 0) {
                 $this->addFlashMessage('', $this->translateById('message.importCsvSuccessWithErrors'),
-                    Error\Message::SEVERITY_WARNING);
+                    Message::SEVERITY_WARNING);
             } else {
                 $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'),
-                    Error\Message::SEVERITY_OK);
+                    Message::SEVERITY_OK);
             }
         } catch (CsvException $e) {
             $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
-                Error\Message::SEVERITY_ERROR);
+                Message::SEVERITY_ERROR);
             $this->redirect('import');
         } catch (ResourceException $e) {
             $this->addFlashMessage('', $this->translateById('error.importResourceFailed'),
-                Error\Message::SEVERITY_ERROR);
+                Message::SEVERITY_ERROR);
             $this->redirect('import');
         }
 
@@ -550,11 +614,11 @@ class ModuleController extends AbstractModuleController
     {
         if ($sourceUriPath === $targetUriPath) {
             $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
-                Error\Message::SEVERITY_WARNING);
+                Message::SEVERITY_WARNING);
         } elseif (!preg_match($this->validationOptions['sourceUriPath'], $sourceUriPath)) {
             $this->addFlashMessage('',
                 $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['sourceUriPath']]),
-                Error\Message::SEVERITY_WARNING);
+                Message::SEVERITY_WARNING);
         } else {
             return true;
         }
@@ -597,5 +661,20 @@ class ModuleController extends AbstractModuleController
     {
         return $this->translator->translateById($id, $arguments, null, null, 'Modules',
             'Neos.RedirectHandler.Ui');
+    }
+
+    /**
+     * Creates a html list of changed redirects
+     *
+     * @param array<RedirectInterface> $changedRedirects
+     * @return string
+     */
+    protected function createChangedRedirectList(array $changedRedirects): string
+    {
+        $list = array_reduce($changedRedirects, function ($carry, RedirectInterface $redirect) {
+            return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . ' &rarr; /' . $redirect->getTargetUriPath() . '</li>';
+        }, '');
+        $list = $list ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $list . '</ul>' : '';
+        return $list;
     }
 }

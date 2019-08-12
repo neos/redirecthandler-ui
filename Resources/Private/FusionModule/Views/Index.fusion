@@ -1,5 +1,5 @@
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
-    redirects = ${[]}
+    redirectsJson = '[]'
     csrfToken = ''
 
     importAction = Neos.Fusion:UriBuilder {
@@ -12,19 +12,15 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
-                <Neos.RedirectHandler.Ui:Component.EditCreateForm csrfToken={props.csrfToken}/>
-            </div>
-
-            <div class="neos-row-fluid">
-                <Neos.RedirectHandler.Ui:Component.Redirect.List redirects={props.redirects} csrfToken={props.csrfToken}/>
+                <Neos.RedirectHandler.Ui:Component.Redirect.List redirectsJson={props.redirectsJson} csrfToken={props.csrfToken}/>
             </div>
 
             <div class="neos-footer">
                 <a class="neos-button neos-button-success" href={props.exportAction}>
-                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:export')}
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.export')}
                 </a>
                 <a class="neos-button neos-button-danger" href={props.importAction}>
-                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:import')}
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.import')}
                 </a>
             </div>
         </div>

@@ -29,7 +29,7 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
                     </div>
                     <div class="neos-control-group neos-control-group--auto">
                         <button type="submit" class="neos-button neos-button-primary">
-                            {I18n.translate('Neos.RedirectHandler.Ui:Modules:exportCsv')}
+                            {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.exportCsv')}
                         </button>
                     </div>
                 </form>
@@ -37,10 +37,10 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
 
             <div class="neos-footer">
                 <a class="neos-button" href={props.indexAction}>
-                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:backToList')}
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.backToList')}
                 </a>
                 <a class="neos-button neos-button-danger" href={props.importAction}>
-                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:import')}
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.import')}
                 </a>
             </div>
         </div>

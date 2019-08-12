@@ -9,17 +9,63 @@
                 <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
             </trans-unit>
 
+            <trans-unit id="filter.search" xml:space="preserve">
+                <source>Search</source>
+            </trans-unit>
+            <trans-unit id="filter.statusCode" xml:space="preserve">
+                <source>Code</source>
+            </trans-unit>
+            <trans-unit id="filter.resultsCountSuffix" xml:space="preserve">
+                <source>({0} total results)</source>
+            </trans-unit>
+            <trans-unit id="filter.type.manual" xml:space="preserve">
+                <source>Manual</source>
+            </trans-unit>
+            <trans-unit id="filter.type.generated" xml:space="preserve">
+                <source>Generated</source>
+            </trans-unit>
+
+            <trans-unit id="pagination.position" xml:space="preserve">
+                <source>Showing {0}-{1} of {2}</source>
+            </trans-unit>
+            <trans-unit id="pagination.noResults" xml:space="preserve">
+                <source>No redirects match your search</source>
+            </trans-unit>
+
+            <trans-unit id="list.neverHit" xml:space="preserve">
+                <source>Never hit</source>
+            </trans-unit>
+            <trans-unit id="list.lastHit" xml:space="preserve">
+                <source>Last hit was {0}</source>
+            </trans-unit>
+            <trans-unit id="list.action.edit" xml:space="preserve">
+                <source>Edit</source>
+            </trans-unit>
+            <trans-unit id="list.action.delete" xml:space="preserve">
+                <source>Delete redirect</source>
+            </trans-unit>
+            <trans-unit id="list.action.confirmDelete" xml:space="preserve">
+                <source>Delete the redirect "{0}"?</source>
+            </trans-unit>
+            <trans-unit id="list.action.copyPath" xml:space="preserve">
+                <source>Copied path to clipboard</source>
+            </trans-unit>
+
+            <trans-unit id="warning.redirectCreatedWithChanges" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created, but there were changes to other redirects!</source>
+            </trans-unit>
+            <trans-unit id="message.redirectUpdatedWithChanges" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
+            </trans-unit>
+
             <trans-unit id="message.redirectCreated" xml:space="preserve">
-                <source>Redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
             </trans-unit>
             <trans-unit id="message.relatedChanges" xml:space="preserve">
                 <source>Related changes:</source>
             </trans-unit>
             <trans-unit id="message.redirectUpdated" xml:space="preserve">
-                <source>Redirect updated</source>
-            </trans-unit>
-            <trans-unit id="message.redirectNotDeleted" xml:space="preserve">
-                <source>Redirect not removed</source>
+                <source>The redirect has been updated</source>
             </trans-unit>
             <trans-unit id="message.redirectDeleted" xml:space="preserve">
                 <source>Redirect from "{0}/{1}" has been deleted</source>
@@ -31,11 +77,14 @@
                 <source>The redirects from the CSV file were imported but there were some errors. See the protocol for details.</source>
             </trans-unit>
 
+            <trans-unit id="error.redirectNotDeleted" xml:space="preserve">
+                <source>The redirect could not be removed</source>
+            </trans-unit>
             <trans-unit id="error.redirectNotCreated" xml:space="preserve">
-                <source>Redirect not created</source>
+                <source>The redirect could not be created</source>
             </trans-unit>
             <trans-unit id="error.redirectNotUpdated" xml:space="preserve">
-                <source>Redirect not updated</source>
+                <source>The redirect could not be updated</source>
             </trans-unit>
             <trans-unit id="error.invalidStartDateTime" xml:space="preserve">
                 <source>The start datetime is invalid</source>
@@ -62,9 +111,6 @@
                 <source>Source path doesn't match the expression {0}</source>
             </trans-unit>
 
-            <trans-unit id="confirmDelete" xml:space="preserve">
-                <source>Delete this redirect?</source>
-            </trans-unit>
             <trans-unit id="host" xml:space="preserve">
                 <source>Origin domain</source>
             </trans-unit>
@@ -101,7 +147,7 @@
             <trans-unit id="creator" xml:space="preserve">
                 <source>Creator</source>
             </trans-unit>
-            <trans-unit id="hitCount" xml:space="preserve">
+            <trans-unit id="hitCounter" xml:space="preserve">
                 <source>Hits</source>
             </trans-unit>
             <trans-unit id="creationDate" xml:space="preserve">
@@ -124,6 +170,9 @@
             <trans-unit id="header.importProtocol" xml:space="preserve">
                 <source>Import protocol</source>
             </trans-unit>
+            <trans-unit id="header.editRedirect" xml:space="preserve">
+                <source>Edit redirect</source>
+            </trans-unit>
 
             <trans-unit id="actions" xml:space="preserve">
                 <source>Actions</source>
@@ -131,35 +180,36 @@
             <trans-unit id="action.importCsvFile" xml:space="preserve">
                 <source>Import redirects from CSV file</source>
             </trans-unit>
-            <trans-unit id="addRedirect" xml:space="preserve">
+            <trans-unit id="action.create" xml:space="preserve">
                 <source>Add redirect</source>
             </trans-unit>
-            <trans-unit id="updateRedirect" xml:space="preserve">
+            <trans-unit id="action.update" xml:space="preserve">
                 <source>Update redirect</source>
             </trans-unit>
-            <trans-unit id="edit" xml:space="preserve">
+            <trans-unit id="action.edit" xml:space="preserve">
                 <source>Edit redirect</source>
             </trans-unit>
-            <trans-unit id="delete" xml:space="preserve">
-                <source>Delete redirect</source>
-            </trans-unit>
-            <trans-unit id="cancel" xml:space="preserve">
+            <trans-unit id="action.cancel" xml:space="preserve">
                 <source>Cancel</source>
             </trans-unit>
-            <trans-unit id="backToList" xml:space="preserve">
+            <trans-unit id="action.backToList" xml:space="preserve">
                 <source>Back to redirect list</source>
             </trans-unit>
-            <trans-unit id="emptyList" xml:space="preserve">
-                <source>There are currently no redirects defined.</source>
-            </trans-unit>
-            <trans-unit id="exportCsv" xml:space="preserve">
+            <trans-unit id="action.exportCsv" xml:space="preserve">
                 <source>Export CSV file</source>
             </trans-unit>
-            <trans-unit id="export" xml:space="preserve">
+            <trans-unit id="action.export" xml:space="preserve">
                 <source>Export redirect rules</source>
             </trans-unit>
-            <trans-unit id="import" xml:space="preserve">
+            <trans-unit id="action.import" xml:space="preserve">
                 <source>Import redirect rules</source>
+            </trans-unit>
+
+            <trans-unit id="list.loading" xml:space="preserve">
+                <source>Loading…</source>
+            </trans-unit>
+            <trans-unit id="list.empty" xml:space="preserve">
+                <source>There are currently no redirects defined.</source>
             </trans-unit>
 
             <trans-unit id="hint.importCsvFile" xml:space="preserve">

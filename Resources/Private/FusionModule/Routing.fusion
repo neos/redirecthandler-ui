@@ -1,6 +1,6 @@
 Neos.RedirectHandler.Ui.ModuleController {
     index = afx`
-        <Neos.RedirectHandler.Ui:Module.Index redirects={redirects} csrfToken={csrfToken}/>
+        <Neos.RedirectHandler.Ui:Module.Index redirectsJson={redirectsJson} csrfToken={csrfToken}/>
         <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
     `
 
