@@ -123,7 +123,11 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * Refreshes the list
      */
     private refresh(): void {
-        this.handleUpdateSearch(this.state.searchValue);
+        const {redirects} = this.state;
+        this.setState({
+            redirectCountByStatusCode: RedirectList.calculateRedirectCountByStatusCode(redirects),
+            redirectCountByType: RedirectList.calculateRedirectCountByType(redirects),
+        }, () => this.handleUpdateSearch(this.state.searchValue));
     }
 
     /**
@@ -373,7 +377,6 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         const {
             showHitCount,
             translate,
-            redirects,
             actions,
             csrfToken,
             statusCodes,
@@ -383,6 +386,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         } = this.props;
 
         const {
+            redirects,
             sortBy,
             sortDirection,
             filteredRedirects,
