@@ -4,6 +4,7 @@ import DatePicker from 'react-datepicker';
 import Redirect from '../interfaces/Redirect';
 import NeosNotification from '../interfaces/NeosNotification';
 import {formatReadable, formatW3CString} from '../util/datetime';
+import {parseURL} from '../util/url';
 
 const MAX_INPUT_LENGTH = 255;
 
@@ -76,12 +77,23 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             handleNewRedirect,
             handleUpdatedRedirect,
             defaultStatusCode,
+            translate,
         } = this.props;
 
         const {
             startDateTime,
             endDateTime,
+            host,
+            sourceUriPath,
+            targetUriPath,
         } = this.state;
+
+        const parsedSourceUrl: URL = parseURL(sourceUriPath, host || location.origin);
+        const parsedTargetUrl: URL = parseURL(targetUriPath, location.origin);
+        if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
+            notificationHelper.warning(translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same'));
+            return;
+        }
 
         const data = {
             '__csrfToken': csrfToken,
