@@ -68,7 +68,7 @@
                 <source>The redirect has been updated</source>
             </trans-unit>
             <trans-unit id="message.redirectDeleted" xml:space="preserve">
-                <source>Redirect from "{0}/{1}" has been deleted</source>
+                <source>The redirect from "{0}/{1}" has been deleted</source>
             </trans-unit>
             <trans-unit id="message.importCsvSuccess" xml:space="preserve">
                 <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
@@ -108,7 +108,7 @@
                 <source>No entries were found in the CSV file</source>
             </trans-unit>
             <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
-                <source>Source path doesn't match the expression {0}</source>
+                <source>The source path doesn't match the expression {0}</source>
             </trans-unit>
 
             <trans-unit id="host" xml:space="preserve">
