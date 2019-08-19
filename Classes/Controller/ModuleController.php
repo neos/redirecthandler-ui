@@ -230,7 +230,7 @@ class ModuleController extends AbstractModuleController
         if ($this->request->getFormat() === 'json') {
             return json_encode([
                 'success' => $creationStatus,
-                'message' => $messageTitle ?? $message,
+                'message' => empty($messageTitle) ? $message : $messageTitle,
                 'changedRedirects' => $changedRedirects,
                 // FIXME: The returned flash messages are empty
                 'messages' => $this->flashMessageContainer->getMessagesAndFlush(),

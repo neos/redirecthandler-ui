@@ -133,9 +133,15 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     }
                 } else {
                     notificationHelper.error(message);
+                    this.setState({
+                        isSendingData: false,
+                    });
                 }
             }).catch(error => {
                 notificationHelper.error(error);
+                this.setState({
+                    isSendingData: false,
+                });
             }
         );
     };
