@@ -13,6 +13,7 @@ declare global {
             I18n: {
                 translate: Function;
                 addObserver: Function;
+                initialized: boolean;
             },
             Notification: {
                 notice: Function;
@@ -56,7 +57,7 @@ declare global {
             return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
         };
 
-        I18n.addObserver('initialized', () => {
+        const renderApp = () => {
             ReactDOM.render(
                 <RedirectList redirects={redirects}
                               csrfToken={csrfToken}
@@ -68,7 +69,13 @@ declare global {
                               notificationHelper={Notification}
                               initialTypeFilter={initialTypeFilter}
                               initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
-        });
+        };
+
+        if (I18n.initialized) {
+            renderApp();
+        } else {
+            I18n.addObserver('initialized', renderApp);
+        }
     };
 })();
 
