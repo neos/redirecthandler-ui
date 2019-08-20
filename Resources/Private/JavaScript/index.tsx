@@ -26,8 +26,17 @@ declare global {
     }
 }
 
-window.onload = (): void => {
+window.onload = async (): Promise<void> => {
+    while (!window.Typo3Neos || !window.Typo3Neos.I18n.initialized) {
+        await new Promise(resolve => setTimeout(resolve, 50));
+    }
+
     const redirectsList: HTMLElement = document.getElementById('redirects-list-app');
+
+    if (!redirectsList) {
+        return;
+    }
+
     const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset.redirectsJson);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
     const {csrfToken} = redirectsList.dataset;
@@ -45,47 +54,28 @@ window.onload = (): void => {
         initialStatusCodeFilter = -1;
     }
 
-    // The global Neos api might not be available yet, when this script is run
-    const loadNeosApi = (callback: Function): void => {
-        if (window.Typo3Neos) {
-            callback();
-        } else {
-            window.setTimeout(() => loadNeosApi(callback), 50);
-        }
+    const {I18n, Notification} = window.Typo3Neos;
+
+    /**
+     * @param id
+     * @param label
+     * @param args
+     */
+    const translate = (id: string, label = '', args: Array<any> = []): string => {
+        return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
 
-    loadNeosApi(() => {
-        const {I18n, Notification} = window.Typo3Neos;
-
-        /**
-         * @param id
-         * @param label
-         * @param args
-         */
-        const translate = (id: string, label = '', args: Array<any> = []): string => {
-            return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
-        };
-
-        const renderApp = (): void => {
-            ReactDOM.render(
-                <RedirectList
-                    redirects={redirects}
-                    csrfToken={csrfToken}
-                    actions={actions}
-                    showHitCount={showHitCount}
-                    translate={translate}
-                    statusCodes={statusCodes}
-                    validSourceUriPathPattern={validSourceUriPathPattern}
-                    notificationHelper={Notification}
-                    initialTypeFilter={initialTypeFilter}
-                    initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
-        };
-
-        if (I18n.initialized) {
-            renderApp();
-        } else {
-            I18n.addObserver('initialized', renderApp);
-        }
-    });
+    ReactDOM.render(
+        <RedirectList
+            redirects={redirects}
+            csrfToken={csrfToken}
+            actions={actions}
+            showHitCount={showHitCount}
+            translate={translate}
+            statusCodes={statusCodes}
+            validSourceUriPathPattern={validSourceUriPathPattern}
+            notificationHelper={Notification}
+            initialTypeFilter={initialTypeFilter}
+            initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
 };
 
