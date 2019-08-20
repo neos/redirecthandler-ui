@@ -287,7 +287,7 @@
                 <target>
                     Es wird empfohlen die existierenden Umleitungen zu exportieren und an der resultierenden Datei zu arbeiten,
                     bevor Umleitungen importiert werden.
-                    Auf diese Weise, erhält man automatisch die richtige Struktur.
+                    Auf diese Weise erhält man automatisch die richtige Struktur.
                 </target>
             </trans-unit>
             <trans-unit id="hint.importGetHelp" xml:space="preserve">
