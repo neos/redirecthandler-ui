@@ -718,13 +718,22 @@
 .neos .redirects-protocol-entry--error {
   color: #ff4500; }
 
-.neos .redirects-protocol-entry-label {
+.neos .redirects-protocol-entry__label {
   width: 500px;
   max-width: 50%; }
 
 .redirect-edit-form td {
   padding: 1rem;
   border-top: 0; }
+
+.redirect-tooltip {
+  position: absolute;
+  padding: 1rem;
+  background-color: #3f3f3f;
+  z-index: 1;
+  max-width: 300px;
+  margin-left: 1rem;
+  box-shadow: 0 1px 3px 5px rgba(0, 0, 0, 0.15); }
 
 .tail-datetime-calendar .calendar-timepicker .timepicker-field:first-child input[type=number],
 .tail-datetime-calendar .calendar-timepicker .timepicker-field:last-child input[type=number],
