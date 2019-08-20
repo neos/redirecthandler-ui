@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types=1);
+
 namespace Neos\RedirectHandler\Ui\Aspects;
 
 /*
@@ -22,11 +24,11 @@ trait DatabaseStorageTrait
     /**
      * @param string $sourceUriPath
      * @param string $targetUriPath
-     * @param string $statusCode
+     * @param int $statusCode
      * @param string $host
      * @return QueryResultInterface
      */
-    public function search($sourceUriPath = null, $targetUriPath = null, $statusCode = null, $host = null)
+    public function search(?string $sourceUriPath = null, ?string $targetUriPath = null, int $statusCode = null, ?string $host = null)
     {
 
         $searchParameters = [];

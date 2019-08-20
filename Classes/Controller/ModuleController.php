@@ -429,7 +429,7 @@ class ModuleController extends AbstractModuleController
      * @param string $delimiter
      * @throws StopActionException
      */
-    public function importCsvAction(PersistentResource $csvFile = null, $delimiter = ','): void
+    public function importCsvAction(PersistentResource $csvFile = null, string $delimiter = ','): void
     {
         $protocol = [];
 
@@ -493,14 +493,14 @@ class ModuleController extends AbstractModuleController
      * @return array
      */
     protected function addRedirect(
-        $sourceUriPath,
-        $targetUriPath,
-        $statusCode,
-        $host = null,
-        $comment = null,
+        string $sourceUriPath,
+        string $targetUriPath,
+        int $statusCode,
+        ?string $host = null,
+        ?string $comment = null,
         DateTime $startDateTime = null,
         DateTime $endDateTime = null,
-        $force = false
+        bool $force = false
     ): array {
         $sourceUriPath = trim($sourceUriPath);
         $targetUriPath = trim($targetUriPath);
@@ -550,16 +550,16 @@ class ModuleController extends AbstractModuleController
      * @return array
      */
     protected function updateRedirect(
-        $originalSourceUriPath,
-        $originalHost,
-        $sourceUriPath,
-        $targetUriPath,
-        $statusCode,
-        $host = null,
-        $comment = null,
+        string $originalSourceUriPath,
+        string $originalHost,
+        string $sourceUriPath,
+        string $targetUriPath,
+        int $statusCode,
+        ?string $host = null,
+        ?string $comment = null,
         DateTime $startDateTime = null,
         DateTime $endDateTime = null,
-        $force = false
+        bool $force = false
     ): array {
         $sourceUriPath = trim($sourceUriPath);
         $targetUriPath = trim($targetUriPath);
@@ -591,7 +591,7 @@ class ModuleController extends AbstractModuleController
      * @param string|null $host
      * @return bool
      */
-    protected function deleteRedirect($sourceUriPath, $host = null): bool
+    protected function deleteRedirect(string $sourceUriPath, ?string $host = null): bool
     {
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null);
         if ($redirect === null) {
@@ -609,7 +609,7 @@ class ModuleController extends AbstractModuleController
      * @param $targetUriPath
      * @return bool
      */
-    protected function validateRedirectAttributes($host, $sourceUriPath, $targetUriPath): bool
+    protected function validateRedirectAttributes(string $host, string $sourceUriPath, string $targetUriPath): bool
     {
         if ($sourceUriPath === $targetUriPath) {
             $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
@@ -627,16 +627,16 @@ class ModuleController extends AbstractModuleController
     /**
      * @param string $sourceUriPath
      * @param string $targetUriPath
-     * @param string $host
-     * @param string $statusCode
+     * @param string|null $host
+     * @param int $statusCode
      * @param RedirectInterface|null $redirect
      * @return bool
      */
     protected function isSame(
-        $sourceUriPath,
-        $targetUriPath,
-        $host,
-        $statusCode,
+        string $sourceUriPath,
+        string $targetUriPath,
+        ?string $host,
+        int $statusCode,
         RedirectInterface $redirect = null
     ): bool {
         if ($redirect === null) {
@@ -652,11 +652,11 @@ class ModuleController extends AbstractModuleController
     /**
      * Shorthand to translate labels for this package
      *
-     * @param $id
+     * @param string $id
      * @param array $arguments
      * @return string
      */
-    protected function translateById($id, array $arguments = []): string
+    protected function translateById(string $id, array $arguments = []): string
     {
         return $this->translator->translateById($id, $arguments, null, null, 'Modules',
             'Neos.RedirectHandler.Ui');
