@@ -120,6 +120,13 @@
             <trans-unit id="sourceUriPath" xml:space="preserve">
                 <source>Source path</source>
             </trans-unit>
+            <trans-unit id="sourceUriPath.help" xml:space="preserve">
+                <source>
+                    The source uri path is the relative path after the hostname.
+                    F.e. "my/subpage" without any leading or trailing slashes or query parameters.
+                    Those will be ignored by Neos when checking a url if it needs to be redirected.
+                </source>
+            </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
                 <source>Code</source>
             </trans-unit>

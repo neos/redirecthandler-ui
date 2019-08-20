@@ -37,6 +37,7 @@ export interface RedirectFormState {
     endDateTime: string;
     comment: string;
     isSendingData: boolean;
+    activeHelpMessage: string;
 }
 
 const initialState: RedirectFormState = {
@@ -48,6 +49,7 @@ const initialState: RedirectFormState = {
     endDateTime: '',
     comment: '',
     isSendingData: false,
+    activeHelpMessage: '',
 };
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
@@ -221,6 +223,15 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 ${changedRedirects.map(redirect => `<li>${redirect.host || ''}/${redirect.sourceUriPath}&rarr;${redirect.targetUriPath}</li>`).join('')}
             </ul>`;
     };
+
+    /**
+     * Sets a help message active
+     *
+     * @param identifier
+     */
+    private toggleHelpMessage = (identifier: string): void => {
+        const {activeHelpMessage} = this.state;
+        this.setState({activeHelpMessage: activeHelpMessage === identifier ? '' : identifier});
     };
 
     render() {
@@ -242,6 +253,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             endDateTime,
             comment,
             isSendingData,
+            activeHelpMessage,
         } = this.state;
 
         return (
@@ -254,7 +266,14 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                               htmlFor={idPrefix + 'sourceUriPath'}>{translate('sourceUriPath')}*</label>
+                            htmlFor={idPrefix + 'sourceUriPath'}>
+                            {translate('sourceUriPath')}* <i role="button" className={'fas fa-question-circle'}
+                                onClick={() => this.toggleHelpMessage('sourceUriPath')}/>
+                            {activeHelpMessage === 'sourceUriPath' && (
+                                <span role="tooltip"
+                                    className="redirect-tooltip">{translate('sourceUriPath.help', 'Explanation of the source path')}</span>
+                            )}
+                        </label>
                         <input name="sourceUriPath" id={idPrefix + 'sourceUriPath'} type="text"
                             title={validSourceUriPathPattern} onChange={this.handleInputChange}
                             autoFocus={true} required={true} placeholder="the-old-url/product-a"

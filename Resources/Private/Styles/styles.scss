@@ -9,6 +9,9 @@ $deletedColor: #ff8700;
 $fieldSpacing: .3rem;
 $commentFieldHeight: 40px;
 
+// Custom tooltip (should later be replaced by Neos core feature)
+$tooltipBackground: #3f3f3f;
+
 // Datepicker overrides
 $datepicker__background-color: #3f3f3f;
 $datepicker__border-color: #666;
@@ -311,6 +314,16 @@ $datepicker__header-color: white;
     padding: 1rem;
     border-top: 0;
   }
+}
+
+.redirect-tooltip {
+    position: absolute;
+    padding: 1rem;
+    background-color: #3f3f3f;
+    z-index: 1;
+    max-width: 300px;
+    margin-left: 1rem;
+    box-shadow: 0 1px 3px 5px rgba(0, 0, 0, .15);
 }
 
 .tail-datetime-calendar {

@@ -158,6 +158,18 @@
                 <source>Source path</source>
                 <target>Quellpfad</target>
             </trans-unit>
+            <trans-unit id="sourceUriPath.help" xml:space="preserve">
+                <source>
+                    The source uri path is the relative path after the hostname.
+                    F.e. "my/subpage" without any leading or trailing slashes or query parameters.
+                    Those will be ignored by Neos when checking a url if it needs to be redirected.
+                </source>
+                <target>
+                    Der Quellpfad ist der relative Pfad nach dem Hostnamen.
+                    Zum Beispiel "meine/unterseite" ohne Schrägstriche am Anfang oder am Ende und keine Parameter.
+                    Diese ignoriert Neos, wenn für eine aufgerufene Url geprüft wird, ob eine Umleitung erfolgen soll.
+                </target>
+            </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
                 <source>Code</source>
                 <target>Code</target>
