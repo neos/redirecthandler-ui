@@ -22,302 +22,302 @@ $datepicker__text-color: white;
 $datepicker__header-color: white;
 
 .neos {
-  .add-redirect-form,
-  .redirects-filter {
-    margin-bottom: 1.6rem;
+    .add-redirect-form,
+    .redirects-filter {
+        margin-bottom: 1.6rem;
 
-    .row {
-      display: flex;
-      flex-wrap: wrap;
-      align-items: flex-start;
-      margin: 0 -#{$fieldSpacing};
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: flex-start;
+            margin: 0 -#{$fieldSpacing};
+        }
+
+        .neos-control-group {
+            flex: 0 1 200px;
+            display: flex;
+            flex-direction: column;
+            justify-content: flex-end;
+            padding-left: #{$fieldSpacing};
+            padding-right: #{$fieldSpacing};
+
+            &--large {
+                flex-basis: 300px;
+            }
+
+            &--auto {
+                flex-basis: auto;
+                align-self: flex-end;
+            }
+        }
+
+        .textarea-wrap {
+            position: relative;
+            height: 40px;
+        }
+
+        textarea {
+            width: 100%;
+            height: #{$commentFieldHeight};
+            transition: height .2s ease-in;
+            line-height: 36px;
+            position: absolute;
+            top: 0;
+
+            &:focus {
+                height: #{$commentFieldHeight * 4};
+            }
+        }
     }
 
-    .neos-control-group {
-      flex: 0 1 200px;
-      display: flex;
-      flex-direction: column;
-      justify-content: flex-end;
-      padding-left: #{$fieldSpacing};
-      padding-right: #{$fieldSpacing};
+    .add-redirect-form {
+        @import '../../../node_modules/react-datepicker/src/stylesheets/datepicker';
 
-      &--large {
-        flex-basis: 300px;
-      }
+        .react-datepicker {
+            line-height: initial;
+            background-color: #{$datepicker__background-color};
 
-      &--auto {
-        flex-basis: auto;
-        align-self: flex-end;
-      }
+            &__navigation {
+                &:hover {
+                    background-color: transparent;
+                }
+
+                &--next--with-time {
+                    right: 10px;
+                }
+            }
+
+            &__day {
+                &:hover {
+                    background-color: #{$primaryColor};
+                }
+            }
+        }
+
+        .react-datepicker__time-container {
+            &--with-today-button {
+                border-color: #{$datepicker__border-color};
+            }
+
+            .react-datepicker__time {
+                background-color: #{$datepicker__background-color};
+
+                .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+                    height: auto;
+
+                    &:hover {
+                        background-color: #{$primaryColor};
+                    }
+                }
+            }
+        }
     }
 
-    .textarea-wrap {
-      position: relative;
-      height: 40px;
+    .export-redirects-form {
+        .neos-control-group {
+            &--checkbox {
+                label {
+                    padding-left: 1.2rem;
+                }
+
+                input {
+                    position: absolute;
+                    margin-left: -1.2rem;
+                }
+            }
+        }
     }
 
-    textarea {
-      width: 100%;
-      height: #{$commentFieldHeight};
-      transition: height .2s ease-in;
-      line-height: 36px;
-      position: absolute;
-      top: 0;
+    .redirects-filter {
+        &__pagination {
+            padding: 5px 0;
+            user-select: none;
 
-      &:focus {
-        height: #{$commentFieldHeight * 4};
-      }
-    }
-  }
+            i {
+                cursor: pointer;
+                padding: 0 5px;
+                transition: color .1s ease-in;
 
-  .add-redirect-form {
-    @import '../../../node_modules/react-datepicker/src/stylesheets/datepicker';
+                &:not(.disabled):hover {
+                    color: #{$primaryColor};
+                }
 
-    .react-datepicker {
-      line-height: initial;
-      background-color: #{$datepicker__background-color};
-
-      &__navigation {
-        &:hover {
-          background-color: transparent;
+                &.disabled {
+                    cursor: initial;
+                    color: #{$inactiveColor};
+                }
+            }
         }
-
-        &--next--with-time {
-          right: 10px;
-        }
-      }
-
-      &__day {
-        &:hover {
-          background-color: #{$primaryColor};
-        }
-      }
     }
 
-    .react-datepicker__time-container {
-      &--with-today-button {
-        border-color: #{$datepicker__border-color};
-      }
-
-      .react-datepicker__time {
-        background-color: #{$datepicker__background-color};
-
-        .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
-          height: auto;
-
-          &:hover {
-            background-color: #{$primaryColor};
-          }
+    .redirects-table {
+        &-wrap {
+            overflow-x: auto;
         }
-      }
+
+        thead {
+            th {
+                padding: 0 4px 4px 0;
+                white-space: nowrap;
+                cursor: pointer;
+                user-select: none;
+                transition: color .1s ease-in;
+
+                &.redirect-table__heading-actions {
+                    text-align: center;
+                }
+
+                &:hover {
+                    color: #{$primaryColor};
+                }
+            }
+        }
+
+        tbody {
+            td {
+                padding: 0 4px 0 0;
+                height: auto;
+                white-space: nowrap;
+                text-overflow: ellipsis;
+                overflow: hidden;
+                font-size: 80%;
+            }
+
+            .neos-action {
+                width: #{2 * 46px};
+
+                form {
+                    display: inline-block;
+                }
+            }
+        }
+
+        &__row {
+            mark {
+                background-color: transparent;
+                font-weight: bold;
+                color: white;
+                text-decoration: underline;
+            }
+
+            &.odd td {
+                background-color: #{$alternatingBackgroundColor};
+
+                .neos-button {
+                    &:not(:hover) {
+                        background-color: #{$alternatingBackgroundColor} !important;
+                    }
+                }
+            }
+
+            &__column-status-code,
+            &__column-hit-count {
+                width: 80px;
+            }
+
+            &__column-status-code {
+                border-left: 3px solid #{$newColor};
+            }
+
+            &__column-comment {
+                max-width: 200px;
+            }
+
+            &__column-source-uri-path,
+            &__column-target-uri-path {
+                min-width: 200px;
+                max-width: 450px;
+
+                .copy-path {
+                    opacity: 0;
+                    visibility: hidden;
+                    cursor: pointer;
+                    margin-left: .5rem;
+                    transition: color .1s ease-in, opacity .1s ease-in;
+
+                    &:hover {
+                        color: #{$primaryColor};
+                    }
+                }
+
+                &:hover {
+                    .copy-path {
+                        opacity: 1;
+                        visibility: visible;
+                    }
+                }
+            }
+
+            &__column-creation-date-time {
+                width: 90px;
+            }
+
+            &--inactive {
+                td {
+                    color: #{$inactiveColor};
+                }
+
+                .redirects-table__row__column-status-code {
+                    border-left: 3px solid #{$inactiveColor};
+                }
+
+                .redirects-table__row__column-start,
+                .redirects-table__row__column-end {
+                    color: #{$warningColor};
+                }
+            }
+
+            .redirect__type {
+                color: #{$inactiveColor};
+            }
+        }
     }
-  }
 
-  .export-redirects-form {
-    .neos-control-group {
-      &--checkbox {
-        label {
-          padding-left: 1.2rem;
+    .redirects-hint {
+        a {
+            color: $primaryColor;
         }
-
-        input {
-          position: absolute;
-          margin-left: -1.2rem;
-        }
-      }
-    }
-  }
-
-  .redirects-filter {
-    &__pagination {
-      padding: 5px 0;
-      user-select: none;
-
-      i {
-        cursor: pointer;
-        padding: 0 5px;
-        transition: color .1s ease-in;
-
-        &:not(.disabled):hover {
-          color: #{$primaryColor};
-        }
-
-        &.disabled {
-          cursor: initial;
-          color: #{$inactiveColor};
-        }
-      }
-    }
-  }
-
-  .redirects-table {
-    &-wrap {
-      overflow-x: auto;
     }
 
-    thead {
-      th {
-        padding: 0 4px 4px 0;
-        white-space: nowrap;
-        cursor: pointer;
-        user-select: none;
-        transition: color .1s ease-in;
-
-        &.redirect-table__heading-actions {
-          text-align: center;
-        }
-
-        &:hover {
-          color: #{$primaryColor};
-        }
-      }
-    }
-
-    tbody {
-      td {
-        padding: 0 4px 0 0;
-        height: auto;
-        white-space: nowrap;
-        text-overflow: ellipsis;
-        overflow: hidden;
-        font-size: 80%;
-      }
-
-      .neos-action {
-        width: #{2 * 46px};
-
-        form {
-          display: inline-block;
-        }
-      }
-    }
-
-    &__row {
-      mark {
-        background-color: transparent;
-        font-weight: bold;
-        color: white;
-        text-decoration: underline;
-      }
-
-      &.odd td {
-        background-color: #{$alternatingBackgroundColor};
-
-        .neos-button {
-          &:not(:hover) {
-            background-color: #{$alternatingBackgroundColor} !important;
-          }
-        }
-      }
-
-      &__column-status-code,
-      &__column-hit-count {
-        width: 80px;
-      }
-
-      &__column-status-code {
-        border-left: 3px solid #{$newColor};
-      }
-
-      &__column-comment {
-        max-width: 200px;
-      }
-
-      &__column-source-uri-path,
-      &__column-target-uri-path {
-        min-width: 200px;
-        max-width: 450px;
-
-        .copy-path {
-          opacity: 0;
-          visibility: hidden;
-          cursor: pointer;
-          margin-left: .5rem;
-          transition: color .1s ease-in, opacity .1s ease-in;
-
-          &:hover {
-            color: #{$primaryColor};
-          }
-        }
-
-        &:hover {
-          .copy-path {
-            opacity: 1;
-            visibility: visible;
-          }
-        }
-      }
-
-      &__column-creation-date-time {
-        width: 90px;
-      }
-
-      &--inactive {
+    table.redirects-protocol {
         td {
-          color: #{$inactiveColor};
+            height: auto;
+            padding-top: .2rem;
+            padding-bottom: .2rem;
+            line-height: 1.3em;
+            vertical-align: top;
+        }
+    }
+
+    .redirects-protocol-entry {
+        &--unchanged {
+            color: #{$inactiveColor};
         }
 
-        .redirects-table__row__column-status-code {
-          border-left: 3px solid #{$inactiveColor};
+        &--created {
+            color: #{$newColor};
         }
 
-        .redirects-table__row__column-start,
-        .redirects-table__row__column-end {
-          color: #{$warningColor};
+        &--deleted {
+            color: #{$deletedColor};
         }
-      }
 
-      .redirect__type {
-        color: #{$inactiveColor};
-      }
-    }
-  }
+        &--error {
+            color: #{$warningColor};
+        }
 
-  .redirects-hint {
-    a {
-      color: $primaryColor;
+        &__label {
+            width: 500px;
+            max-width: 50%;
+        }
     }
-  }
-
-  table.redirects-protocol {
-    td {
-      height: auto;
-      padding-top: .2rem;
-      padding-bottom: .2rem;
-      line-height: 1.3em;
-      vertical-align: top;
-    }
-  }
-
-  .redirects-protocol-entry {
-    &--unchanged {
-      color: #{$inactiveColor};
-    }
-
-    &--created {
-      color: #{$newColor};
-    }
-
-    &--deleted {
-      color: #{$deletedColor};
-    }
-
-    &--error {
-      color: #{$warningColor};
-    }
-
-    &__label {
-      width: 500px;
-      max-width: 50%;
-    }
-  }
 }
 
 .redirect-edit-form {
-  td {
-    padding: 1rem;
-    border-top: 0;
-  }
+    td {
+        padding: 1rem;
+        border-top: 0;
+    }
 }
 
 .redirect-tooltip {
@@ -331,37 +331,37 @@ $datepicker__header-color: white;
 }
 
 .tail-datetime-calendar {
-  .calendar-timepicker .timepicker-field:first-child input[type=number],
-  .calendar-timepicker .timepicker-field:last-child input[type=number],
-  .calendar-timepicker .timepicker-field input[type=number] {
-    background-color: #101418;
-  }
+    .calendar-timepicker .timepicker-field:first-child input[type=number],
+    .calendar-timepicker .timepicker-field:last-child input[type=number],
+    .calendar-timepicker .timepicker-field input[type=number] {
+        background-color: #101418;
+    }
 
-  .calendar-datepicker table tr td.date-disabled:after {
-    display: none;
-  }
+    .calendar-datepicker table tr td.date-disabled:after {
+        display: none;
+    }
 }
 
 .neos-notification-content {
-  &.expandable {
-    .neos-expand-content {
-      display: none !important;
-    }
-
-    &.expanded {
-      .neos-expand-content {
-        display: block !important;
-
-        ul {
-          padding-left: 1rem;
-          line-height: 1.3;
+    &.expandable {
+        .neos-expand-content {
+            display: none !important;
         }
 
-        li {
-          list-style: disc;
+        &.expanded {
+            .neos-expand-content {
+                display: block !important;
+
+                ul {
+                    padding-left: 1rem;
+                    line-height: 1.3;
+                }
+
+                li {
+                    list-style: disc;
+                }
+            }
         }
-      }
     }
-  }
 }
 
