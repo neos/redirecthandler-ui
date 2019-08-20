@@ -81,6 +81,10 @@ $datepicker__header-color: white;
         &:hover {
           background-color: transparent;
         }
+
+        &--next--with-time {
+          right: 10px;
+        }
       }
 
       &__day {
