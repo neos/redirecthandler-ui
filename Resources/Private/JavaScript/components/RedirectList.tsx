@@ -418,7 +418,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         return (
             <React.Fragment>
-                <RedirectForm translate={translate}
+                <RedirectForm
+                    translate={translate}
                     actions={actions}
                     redirect={null}
                     csrfToken={csrfToken}
@@ -436,7 +437,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                         <div className="neos-control-group">
                             <label htmlFor="redirects-search">{translate('filter.search', 'Search')}</label>
                             <input id="redirects-search" type="text" placeholder="Search"
-                                onChange={e => this.handleUpdateSearch(e.target.value)}/>
+                                   onChange={e => this.handleUpdateSearch(e.target.value)}/>
                         </div>
 
                         <div className="neos-control-group">
@@ -444,7 +445,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                 {translate('filter.statusCode', 'Code')}
                             </label>
                             <select id="redirects-filter-status-code" defaultValue={filterStatusCode.toString()}
-                                onChange={e => this.handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}>
+                                    onChange={e => this.handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}>
                                 <option value="-1">All</option>
                                 {redirectCountByStatusCode.map((numberOfRedirects, statusCode) => {
                                     return (
@@ -462,7 +463,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                 {translate('filter.type', 'Type')}
                             </label>
                             <select id="redirects-filter-type" defaultValue={filterType}
-                                onChange={e => this.handleUpdateFilterType(e.target.value)}>
+                                    onChange={e => this.handleUpdateFilterType(e.target.value)}>
                                 <option value="">All</option>
                                 {Object.keys(redirectCountByType).map(type => {
                                     return (
@@ -478,12 +479,12 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     <div className="redirects-filter__pagination">
                         {filteredRedirects.length > 0 && (
                             <i role="button" className={'fas fa-caret-left' + (currentPage > 0 ? '' : ' disabled')}
-                                onClick={() => currentPage > 0 && this.handlePagination(Pagination.Left)}/>
+                               onClick={() => currentPage > 0 && this.handlePagination(Pagination.Left)}/>
                         )}
                         {filteredRedirects.length > 0 ? translate('pagination.position', 'Showing {0}-{1} of {2}', pagingParameters) : translate('pagination.noResults', 'No redirects match your search')}
                         {filteredRedirects.length > 0 && (
                             <i role="button" className={'fas fa-caret-right' + (hasMorePages ? '' : ' disabled')}
-                                onClick={() => hasMorePages && this.handlePagination(Pagination.Right)}/>
+                               onClick={() => hasMorePages && this.handlePagination(Pagination.Right)}/>
                         )}
                     </div>
                 </div>
@@ -509,29 +510,29 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                 {visibleRedirects.map((redirect, index) => (
                                     <React.Fragment key={index}>
                                         <RedirectListItem redirect={redirect}
-                                            rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
-                                            translate={translate}
-                                            handleDeleteAction={this.handleDeleteAction}
-                                            handleEditAction={this.handleEditAction}
-                                            handleCopyPathAction={this.handleCopyPathAction}
-                                            searchValue={searchValue}
-                                            showHitCount={showHitCount}/>
+                                                          rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
+                                                          translate={translate}
+                                                          handleDeleteAction={this.handleDeleteAction}
+                                                          handleEditAction={this.handleEditAction}
+                                                          handleCopyPathAction={this.handleCopyPathAction}
+                                                          searchValue={searchValue}
+                                                          showHitCount={showHitCount}/>
                                         {editedRedirect === redirect && (
                                         <tr className="redirect-edit-form">
                                             <td colSpan={columnCount}>
                                                 <h6>{translate('header.editRedirect')}</h6>
                                                 <RedirectForm translate={translate}
-                                                    actions={actions}
-                                                    redirect={redirect}
-                                                    csrfToken={csrfToken}
-                                                    notificationHelper={notificationHelper}
-                                                    handleNewRedirect={this.handleNewRedirect}
-                                                    handleUpdatedRedirect={this.handleUpdatedRedirect}
-                                                    handleCancelAction={this.handleCancelAction}
-                                                    idPrefix={'redirect-' + index + '-'}
-                                                    statusCodes={statusCodes}
-                                                    validSourceUriPathPattern={validSourceUriPathPattern}
-                                                    defaultStatusCode={initialStatusCodeFilter}/>
+                                                              actions={actions}
+                                                              redirect={redirect}
+                                                              csrfToken={csrfToken}
+                                                              notificationHelper={notificationHelper}
+                                                              handleNewRedirect={this.handleNewRedirect}
+                                                              handleUpdatedRedirect={this.handleUpdatedRedirect}
+                                                              handleCancelAction={this.handleCancelAction}
+                                                              idPrefix={'redirect-' + index + '-'}
+                                                              statusCodes={statusCodes}
+                                                              validSourceUriPathPattern={validSourceUriPathPattern}
+                                                              defaultStatusCode={initialStatusCodeFilter}/>
                                             </td>
                                         </tr>
                                     )}

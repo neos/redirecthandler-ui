@@ -64,12 +64,12 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 <td title={redirect.sourceUriPath} className={rowBaseClass + '__column-source-uri-path'}>
                     <span dangerouslySetInnerHTML={{__html: this.renderPath(redirect.sourceUriPath)}}/>
                     {redirect.sourceUriPath && <i role="button" className="copy-path fas fa-clipboard"
-                        onClick={() => handleCopyPathAction(redirect.sourceUriPath)}/>}
+                                                  onClick={() => handleCopyPathAction(redirect.sourceUriPath)}/>}
                 </td>
                 <td title={redirect.targetUriPath} className={rowBaseClass + '__column-target-uri-path'}>
                     <span dangerouslySetInnerHTML={{__html: this.renderPath(redirect.targetUriPath || '/')}}/>
                     {redirect.targetUriPath && <i role="button" className="copy-path fas fa-clipboard"
-                        onClick={() => handleCopyPathAction(redirect.targetUriPath)}/>}
+                                                  onClick={() => handleCopyPathAction(redirect.targetUriPath)}/>}
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
                     {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
@@ -94,14 +94,14 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 </td>
                 <td className="neos-action">
                     <button type="button" className="neos-button"
-                        onClick={e => handleEditAction(e, redirect)}
-                        title={translate('list.action.edit', 'Edit')}
-                        data-edit-redirect-id={identifier}>
+                            onClick={e => handleEditAction(e, redirect)}
+                            title={translate('list.action.edit', 'Edit')}
+                            data-edit-redirect-id={identifier}>
                         <i className="fa fa-pencil-alt icon-pencil icon-white"/>
                     </button>
                     <button type="submit" className="neos-button neos-button-danger"
-                        onClick={e => handleDeleteAction(e, redirect)}
-                        title={translate('list.action.delete', 'Delete')}>
+                            onClick={e => handleDeleteAction(e, redirect)}
+                            title={translate('list.action.delete', 'Delete')}>
                         <i className="fa fa-trash-alt icon-trash icon-white"/>
                     </button>
                 </td>

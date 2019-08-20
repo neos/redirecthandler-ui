@@ -21,6 +21,8 @@
         "@typescript-eslint/explicit-function-return-type": 0,
         "comma-dangle": 0,
         "semi": 0,
-        "no-alert": 0
+        "no-alert": 0,
+        "no-await-in-loop": 0,
+        "react/jsx-indent-props": [2, "first"]
     }
 }

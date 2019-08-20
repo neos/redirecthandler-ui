@@ -109,54 +109,56 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         this.setState({isSendingData: true});
 
-        fetch(redirect ? actions.update : actions.create, {
-            method: 'POST',
-            credentials: 'include',
-            headers: {
-                'Content-Type': 'application/json; charset=UTF-8',
-            },
-            body: JSON.stringify(data),
-        }
-        )
-            .then(response => response.json())
-            .then(data => {
-                const {success, message, changedRedirects} = data;
+        this.postRedirect(redirect ? actions.update : actions.create, data).then(data => {
+            const {message, changedRedirects} = data;
 
-                if (success) {
-                    // Depending on whether an existing redirect was edited handle the list of changes but keep the original
-                    if (redirect) {
-                        handleUpdatedRedirect(changedRedirects.slice(), redirect);
-                    } else {
-                        handleNewRedirect(changedRedirects.slice());
+            // Depending on whether an existing redirect was edited handle the list of changes but keep the original
+            if (redirect) {
+                handleUpdatedRedirect(changedRedirects.slice(), redirect);
+            } else {
+                handleNewRedirect(changedRedirects.slice());
 
-                        // Reset form when a redirect was created but not when it was just updated
-                        this.setState({
-                            ...initialState,
-                            statusCode: defaultStatusCode,
-                            ...redirect,
-                            isSendingData: false,
-                        });
-                    }
+                // Reset form when a redirect was created but not when it was just updated
+                this.setState({
+                    ...initialState,
+                    statusCode: defaultStatusCode,
+                    ...redirect,
+                    isSendingData: false,
+                });
+            }
 
-                    if (changedRedirects.length > 1) {
-                        const changeList = this.renderChangedRedirects(changedRedirects);
-                        notificationHelper.warning(message, changeList);
-                    } else {
-                        notificationHelper.ok(message);
-                    }
-                } else {
-                    notificationHelper.error(message);
-                    this.setState({
-                        isSendingData: false,
-                    });
-                }
-            }).catch(error => {
+            if (changedRedirects.length > 1) {
+                const changeList = this.renderChangedRedirects(changedRedirects);
+                notificationHelper.warning(message, changeList);
+            } else {
+                notificationHelper.ok(message);
+            }
+        }).catch(
+            error => {
                 notificationHelper.error(error);
                 this.setState({
                     isSendingData: false,
                 });
             }
         );
+    };
+
+    private postRedirect = (path: string, body?: any): Promise<any> => {
+        return fetch(path, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8'
+            },
+            body: body && JSON.stringify(body)
+        })
+        .then(res => res.json())
+        .then(async data => {
+            if (data.success) {
+                return data;
+            }
+            throw new Error(data.message);
+        });
     };
 
     /**
@@ -234,6 +236,19 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         this.setState({activeHelpMessage: activeHelpMessage === identifier ? '' : identifier});
     };
 
+    /**
+     * Renders a tooltip with the given caption and it will close when clicked
+     *
+     * @param identifier
+     * @param caption
+     */
+    private renderTooltip = (identifier: string, caption: string): React.ReactElement => {
+        return (
+            <span role="tooltip" onClick={() => this.toggleHelpMessage(identifier)}
+                  className="redirect-tooltip">{caption}</span>
+        );
+    };
+
     render() {
         const {
             translate,
@@ -262,31 +277,28 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'host'}>{translate('host')}</label>
                         <input name="host" id={idPrefix + 'host'} type="text"
-                            placeholder="www.example.org" value={host || ''} onChange={this.handleInputChange}/>
+                               placeholder="www.example.org" value={host || ''} onChange={this.handleInputChange}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                            htmlFor={idPrefix + 'sourceUriPath'}>
+                               htmlFor={idPrefix + 'sourceUriPath'}>
                             {translate('sourceUriPath')}* <i role="button" className={'fas fa-question-circle'}
-                                onClick={() => this.toggleHelpMessage('sourceUriPath')}/>
-                            {activeHelpMessage === 'sourceUriPath' && (
-                                <span role="tooltip"
-                                    className="redirect-tooltip">{translate('sourceUriPath.help', 'Explanation of the source path')}</span>
-                            )}
+                                                             onClick={() => this.toggleHelpMessage('sourceUriPath')}/>
+                            {activeHelpMessage === 'sourceUriPath' && this.renderTooltip(sourceUriPath, translate('sourceUriPath.help', 'Explanation of the source path'))}
                         </label>
                         <input name="sourceUriPath" id={idPrefix + 'sourceUriPath'} type="text"
-                            title={validSourceUriPathPattern} onChange={this.handleInputChange}
-                            autoFocus={true} required={true} placeholder="the-old-url/product-a"
-                            pattern={validSourceUriPathPattern} value={sourceUriPath || ''}/>
+                               title={validSourceUriPathPattern} onChange={this.handleInputChange}
+                               autoFocus={true} required={true} placeholder="the-old-url/product-a"
+                               pattern={validSourceUriPathPattern} value={sourceUriPath || ''}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                            htmlFor={idPrefix + 'statusCode'}>{translate('statusCode')}</label>
+                               htmlFor={idPrefix + 'statusCode'}>{translate('statusCode')}</label>
                         <select name="statusCode" id={idPrefix + 'statusCode'} value={statusCode}
-                            onChange={this.handleInputChange}>
+                                onChange={this.handleInputChange}>
                             {Object.keys(statusCodes).map(code => (
                                 <option value={code} key={code}
-                                    title={statusCodes[code] === 'i18n' ? translate('statusCodes.' + code + '.tooltip') : statusCodes[code]}>
+                                        title={statusCodes[code] === 'i18n' ? translate('statusCodes.' + code + '.tooltip') : statusCodes[code]}>
                                     {statusCodes[code] === 'i18n' ? translate('statusCodes.' + code + '.label') : statusCodes[code]}
                                 </option>
                             ))}
@@ -294,10 +306,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                            htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
+                               htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
                         <input name="targetUriPath" id={idPrefix + 'targetUriPath'} type="text"
-                            required={true} placeholder="(https://)the-new-url/product-a"
-                            value={targetUriPath || ''} onChange={this.handleInputChange}/>
+                               required={true} placeholder="(https://)the-new-url/product-a"
+                               value={targetUriPath || ''} onChange={this.handleInputChange}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label">{translate('startDateTime')}</label>
@@ -309,11 +321,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     <div className="neos-control-group neos-control-group--large">
                         <label className="neos-control-label"
-                            htmlFor={idPrefix + 'comment'}>{translate('comment')}</label>
+                               htmlFor={idPrefix + 'comment'}>{translate('comment')}</label>
                         <div className="textarea-wrap">
                             <textarea name="comment" id={idPrefix + 'comment'} value={comment || ''}
-                                placeholder={translate('comment.placeholder')} rows={4}
-                                onChange={this.handleInputChange}>
+                                      placeholder={translate('comment.placeholder')} rows={4}
+                                      onChange={this.handleInputChange}>
                             </textarea>
                         </div>
                     </div>
@@ -324,7 +336,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     {redirect && (
                         <div className="neos-control-group neos-control-group--auto">
-                            <a role="button" className="neos-button add-redirect-form__cancel" onClick={() => handleCancelAction()}>
+                            <a role="button" className="neos-button add-redirect-form__cancel"
+                               onClick={() => handleCancelAction()}>
                                 {translate('action.cancel', 'Cancel')}
                             </a>
                         </div>
