@@ -33,7 +33,6 @@ use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Context as SecurityContext;
-use Neos\Error\Messages as Error;
 
 use Neos\RedirectHandler\RedirectInterface;
 use Neos\RedirectHandler\Service\RedirectExportService;
