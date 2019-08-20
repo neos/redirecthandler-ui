@@ -164,7 +164,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      *
      * @param event
      */
-    handleInputChange = (event: ChangeEvent): void => {
+    private handleInputChange = (event: ChangeEvent): void => {
         const target: HTMLInputElement = event.target as HTMLInputElement;
         const {name, value} = target;
         this.setState({

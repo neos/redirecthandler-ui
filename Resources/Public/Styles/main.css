@@ -585,6 +585,8 @@
   background-color: #3f3f3f; }
   .neos .add-redirect-form .react-datepicker__navigation:hover {
     background-color: transparent; }
+  .neos .add-redirect-form .react-datepicker__navigation--next--with-time {
+    right: 10px; }
   .neos .add-redirect-form .react-datepicker__day:hover {
     background-color: #00b5ff; }
 
