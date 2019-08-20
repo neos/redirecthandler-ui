@@ -2,6 +2,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
     redirectsJson = '[]'
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
     csrfToken = null
+    defaultStatusCode = ${Configuration.setting('Neos.RedirectHandler.Ui.defaultStatusCode')}
     initialStatusCodeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialStatusCodeFilter')}
     initialTypeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialTypeFilter')}
     validSourceUriPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.sourceUriPath')}
@@ -29,6 +30,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
              data-initial-status-code-filter={props.initialStatusCodeFilter}
              data-initial-type-filter={props.initialTypeFilter}
              data-csrf-token={props.csrfToken}
+             data-default-status-code={props.defaultStatusCode}
              data-actions={Json.stringify(props.actions)}
              data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
              data-status-codes={Json.stringify(props.statusCodes)}

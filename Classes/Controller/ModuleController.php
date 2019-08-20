@@ -173,6 +173,8 @@ class ModuleController extends AbstractModuleController
             'comment' => $comment,
         ] = $this->request->getArguments();
 
+        $statusCode = intval($statusCode);
+
         if (empty($startDateTime)) {
             $startDateTime = null;
         } else {
@@ -260,6 +262,8 @@ class ModuleController extends AbstractModuleController
             'endDateTime' => $endDateTime,
             'comment' => $comment,
         ] = $this->request->getArguments();
+
+        $statusCode = intval($statusCode);
 
         if (empty($startDateTime)) {
             $startDateTime = null;
@@ -551,7 +555,7 @@ class ModuleController extends AbstractModuleController
      */
     protected function updateRedirect(
         string $originalSourceUriPath,
-        string $originalHost,
+        ?string $originalHost,
         string $sourceUriPath,
         string $targetUriPath,
         int $statusCode,
@@ -604,12 +608,12 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * @param $host
-     * @param $sourceUriPath
-     * @param $targetUriPath
+     * @param string|null $host
+     * @param string $sourceUriPath
+     * @param string $targetUriPath
      * @return bool
      */
-    protected function validateRedirectAttributes(string $host, string $sourceUriPath, string $targetUriPath): bool
+    protected function validateRedirectAttributes(?string $host, string $sourceUriPath, string $targetUriPath): bool
     {
         if ($sourceUriPath === $targetUriPath) {
             $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),

@@ -39,16 +39,20 @@ window.onload = async (): Promise<void> => {
 
     const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset.redirectsJson);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
-    const {csrfToken} = redirectsList.dataset;
     const actions: {
         delete: string;
         create: string;
         update: string;
     } = JSON.parse(redirectsList.dataset.actions);
     const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
-    const {validSourceUriPathPattern} = redirectsList.dataset;
+
+    const {
+        csrfToken,
+        validSourceUriPathPattern
+    } = redirectsList.dataset;
 
     const initialTypeFilter = redirectsList.dataset.initialTypeFilter || '';
+    const defaultStatusCode = parseInt(redirectsList.dataset.defaultStatusCode, 10);
     let initialStatusCodeFilter = parseInt(redirectsList.dataset.initialStatusCodeFilter, 10);
     if (isNaN(initialStatusCodeFilter)) {
         initialStatusCodeFilter = -1;
@@ -72,6 +76,7 @@ window.onload = async (): Promise<void> => {
             actions={actions}
             showHitCount={showHitCount}
             translate={translate}
+            defaultStatusCode={defaultStatusCode}
             statusCodes={statusCodes}
             validSourceUriPathPattern={validSourceUriPathPattern}
             notificationHelper={Notification}

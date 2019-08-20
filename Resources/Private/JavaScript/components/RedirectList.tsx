@@ -26,6 +26,7 @@ export interface RedirectListProps {
     notificationHelper: NeosNotification;
     initialTypeFilter: string;
     initialStatusCodeFilter: number;
+    defaultStatusCode: number;
     statusCodes: { [index: string]: string };
     validSourceUriPathPattern: string;
     showHitCount: boolean;
@@ -384,6 +385,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             validSourceUriPathPattern,
             notificationHelper,
             initialStatusCodeFilter,
+            defaultStatusCode,
         } = this.props;
 
         const {
@@ -430,7 +432,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     idPrefix=""
                     statusCodes={statusCodes}
                     validSourceUriPathPattern={validSourceUriPathPattern}
-                    defaultStatusCode={initialStatusCodeFilter}/>
+                    defaultStatusCode={defaultStatusCode}/>
 
                 <div className="redirects-filter">
                     <div className="row">
