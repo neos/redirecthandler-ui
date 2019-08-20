@@ -56,7 +56,7 @@ export function highlight(text: string, keyword: string): string {
  * @param text
  */
 export function escapeHtml(text: string): string {
-    return text.replace(/[&<>"']/g, (m) => HTML_ESCAPE_MAP[m]);
+    return text.replace(/[&<>"']/g, m => HTML_ESCAPE_MAP[m]);
 }
 
 /**
@@ -65,7 +65,7 @@ export function escapeHtml(text: string): string {
  * @param text
  */
 function fallbackCopyTextToClipboard(text: string): void {
-    const textArea = document.createElement("textarea");
+    const textArea = document.createElement('textarea');
     textArea.style.position = 'fixed';
     textArea.style.top = '0';
     textArea.style.left = '0';
@@ -75,10 +75,8 @@ function fallbackCopyTextToClipboard(text: string): void {
     textArea.select();
 
     try {
-        const successful = document.execCommand('copy');
-        // const msg = successful ? 'successful' : 'unsuccessful';
-    } catch (err) {
-        // console.error('Fallback: Oops, unable to copy', err);
+        document.execCommand('copy');
+    } catch {
     }
 
     document.body.removeChild(textArea);
@@ -94,9 +92,5 @@ export function copyTextToClipboard(text: string): void {
         fallbackCopyTextToClipboard(text);
         return;
     }
-    navigator.clipboard.writeText(text).then(() => {
-        // console.log('Async: Copying to clipboard was successful!');
-    }, (err) => {
-        // console.error('Async: Could not copy text: ', err);
-    });
+    navigator.clipboard.writeText(text);
 }

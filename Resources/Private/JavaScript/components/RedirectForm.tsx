@@ -15,7 +15,7 @@ export interface RedirectFormProps {
     actions: {
         create: string;
         update: string;
-    }
+    };
     redirect: Redirect;
     idPrefix: string;
     statusCodes: { [index: string]: string };
@@ -51,7 +51,6 @@ const initialState: RedirectFormState = {
 };
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
-
     constructor(props: RedirectFormProps) {
         super(props);
         this.state = {
@@ -96,7 +95,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         }
 
         const data = {
-            '__csrfToken': csrfToken,
+            __csrfToken: csrfToken,
             moduleArguments: {
                 originalHost: redirect ? redirect.host : null,
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
@@ -109,13 +108,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         this.setState({isSendingData: true});
 
         fetch(redirect ? actions.update : actions.create, {
-                method: 'POST',
-                credentials: 'include',
-                headers: {
-                    'Content-Type': 'application/json; charset=UTF-8',
-                },
-                body: JSON.stringify(data),
-            }
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(data),
+        }
         )
             .then(response => response.json())
             .then(data => {
@@ -177,7 +176,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      * @param property
      * @param datetime
      */
-    private handleDatePickerChange(property: string, datetime: Date | string) {
+    private handleDatePickerChange(property: string, datetime: Date | string): void {
         const formattedValue = typeof datetime === 'string' ? datetime : formatReadable(datetime);
         this.setState({
             [property]: formattedValue,
@@ -191,7 +190,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      * @param dateTimeString
      * @param placeholder
      */
-    private renderDatePicker = (property: string, dateTimeString: string, placeholder: string) => {
+    private renderDatePicker = (property: string, dateTimeString: string, placeholder: string): React.ReactElement => {
         const {translate} = this.props;
         const dateTime = dateTimeString ? new Date(dateTimeString) : null;
 
@@ -205,7 +204,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 placeholderText={placeholder}
                 selected={dateTime}
                 timeCaption={translate('datepicker.time', 'Time')}
-                onChange={(value) => this.handleDatePickerChange(property, value)}/>
+                onChange={value => this.handleDatePickerChange(property, value)}/>
         );
     };
 
@@ -216,14 +215,12 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      */
     private renderChangedRedirects = (changedRedirects: Array<Redirect>): string => {
         const {translate} = this.props;
-        return (
-            '<p>' + translate('message.relatedChanges', 'Related changes') + '</p>' +
-            '<ul>' +
-            changedRedirects.map((redirect, index) => (
-                '<li>' + (redirect.host || '') + '/' + redirect.sourceUriPath + '&rarr;' + redirect.targetUriPath + '</li>'
-            )).join('') +
-            '</ul>'
-        );
+        return `
+            <p>${translate('message.relatedChanges', 'Related changes')}</p>
+            <ul>
+                ${changedRedirects.map(redirect => `<li>${redirect.host || ''}/${redirect.sourceUriPath}&rarr;${redirect.targetUriPath}</li>`).join('')}
+            </ul>`;
+    };
     };
 
     render() {
@@ -253,35 +250,35 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'host'}>{translate('host')}</label>
                         <input name="host" id={idPrefix + 'host'} type="text"
-                               placeholder="www.example.org" value={host || ''} onChange={this.handleInputChange}/>
+                            placeholder="www.example.org" value={host || ''} onChange={this.handleInputChange}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
                                htmlFor={idPrefix + 'sourceUriPath'}>{translate('sourceUriPath')}*</label>
                         <input name="sourceUriPath" id={idPrefix + 'sourceUriPath'} type="text"
-                               title={validSourceUriPathPattern} onChange={this.handleInputChange}
-                               autoFocus={true} required={true} placeholder="the-old-url/product-a"
-                               pattern={validSourceUriPathPattern} value={sourceUriPath || ''}/>
+                            title={validSourceUriPathPattern} onChange={this.handleInputChange}
+                            autoFocus={true} required={true} placeholder="the-old-url/product-a"
+                            pattern={validSourceUriPathPattern} value={sourceUriPath || ''}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                               htmlFor={idPrefix + 'statusCode'}>{translate('statusCode')}</label>
+                            htmlFor={idPrefix + 'statusCode'}>{translate('statusCode')}</label>
                         <select name="statusCode" id={idPrefix + 'statusCode'} value={statusCode}
-                                onChange={this.handleInputChange}>
-                            {Object.keys(statusCodes).map((code) => (
+                            onChange={this.handleInputChange}>
+                            {Object.keys(statusCodes).map(code => (
                                 <option value={code} key={code}
-                                        title={statusCodes[code] != 'i18n' ? statusCodes[code] : translate('statusCodes.' + code + '.tooltip')}>
-                                    {statusCodes[code] != 'i18n' ? statusCodes[code] : translate('statusCodes.' + code + '.label')}
+                                    title={statusCodes[code] === 'i18n' ? translate('statusCodes.' + code + '.tooltip') : statusCodes[code]}>
+                                    {statusCodes[code] === 'i18n' ? translate('statusCodes.' + code + '.label') : statusCodes[code]}
                                 </option>
                             ))}
                         </select>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label"
-                               htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
+                            htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
                         <input name="targetUriPath" id={idPrefix + 'targetUriPath'} type="text"
-                               required={true} placeholder="(https://)the-new-url/product-a"
-                               value={targetUriPath || ''} onChange={this.handleInputChange}/>
+                            required={true} placeholder="(https://)the-new-url/product-a"
+                            value={targetUriPath || ''} onChange={this.handleInputChange}/>
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label">{translate('startDateTime')}</label>
@@ -293,11 +290,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     <div className="neos-control-group neos-control-group--large">
                         <label className="neos-control-label"
-                               htmlFor={idPrefix + 'comment'}>{translate('comment')}</label>
+                            htmlFor={idPrefix + 'comment'}>{translate('comment')}</label>
                         <div className="textarea-wrap">
                             <textarea name="comment" id={idPrefix + 'comment'} value={comment || ''}
-                                      placeholder={translate('comment.placeholder')} rows={4}
-                                      onChange={this.handleInputChange}>
+                                placeholder={translate('comment.placeholder')} rows={4}
+                                onChange={this.handleInputChange}>
                             </textarea>
                         </div>
                     </div>
@@ -308,13 +305,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     </div>
                     {redirect && (
                         <div className="neos-control-group neos-control-group--auto">
-                            <a className="neos-button add-redirect-form__cancel" onClick={() => handleCancelAction()}>
+                            <a role="button" className="neos-button add-redirect-form__cancel" onClick={() => handleCancelAction()}>
                                 {translate('action.cancel', 'Cancel')}
                             </a>
                         </div>
                     )}
                 </div>
             </form>
-        )
+        );
     }
 }

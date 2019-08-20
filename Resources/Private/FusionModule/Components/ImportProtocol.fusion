@@ -19,7 +19,7 @@ prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fus
                         <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
                         <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
                     </td>
-                    <td class={props.className + '-entry-label'}>
+                    <td class={props.className + '-entry__label'}>
                         {entry.message}
                         <span @if.hasRedirect={entry.redirect}>
                             {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; /{entry.redirect.targetUriPath} ({entry.redirect.statusCode})

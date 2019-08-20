@@ -1,7 +1,7 @@
 export function formatReadable(date: Date): string {
-    let year: number|string = date.getFullYear();
+    const year: number|string = date.getFullYear();
     let month: number|string = date.getMonth();
-    month ++;
+    month++;
     if (month < 10) {
         month = '0' + month;
     }
@@ -16,18 +16,14 @@ export function formatReadable(date: Date): string {
     let minutes: number|string = date.getMinutes();
     if (minutes < 10) {
         minutes = '0' + minutes;
-    }
-    let seconds: number|string = date.getSeconds();
-    if (seconds < 10) {
-        seconds = '0' + seconds;
     }
     return year + '-' + month + '-' + day + ' ' + hours + ':' + minutes;
 }
 
 export function formatW3CString(date: Date): string {
-    let year: number|string = date.getFullYear();
+    const year: number|string = date.getFullYear();
     let month: number|string = date.getMonth();
-    month ++;
+    month++;
     if (month < 10) {
         month = '0' + month;
     }
@@ -47,9 +43,9 @@ export function formatW3CString(date: Date): string {
     if (seconds < 10) {
         seconds = '0' + seconds;
     }
-    let offset = -date.getTimezoneOffset();
+    const offset = -date.getTimezoneOffset();
     let offsetHours: number|string = Math.abs(Math.floor(offset / 60));
-    let offsetMinutes: number|string = Math.abs(offset) - offsetHours * 60;
+    let offsetMinutes: number|string = Math.abs(offset) - (offsetHours * 60);
     if (offsetHours < 10) {
         offsetHours = '0' + offsetHours;
     }

@@ -1,11 +1,11 @@
 const path = require('path');
-const MiniCssExtractPlugin = require("mini-css-extract-plugin");
+const MiniCssExtractPlugin = require('mini-css-extract-plugin');
 
 module.exports = {
     mode: 'production',
     devtool: 'source-map',
     resolve: {
-        extensions: ['.ts', '.tsx', '.js', '.jsx']
+        extensions: ['.ts', '.tsx', '.js', 'jsx']
     },
     entry: './Resources/Private/JavaScript/index.tsx',
     output: {
@@ -14,8 +14,8 @@ module.exports = {
     },
     plugins: [
         new MiniCssExtractPlugin({
-            filename: "../Styles/[name].css",
-            chunkFilename: "[id].css"
+            filename: '../Styles/[name].css',
+            chunkFilename: '[id].css'
         }),
     ],
     module: {
@@ -39,14 +39,9 @@ module.exports = {
                     'css-loader?sourceMap',
                     'sass-loader?sourceMap',
                 ],
-            },
-            {
-                enforce: 'pre',
-                test: /\.js$/,
-                loader: 'source-map-loader'
             }
         ]
-    },
+    }
 
     // The following lines should be used as soon as Neos provides react libraries for backend modules
     // externals: {

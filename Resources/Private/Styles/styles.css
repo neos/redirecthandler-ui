@@ -659,7 +659,7 @@
   color: #ff8700; }
 .neos .redirects-protocol-entry--error {
   color: #ff4500; }
-.neos .redirects-protocol-entry-label {
+.neos .redirects-protocol-entry__label {
   width: 500px;
   max-width: 50%; }
 

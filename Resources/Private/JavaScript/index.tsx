@@ -14,68 +14,67 @@ declare global {
                 translate: Function;
                 addObserver: Function;
                 initialized: boolean;
-            },
+            };
             Notification: {
                 notice: Function;
                 ok: Function;
                 error: Function;
                 warning: Function;
                 info: Function;
-            },
+            };
         };
     }
 }
 
-(() => {
-    window.onload = () => {
-        const redirectsList: HTMLElement = document.getElementById('redirects-list-app');
-        const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset['redirectsJson']);
-        const showHitCount: boolean = JSON.parse(redirectsList.dataset['showHitCount'] || 'false');
-        const csrfToken: string = redirectsList.dataset['csrfToken'];
-        const actions: {
-            delete: string;
-            create: string;
-            update: string;
-        } = JSON.parse(redirectsList.dataset['actions']);
-        const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset['statusCodes']);
-        const validSourceUriPathPattern: string = redirectsList.dataset['validSourceUriPathPattern'];
+window.onload = (): void => {
+    const redirectsList: HTMLElement = document.getElementById('redirects-list-app');
+    const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset.redirectsJson);
+    const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
+    const {csrfToken} = redirectsList.dataset;
+    const actions: {
+        delete: string;
+        create: string;
+        update: string;
+    } = JSON.parse(redirectsList.dataset.actions);
+    const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
+    const {validSourceUriPathPattern} = redirectsList.dataset;
 
-        let initialTypeFilter = redirectsList.dataset['initialTypeFilter'] || '';
-        let initialStatusCodeFilter = parseInt(redirectsList.dataset['initialStatusCodeFilter']);
-        if (isNaN(initialStatusCodeFilter)) {
-            initialStatusCodeFilter = -1;
-        }
+    const initialTypeFilter = redirectsList.dataset.initialTypeFilter || '';
+    let initialStatusCodeFilter = parseInt(redirectsList.dataset.initialStatusCodeFilter, 10);
+    if (isNaN(initialStatusCodeFilter)) {
+        initialStatusCodeFilter = -1;
+    }
 
-        const {I18n, Notification} = window.Typo3Neos;
+    const {I18n, Notification} = window.Typo3Neos;
 
-        /**
-         * @param id
-         * @param label
-         * @param args
-         */
-        const translate = (id: string, label: string = '', args: Array<any> = []): string => {
-            return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
-        };
-
-        const renderApp = () => {
-            ReactDOM.render(
-                <RedirectList redirects={redirects}
-                              csrfToken={csrfToken}
-                              actions={actions}
-                              showHitCount={showHitCount}
-                              translate={translate}
-                              statusCodes={statusCodes}
-                              validSourceUriPathPattern={validSourceUriPathPattern}
-                              notificationHelper={Notification}
-                              initialTypeFilter={initialTypeFilter}
-                              initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
-        };
-
-        if (I18n.initialized) {
-            renderApp();
-        } else {
-            I18n.addObserver('initialized', renderApp);
-        }
+    /**
+     * @param id
+     * @param label
+     * @param args
+     */
+    const translate = (id: string, label = '', args: Array<any> = []): string => {
+        return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
-})();
+
+    const renderApp = (): void => {
+        ReactDOM.render(
+            <RedirectList
+                redirects={redirects}
+                csrfToken={csrfToken}
+                actions={actions}
+                showHitCount={showHitCount}
+                translate={translate}
+                statusCodes={statusCodes}
+                validSourceUriPathPattern={validSourceUriPathPattern}
+                notificationHelper={Notification}
+                initialTypeFilter={initialTypeFilter}
+                initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
+    };
+
+    if (I18n.initialized) {
+        renderApp();
+    } else {
+        I18n.addObserver('initialized', renderApp);
+    }
+};
 
