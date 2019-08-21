@@ -89,11 +89,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             targetUriPath,
         } = this.state;
 
-        const parsedSourceUrl: URL = parseURL(sourceUriPath, host || location.origin);
-        const parsedTargetUrl: URL = parseURL(targetUriPath, location.origin);
-        if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
-            notificationHelper.warning(translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same'));
-            return;
+        if (!host || host === location.host) {
+            const parsedSourceUrl: URL = parseURL(sourceUriPath, location.origin);
+            const parsedTargetUrl: URL = parseURL(targetUriPath, location.origin);
+            if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
+                notificationHelper.warning(translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same'));
+                return;
+            }
         }
 
         const data = {
