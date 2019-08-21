@@ -14,6 +14,7 @@ namespace Neos\RedirectHandler\Ui\Controller;
  * source code.
  */
 
+use AppendIterator;
 use DateTime;
 use Exception;
 use League\Csv\CannotInsertRecord;
@@ -132,9 +133,14 @@ class ModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        $redirects = $this->redirectStorage->getAll();
+        $redirects = new AppendIterator();
+        foreach ($this->redirectStorage->getDistinctHosts() as $host) {
+            $redirects->append($this->redirectStorage->getAll($host));
+        }
+
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
         $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+
         $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
         // Serialize redirects for the filterable list in the frontend
