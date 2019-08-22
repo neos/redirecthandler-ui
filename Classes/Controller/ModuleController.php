@@ -133,17 +133,13 @@ class ModuleController extends AbstractModuleController
      */
     public function indexAction()
     {
-        $redirects = new AppendIterator();
-        foreach ($this->redirectStorage->getDistinctHosts() as $host) {
-            $redirects->append($this->redirectStorage->getAll($host));
-        }
-
+        $redirects = $this->redirectStorage->getAll();
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
         $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
-
         $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
         // Serialize redirects for the filterable list in the frontend
+        // TODO: Provide the list via a json action to the frontend for async loading
         $redirectsJson = '';
         /** @var RedirectInterface $redirect */
         foreach ($redirects as $redirect) {
