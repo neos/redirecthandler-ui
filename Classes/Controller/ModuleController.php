@@ -1,5 +1,7 @@
 <?php
 
+declare(strict_types = 1);
+
 namespace Neos\RedirectHandler\Ui\Controller;
 
 /*
@@ -12,20 +14,65 @@ namespace Neos\RedirectHandler\Ui\Controller;
  * source code.
  */
 
+use AppendIterator;
+use DateTime;
+use Exception;
+use League\Csv\CannotInsertRecord;
+use League\Csv\Exception as CsvException;
+use League\Csv\Reader;
+use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Service as LocalizationService;
+use Neos\Flow\I18n\Translator;
+use Neos\Flow\Mvc\Exception\StopActionException;
+use Neos\Flow\Mvc\View\JsonView;
+use Neos\Flow\ResourceManagement\Exception as ResourceException;
+use Neos\Flow\ResourceManagement\PersistentResource;
+use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Utility\Environment;
+use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
-use Neos\Error\Messages as Error;
+use Neos\Flow\Security\Context as SecurityContext;
 
 use Neos\RedirectHandler\RedirectInterface;
+use Neos\RedirectHandler\Service\RedirectExportService;
+use Neos\RedirectHandler\Service\RedirectImportService;
 use Neos\RedirectHandler\Storage\RedirectStorageInterface;
-use Neos\RedirectHandler\DatabaseStorage\Domain\Repository\RedirectRepository;
 
 /**
  * @Flow\Scope("singleton")
  */
 class ModuleController extends AbstractModuleController
 {
+    /**
+     * @var FusionView
+     */
+    protected $view;
+
+    /**
+     * @var string
+     */
+    protected $defaultViewObjectName = FusionView::class;
+
+    /**
+     * @var array
+     */
+    protected $supportedMediaTypes = ['application/json', 'text/html'];
+
+    /**
+     * @var array
+     */
+    protected $viewFormatToObjectNameMap = [
+        'html' => FusionView::class,
+        'json' => JsonView::class,
+    ];
+
+    /**
+     * @Flow\Inject
+     * @var SecurityContext
+     */
+    protected $securityContext;
 
     /**
      * @Flow\Inject
@@ -35,181 +82,604 @@ class ModuleController extends AbstractModuleController
 
     /**
      * @Flow\Inject
-     * @var RedirectRepository
-     */
-    protected $redirectRepository;
-
-    /**
-     * @Flow\Inject
      * @var PersistenceManagerInterface
      */
     protected $persistenceManager;
 
+    /**
+     * @Flow\Inject
+     * @var Translator
+     */
+    protected $translator;
+
+    /**
+     * @Flow\Inject
+     * @var LocalizationService
+     */
+    protected $localizationService;
+
+    /**
+     * @Flow\Inject
+     * @var RedirectExportService
+     */
+    protected $redirectExportService;
+
+    /**
+     * @Flow\Inject
+     * @var RedirectImportService
+     */
+    protected $redirectImportService;
+
+    /**
+     * @Flow\Inject
+     * @var Environment
+     */
+    protected $environment;
+
+    /**
+     * @Flow\Inject
+     * @var ResourceManager
+     */
+    protected $resourceManager;
+
+    /**
+     * @Flow\InjectConfiguration(path="validation", package="Neos.RedirectHandler")
+     * @var array
+     */
+    protected $validationOptions;
+
+    /**
+     * Renders the list of all redirects and allows modifying them.
+     */
     public function indexAction()
     {
-        $host = null;
+        $redirects = $this->redirectStorage->getAll();
+        $csrfToken = $this->securityContext->getCsrfProtectionToken();
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
-        if ($this->request->getArguments() && $this->request->hasArgument('updateAction')) {
-            $removeArguments = explode(',', $this->request->getArgument('updateAction'));
-            $status = $this->updateRedirect(
-                $removeArguments[0],
-                $removeArguments[1] ? $removeArguments[1] : null,
-                $this->request->getArgument('updateData')['source'],
-                $this->request->getArgument('updateData')['target'],
-                $this->request->getArgument('updateData')['code'],
-                $this->request->getArgument('updateData')['host']
-            );
-
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not updated', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect updated', '', Error\Message::SEVERITY_OK);
-
-//                set new search values..
-                $this->request->setArgument('source', $this->request->getArgument('updateData')['source']);
-                $this->request->setArgument('target', '');
-                $this->request->setArgument('code', '');
-                $this->request->setArgument('host', '');
-            }
+        // Serialize redirects for the filterable list in the frontend
+        // TODO: Provide the list via a json action to the frontend for async loading
+        $redirectsJson = '';
+        /** @var RedirectInterface $redirect */
+        foreach ($redirects as $redirect) {
+            $redirectsJson .= json_encode($redirect) . ',';
         }
+        $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
 
-        if ($this->request->hasArgument('remove')) {
-            $removeArguments = explode(',', $this->request->getArgument('remove'));
-            $status = $this->removeRedirect(
-                $removeArguments[0],
-                $removeArguments[1] ? $removeArguments[1] : null
-            );
-
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not removed', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect removed', '', Error\Message::SEVERITY_OK);
-            }
-        }
-
-        if ($this->request->hasArgument('action') && $this->request->getArgument('action') == 'create') {
-            $status = $this->addRedirect(
-                $this->request->getArgument('source'),
-                $this->request->getArgument('target'),
-                $this->request->getArgument('code'),
-                $this->request->getArgument('host')
-            );
-
-            if ($status === false) {
-                $this->addFlashMessage('Redirect not created', '', Error\Message::SEVERITY_ERROR);
-            } else {
-                $this->addFlashMessage('Redirect created', '', Error\Message::SEVERITY_OK);
-            }
-        }
-
-        if ($this->request->getArguments()) {
-            $redirects = $this->redirectRepository->search(
-                $this->request->getArgument('source'),
-                $this->request->getArgument('target'),
-                $this->request->getArgument('code'),
-                $this->request->getArgument('host')
-            );
-        } else {
-            $redirects = $this->redirectRepository->search();
-        }
-
-        $this->view->assign('arguments', $this->request->getArguments());
-        $this->view->assign('redirects', $redirects);
+        $this->view->assignMultiple([
+            'redirectsJson' => $redirectsJson,
+            'flashMessages' => $flashMessages,
+            'csrfToken' => $csrfToken,
+            'locale' => $currentLocale,
+        ]);
     }
 
     /**
-     * @param string $source
-     * @param string $target
-     * @param string $statusCode
-     * @param string|null $host
-     * @param bool $force
-     * @return array|bool
+     * Creates a single redirect and goes back to the list
+     *
+     * @return void|string
+     * @throws StopActionException
      */
-    protected function addRedirect($source, $target, $statusCode, $host = null, $force = false)
+    public function createAction(): ?string
     {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
-        $isSame = $this->isSame($source, $target, $host, $statusCode, $redirect);
+        $creationStatus = true;
+
+        [
+            'host' => $host,
+            'sourceUriPath' => $sourceUriPath,
+            'targetUriPath' => $targetUriPath,
+            'statusCode' => $statusCode,
+            'startDateTime' => $startDateTime,
+            'endDateTime' => $endDateTime,
+            'comment' => $comment,
+        ] = $this->request->getArguments();
+
+        $statusCode = intval($statusCode);
+
+        if (empty($startDateTime)) {
+            $startDateTime = null;
+        } else {
+            try {
+                $startDateTime = new DateTime($startDateTime);
+            } catch (Exception $e) {
+                $creationStatus = false;
+                $message = $this->translateById('error.invalidStartDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            }
+        }
+        if (empty($endDateTime)) {
+            $endDateTime = null;
+        } else {
+            try {
+                $endDateTime = new DateTime($endDateTime);
+            } catch (Exception $e) {
+                $creationStatus = false;
+                $message = $this->translateById('error.invalidEndDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            }
+        }
+
+        if ($creationStatus) {
+            $changedRedirects = $this->addRedirect(
+                $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
+            );
+            $creationStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+        } else {
+            $changedRedirects = [];
+        }
+
+        if (!$creationStatus) {
+            $messageTitle = '';
+            $message = $this->translateById('error.redirectNotCreated');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+        } else {
+            // Build list of changed redirects for feedback to user
+            $message = $this->createChangedRedirectList($changedRedirects);
+
+            /** @var RedirectInterface $createdRedirect */
+            $createdRedirect = $changedRedirects[0];
+
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges', [
+                $createdRedirect->getHost(),
+                $createdRedirect->getSourceUriPath(),
+                $createdRedirect->getTargetUriPath(),
+                $createdRedirect->getStatusCode()
+            ]);
+
+            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+        }
+
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $creationStatus,
+                'message' => empty($messageTitle) ? $message : $messageTitle,
+                'changedRedirects' => $changedRedirects,
+                // FIXME: The returned flash messages are empty
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
+    }
+
+    /**
+     * Updates a single redirect and goes back to the list
+     *
+     * @return void|string
+     * @throws StopActionException
+     */
+    public function updateAction(): ?string
+    {
+        $updateStatus = true;
+
+        [
+            'host' => $host,
+            'originalHost' => $originalHost,
+            'sourceUriPath' => $sourceUriPath,
+            'originalSourceUriPath' => $originalSourceUriPath,
+            'targetUriPath' => $targetUriPath,
+            'statusCode' => $statusCode,
+            'startDateTime' => $startDateTime,
+            'endDateTime' => $endDateTime,
+            'comment' => $comment,
+        ] = $this->request->getArguments();
+
+        $statusCode = intval($statusCode);
+
+        if (empty($startDateTime)) {
+            $startDateTime = null;
+        } else {
+            try {
+                $startDateTime = new DateTime($startDateTime);
+            } catch (Exception $e) {
+                $updateStatus = false;
+                $message = $this->translateById('error.invalidStartDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            }
+        }
+        if (empty($endDateTime)) {
+            $endDateTime = null;
+        } else {
+            try {
+                $endDateTime = new DateTime($endDateTime);
+            } catch (Exception $e) {
+                $updateStatus = false;
+                $message = $this->translateById('error.invalidEndDateTime');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            }
+        }
+
+        if ($updateStatus) {
+            $changedRedirects = $this->updateRedirect(
+                $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
+                $startDateTime, $endDateTime
+            );
+            $updateStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+        } else {
+            $changedRedirects = [];
+        }
+
+        if (!$updateStatus) {
+            $message = $this->translateById('error.redirectNotUpdated');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+        } else {
+            // Build list of changed redirects for feedback to user
+            $message = $this->createChangedRedirectList($changedRedirects);
+
+            /** @var RedirectInterface $createdRedirect */
+            $createdRedirect = $changedRedirects[0];
+
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges', [
+                $createdRedirect->getHost(),
+                $createdRedirect->getSourceUriPath(),
+                $createdRedirect->getTargetUriPath(),
+                $createdRedirect->getStatusCode()
+            ]);
+
+            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+        }
+
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $updateStatus,
+                'message' => $messageTitle ?? $message,
+                'changedRedirects' => $changedRedirects,
+                // FIXME: The returned flash messages are empty
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
+    }
+
+    /**
+     * Deletes a single redirect and goes back to the list
+     *
+     * @return void|string
+     * @throws StopActionException
+     */
+    public function deleteAction(): ?string
+    {
+        [
+            'host' => $host,
+            'sourceUriPath' => $sourceUriPath,
+        ] = $this->request->getArguments();
+
+        $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
+
+        if ($status === false) {
+            $message = $this->translateById('error.redirectNotDeleted');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+        } else {
+            $message = $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]);
+            $this->addFlashMessage('', $message, Message::SEVERITY_OK);
+        }
+
+        if ($this->request->getFormat() === 'json') {
+            return json_encode([
+                'success' => $status,
+                'message' => $message,
+                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+            ]);
+        } else {
+            $this->redirect('index');
+        }
+    }
+
+    /**
+     * Shows the import interface with its options, actions and a protocol after an action
+     */
+    public function importAction(): void
+    {
+        $csrfToken = $this->securityContext->getCsrfProtectionToken();
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $this->view->assignMultiple([
+            'csrfToken' => $csrfToken,
+            'flashMessages' => $flashMessages,
+        ]);
+    }
+
+    /**
+     * Shows the export interface with its options and actions
+     */
+    public function exportAction(): void
+    {
+    }
+
+    /**
+     * Exports all redirects into a CSV file and starts its download
+     * @throws CannotInsertRecord
+     */
+    public function exportCsvAction(): void
+    {
+        $includeInactiveRedirects = $this->request->hasArgument('includeInactiveRedirects');
+        $includeGeneratedRedirects = $this->request->hasArgument('includeGeneratedRedirects');
+
+        // TODO: Make host selectable from distinct list of existing hosts
+        $host = null;
+
+        $csvWriter = $this->redirectExportService->exportCsv(
+            $host,
+            !$includeInactiveRedirects,
+            $includeGeneratedRedirects ? null : RedirectInterface::REDIRECT_TYPE_MANUAL,
+            true
+        );
+        $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
+
+        $filePath = $this->environment->getPathToTemporaryDirectory() . $filename;
+
+        file_put_contents($filePath, $csvWriter->getContent());
+
+        header("Pragma: no-cache");
+        header("Content-type: application/text");
+        header("Content-Length: " . filesize($filePath));
+        header("Content-Disposition: attachment; filename=" . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+
+        readfile($filePath);
+
+        // Remove file again
+        if (file_exists($filePath)) {
+            unlink($filePath);
+        }
+
+        exit;
+    }
+
+    /**
+     * Tries to import redirects from the given CSV file and then shows a protocol
+     *
+     * @param PersistentResource $csvFile
+     * @param string $delimiter
+     * @throws StopActionException
+     */
+    public function importCsvAction(PersistentResource $csvFile = null, string $delimiter = ','): void
+    {
+        $protocol = [];
+
+        if (!$csvFile) {
+            $this->addFlashMessage('', $this->translateById('error.csvFileNotSet'),
+                Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        }
+
+        try {
+            // Use temporary local copy as stream doesn't work reliably with cloud based storage
+            $reader = Reader::createFromPath($csvFile->createTemporaryLocalCopy());
+            $reader->setDelimiter($delimiter);
+
+            $protocol = $this->redirectImportService->import($reader->getIterator());
+            $protocolErrors = array_filter($protocol, function ($entry) {
+                return $entry['type'] === RedirectImportService::REDIRECT_IMPORT_MESSAGE_TYPE_ERROR;
+            });
+
+            try {
+                $this->resourceManager->deleteResource($csvFile);
+            } catch (Exception $e) {
+                $this->logger->warning('Could not delete csv file after importing redirects', [$e->getMessage()]);
+            }
+
+            if (count($protocol) === 0) {
+                $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Message::SEVERITY_OK);
+            } elseif (count($protocolErrors) > 0) {
+                $this->addFlashMessage('', $this->translateById('message.importCsvSuccessWithErrors'),
+                    Message::SEVERITY_WARNING);
+            } else {
+                $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'),
+                    Message::SEVERITY_OK);
+            }
+        } catch (CsvException $e) {
+            $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
+                Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        } catch (ResourceException $e) {
+            $this->addFlashMessage('', $this->translateById('error.importResourceFailed'),
+                Message::SEVERITY_ERROR);
+            $this->redirect('import');
+        }
+
+        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $this->view->assignMultiple([
+            'protocol' => $protocol,
+            'flashMessages' => $flashMessages,
+        ]);
+    }
+
+    /**
+     * @param string $sourceUriPath
+     * @param string $targetUriPath
+     * @param integer $statusCode
+     * @param string|null $host
+     * @param string|null $comment
+     * @param DateTime|null $startDateTime
+     * @param DateTime|null $endDateTime
+     * @param bool $force
+     * @return array
+     */
+    protected function addRedirect(
+        string $sourceUriPath,
+        string $targetUriPath,
+        int $statusCode,
+        ?string $host = null,
+        ?string $comment = null,
+        DateTime $startDateTime = null,
+        DateTime $endDateTime = null,
+        bool $force = false
+    ): array {
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
+
+        if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
+            return [];
+        }
+
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
+        $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
         $go = true;
+
         if ($redirect !== null && $isSame === false && $force === false) {
             $go = false; // Ignore.. A redirect with the same source URI exist.
         } elseif ($redirect !== null && $isSame === false && $force === true) {
-            $this->redirectStorage->removeOneBySourceUriPathAndHost($source, $host);
+            $this->redirectStorage->removeOneBySourceUriPathAndHost($sourceUriPath, $host);
             $this->persistenceManager->persistAll();
         } elseif ($redirect !== null && $isSame === true) {
             $go = false; // Ignore.. Not valid.
         }
 
         if ($go) {
-            $redirects = $this->redirectStorage->addRedirect($source, $target, $statusCode, [$host]);
-            $this->persistenceManager->persistAll();
+            $creator = $this->securityContext->getAccount()->getAccountIdentifier();
 
+            $redirects = $this->redirectStorage->addRedirect($sourceUriPath, $targetUriPath, $statusCode, [$host],
+                $creator,
+                $comment, RedirectInterface::REDIRECT_TYPE_MANUAL, $startDateTime, $endDateTime);
+
+            $this->persistenceManager->persistAll();
             return $redirects;
         }
 
-        return false;
+        return [];
     }
 
     /**
-     * @param string $source
-     * @param string $host
-     * @param string $newSource
-     * @param string $newTarget
-     * @param string $newStatusCode
-     * @param string|null $newHost
+     * @param string $originalSourceUriPath
+     * @param string|null $originalHost
+     * @param string $sourceUriPath
+     * @param string|null $targetUriPath
+     * @param integer $statusCode
+     * @param string|null $host
+     * @param string|null $comment
+     * @param DateTime|null $startDateTime
+     * @param DateTime|null $endDateTime
      * @param bool $force
-     * @return bool
+     * @return array
      */
-    protected function updateRedirect( $source, $host, $newSource, $newTarget, $newStatusCode, $newHost = null, $force = false) {
-        $go = false;
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host, false);
-        if ($redirect !== null && $force === false) {
-            $this->removeRedirect($source, $host);
+    protected function updateRedirect(
+        string $originalSourceUriPath,
+        ?string $originalHost,
+        string $sourceUriPath,
+        string $targetUriPath,
+        int $statusCode,
+        ?string $host = null,
+        ?string $comment = null,
+        DateTime $startDateTime = null,
+        DateTime $endDateTime = null,
+        bool $force = false
+    ): array {
+        $sourceUriPath = trim($sourceUriPath);
+        $targetUriPath = trim($targetUriPath);
 
+        if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
+            return [];
+        }
+
+        $go = false;
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath,
+            $originalHost ? $originalHost : null, false);
+        if ($redirect !== null && $force === false) {
+            $this->deleteRedirect($originalSourceUriPath, $originalHost);
             $go = true;
         } elseif ($force === true) {
             $go = true;
         }
 
         if ($go) {
-            $this->addRedirect($newSource, $newTarget, $newStatusCode, $newHost, $force);
-
-            return true;
+            return $this->addRedirect($sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime,
+                $endDateTime, $force);
         }
 
-        return false;
+        return [];
     }
 
     /**
-     * @param string $source
+     * @param string $sourceUriPath
      * @param string|null $host
      * @return bool
      */
-    protected function removeRedirect($source, $host = null)
+    protected function deleteRedirect(string $sourceUriPath, ?string $host = null): bool
     {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($source, $host);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null);
         if ($redirect === null) {
             return false;
         }
-        $this->redirectStorage->removeOneBySourceUriPathAndHost($source, $host);
+        $this->redirectStorage->removeOneBySourceUriPathAndHost($sourceUriPath, $host);
         $this->persistenceManager->persistAll();
 
         return true;
     }
 
     /**
+     * @param string|null $host
      * @param string $sourceUriPath
      * @param string $targetUriPath
-     * @param string $host
-     * @param string $statusCode
+     * @return bool
+     */
+    protected function validateRedirectAttributes(?string $host, string $sourceUriPath, string $targetUriPath): bool
+    {
+        if ($sourceUriPath === $targetUriPath) {
+            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
+                Message::SEVERITY_WARNING);
+        } elseif (!preg_match($this->validationOptions['sourceUriPath'], $sourceUriPath)) {
+            $this->addFlashMessage('',
+                $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['sourceUriPath']]),
+                Message::SEVERITY_WARNING);
+        } else {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * @param string $sourceUriPath
+     * @param string $targetUriPath
+     * @param string|null $host
+     * @param int $statusCode
      * @param RedirectInterface|null $redirect
      * @return bool
      */
-    protected function isSame($sourceUriPath, $targetUriPath, $host, $statusCode, RedirectInterface $redirect = null)
-    {
+    protected function isSame(
+        string $sourceUriPath,
+        string $targetUriPath,
+        ?string $host,
+        int $statusCode,
+        RedirectInterface $redirect = null
+    ): bool {
         if ($redirect === null) {
             return false;
         }
 
-        return $redirect->getSourceUriPath() === $sourceUriPath && $redirect->getTargetUriPath() === $targetUriPath && $redirect->getHost() === $host && $redirect->getStatusCode() === (integer)$statusCode;
+        return $redirect->getSourceUriPath() === $sourceUriPath
+            && $redirect->getTargetUriPath() === $targetUriPath
+            && $redirect->getHost() === $host
+            && $redirect->getStatusCode() === (integer)$statusCode;
+    }
+
+    /**
+     * Shorthand to translate labels for this package
+     *
+     * @param string $id
+     * @param array $arguments
+     * @return string
+     */
+    protected function translateById(string $id, array $arguments = []): string
+    {
+        return $this->translator->translateById($id, $arguments, null, null, 'Modules',
+            'Neos.RedirectHandler.Ui');
+    }
+
+    /**
+     * Creates a html list of changed redirects
+     *
+     * @param array<RedirectInterface> $changedRedirects
+     * @return string
+     */
+    protected function createChangedRedirectList(array $changedRedirects): string
+    {
+        $list = array_reduce($changedRedirects, function ($carry, RedirectInterface $redirect) {
+            return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . ' &rarr; /' . $redirect->getTargetUriPath() . '</li>';
+        }, '');
+        $list = $list ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $list . '</ul>' : '';
+        return $list;
     }
 }

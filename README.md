@@ -17,9 +17,30 @@ This package is compatible with Neos 3.x, 4.x and will be maintained for upcomin
 2. Then run `composer update` in your projects root folder.
 3. Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.
 
+## Screenshots
 
-## Screenshot
-![Redirects Module Screenshot](Documentation/redirects-module.png?raw=true "Redirects Module Screenshot")
+Listing and editing redirects:
+
+![Redirects Module Screenshot](Documentation/edit-redirects.png "Redirects Module Screenshot")
+
+Search & filter redirects:
+
+![Filtering redirects](Documentation/filter-redirects.png "Redirects Module Screenshot with active filter")
+
+## Contributing
+
+Please create issues on [Github](https://github.com/neos/redirecthandler-ui) if you encounter bugs or other issues.
+
+### Working on the code
+
+The basis of the backend module is built with Fusion and the UI for managing the redirects
+is built with *React* and *Typescript*.
+
+#### Recompiling the js and css parts
+
+1. Use *nvm* so you have the correct *npm* version.
+2. Run `npm install` in the package folder.
+3. Run `npm run watch` during development or `npm run build` for a new release.
              
 ## License
 

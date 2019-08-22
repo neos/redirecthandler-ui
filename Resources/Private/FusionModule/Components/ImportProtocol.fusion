@@ -1,0 +1,47 @@
+prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fusion:Component) {
+    protocol = ${[]}
+    className = 'redirects-protocol'
+
+    renderer = afx`
+        <table class={props.className}>
+            <tr>
+                <th>Status</th>
+                <th>Redirect</th>
+                <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:startDateTime')}</th>
+                <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:endDateTime')}</th>
+                <th>{I18n.translate('Neos.RedirectHandler.Ui:Modules:comment')}</th>
+            </tr>
+            <Neos.Fusion:Loop items={props.protocol} itemName="entry">
+                <tr class={props.className + '-entry--' + entry.type}>
+                    <td title={String.firstLetterToUpperCase(entry.type)}>
+                        <i class="fas fa-exclamation-triangle" @if.type={entry.type == 'error'}></i>
+                        <i class="fas fa-trash" @if.type={entry.type == 'deleted'}></i>
+                        <i class="fas fa-plus-circle" @if.type={entry.type == 'created'}></i>
+                        <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
+                    </td>
+                    <td class={props.className + '-entry__label'}>
+                        {entry.message}
+                        <span @if.hasRedirect={entry.redirect}>
+                            {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; /{entry.redirect.targetUriPath} ({entry.redirect.statusCode})
+                        </span>
+                    </td>
+                    <td>
+                        <span @if.hasStartDateTime={entry.redirect.startDateTime}>
+                            {Date.format(entry.redirect.startDateTime, 'd.m.Y H:i')}
+                        </span>
+                    </td>
+                    <td>
+                        <span @if.hasEndDateTime={entry.redirect.endDateTime}>
+                            {Date.format(entry.redirect.endDateTime, 'd.m.Y H:i')}
+                        </span>
+                    </td>
+                    <td title={entry.redirect.comment}>
+                        <span @if.comment={entry.redirect.comment}>
+                            {String.crop(entry.redirect.comment, 25, '&#8230;') || '&ndash;'}
+                        </span>
+                    </td>
+                </tr>
+            </Neos.Fusion:Loop>
+        </table>
+    `
+}

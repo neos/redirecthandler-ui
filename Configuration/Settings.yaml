@@ -4,6 +4,27 @@ Neos:
       redirect: 301
       gone: 410
 
+    Ui:
+      # The preselected status code for the dropdown when creating new redirects
+      defaultStatusCode: 307
+      # Only show redirects with the given redirects when the module is opened
+      initialStatusCodeFilter: -1
+      initialTypeFilter: 'manual'
+      validation:
+        # This is the pattern for matching the input in the HTML forms
+        sourceUriPath: '^[a-zA-Z0-9\-\/\.]+$'
+      csv:
+        delimiterOptions: [';', ',', '|']
+      statusCodes:
+        301: i18n
+        302: i18n
+        303: i18n
+        307: i18n
+        403: i18n
+        404: i18n
+        410: i18n
+        451: i18n
+
   Neos:
     userInterface:
       translation:
@@ -12,10 +33,15 @@ Neos:
     modules:
       management:
         submodules:
-          redirectHandlerUiModule:
+          redirects:
             label: 'Neos.RedirectHandler.Ui:Modules:module.label'
             controller: '\Neos\RedirectHandler\Ui\Controller\ModuleController'
             description: 'Neos.RedirectHandler.Ui:Modules:module.description'
             icon: 'icon-mail-forward'
             resource: 'Neos.RedirectHandler.Ui:Backend.Module'
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
+            additionalResources:
+              styleSheets:
+                - 'resource://Neos.RedirectHandler.Ui/Public/Styles/main.css'
+              javaScripts:
+                - 'resource://Neos.RedirectHandler.Ui/Public/JavaScript/main.bundle.js'

@@ -1,0 +1,29 @@
+prototype(Neos.RedirectHandler.Ui:Module.ImportCsv) < prototype(Neos.Fusion:Component) {
+    protocol = ${[]}
+
+    indexAction = Neos.Fusion:UriBuilder {
+        action = 'index'
+    }
+    importAction = Neos.Fusion:UriBuilder {
+        action = 'import'
+    }
+
+    renderer = afx`
+        <div class="neos-content neos-container-fluid">
+            <div class="neos-row-fluid" @if.protocolNotEmpty={props.protocol}>
+                <h2>{I18n.translate('Neos.RedirectHandler.Ui:Modules:header.importProtocol')}</h2>
+                <br/>
+                <Neos.RedirectHandler.Ui:Component.ImportProtocol protocol={props.protocol}/>
+            </div>
+
+            <div class="neos-footer">
+                <a class="neos-button" href={props.indexAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.backToList')}
+                </a>
+                <a class="neos-button neos-button-danger" href={props.importAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.import')}
+                </a>
+            </div>
+        </div>
+    `
+}

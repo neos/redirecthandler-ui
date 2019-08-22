@@ -1,0 +1,21 @@
+Neos.RedirectHandler.Ui.ModuleController {
+    index = afx`
+        <Neos.RedirectHandler.Ui:Module.Index redirectsJson={redirectsJson} csrfToken={csrfToken}/>
+        <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
+    `
+
+    import = afx`
+        <Neos.RedirectHandler.Ui:Module.Import csrfToken={csrfToken}/>
+        <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
+    `
+
+    importCsv = afx`
+        <Neos.RedirectHandler.Ui:Module.ImportCsv protocol={protocol}/>
+        <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
+    `
+
+    export = afx`
+        <Neos.RedirectHandler.Ui:Module.Export/>
+        <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
+    `
+}

@@ -1,16 +1,282 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <xliff version="1.2" xmlns="urn:oasis:names:tc:xliff:document:1.2">
-	<file original="" product-name="Neos.RedirectHandler.Ui" source-language="en" datatype="plaintext">
-		<body>
-			<trans-unit id="module.label" xml:space="preserve">
-				<source>Redirects</source>
-			</trans-unit>
-			<trans-unit id="module.description" xml:space="preserve">
-				<source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
-			</trans-unit>
-			<trans-unit id="confirm" xml:space="preserve">
-				<source>Delete this redirect?</source>
-			</trans-unit>
-		</body>
-	</file>
+    <file original="" product-name="Neos.RedirectHandler.Ui" source-language="en" datatype="plaintext">
+        <body>
+            <trans-unit id="module.label" xml:space="preserve">
+                <source>Redirects</source>
+            </trans-unit>
+            <trans-unit id="module.description" xml:space="preserve">
+                <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
+            </trans-unit>
+
+            <trans-unit id="filter.search" xml:space="preserve">
+                <source>Search</source>
+            </trans-unit>
+            <trans-unit id="filter.statusCode" xml:space="preserve">
+                <source>Code</source>
+            </trans-unit>
+            <trans-unit id="filter.resultsCountSuffix" xml:space="preserve">
+                <source>({0} total results)</source>
+            </trans-unit>
+            <trans-unit id="filter.type.manual" xml:space="preserve">
+                <source>Manual</source>
+            </trans-unit>
+            <trans-unit id="filter.type.generated" xml:space="preserve">
+                <source>Generated</source>
+            </trans-unit>
+
+            <trans-unit id="pagination.position" xml:space="preserve">
+                <source>Showing {0}-{1} of {2}</source>
+            </trans-unit>
+            <trans-unit id="pagination.noResults" xml:space="preserve">
+                <source>No redirects match your search</source>
+            </trans-unit>
+
+            <trans-unit id="list.neverHit" xml:space="preserve">
+                <source>Never hit</source>
+            </trans-unit>
+            <trans-unit id="list.lastHit" xml:space="preserve">
+                <source>Last hit was {0}</source>
+            </trans-unit>
+            <trans-unit id="list.action.edit" xml:space="preserve">
+                <source>Edit</source>
+            </trans-unit>
+            <trans-unit id="list.action.delete" xml:space="preserve">
+                <source>Delete redirect</source>
+            </trans-unit>
+            <trans-unit id="list.action.confirmDelete" xml:space="preserve">
+                <source>Delete the redirect "{0}"?</source>
+            </trans-unit>
+            <trans-unit id="list.action.copyPath" xml:space="preserve">
+                <source>Copied path to clipboard</source>
+            </trans-unit>
+
+            <trans-unit id="warning.redirectCreatedWithChanges" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created, but there were changes to other redirects!</source>
+            </trans-unit>
+            <trans-unit id="message.redirectUpdatedWithChanges" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
+            </trans-unit>
+
+            <trans-unit id="message.redirectCreated" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
+            </trans-unit>
+            <trans-unit id="message.relatedChanges" xml:space="preserve">
+                <source>Related changes:</source>
+            </trans-unit>
+            <trans-unit id="message.redirectUpdated" xml:space="preserve">
+                <source>The redirect has been updated</source>
+            </trans-unit>
+            <trans-unit id="message.redirectDeleted" xml:space="preserve">
+                <source>The redirect from "{0}/{1}" has been deleted</source>
+            </trans-unit>
+            <trans-unit id="message.importCsvSuccess" xml:space="preserve">
+                <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
+            </trans-unit>
+            <trans-unit id="message.importCsvSuccessWithErrors" xml:space="preserve">
+                <source>The redirects from the CSV file were imported but there were some errors. See the protocol for details.</source>
+            </trans-unit>
+
+            <trans-unit id="error.redirectNotDeleted" xml:space="preserve">
+                <source>The redirect could not be removed</source>
+            </trans-unit>
+            <trans-unit id="error.redirectNotCreated" xml:space="preserve">
+                <source>The redirect could not be created</source>
+            </trans-unit>
+            <trans-unit id="error.redirectNotUpdated" xml:space="preserve">
+                <source>The redirect could not be updated</source>
+            </trans-unit>
+            <trans-unit id="error.invalidStartDateTime" xml:space="preserve">
+                <source>The start datetime is invalid</source>
+            </trans-unit>
+            <trans-unit id="error.invalidEndDateTime" xml:space="preserve">
+                <source>The end datetime is invalid</source>
+            </trans-unit>
+            <trans-unit id="error.sameSourceAndTarget" xml:space="preserve">
+                <source>The source and target paths cannot be the same</source>
+            </trans-unit>
+            <trans-unit id="error.importCsvFailed" xml:space="preserve">
+                <source>An error occurred while reading the csv file content</source>
+            </trans-unit>
+            <trans-unit id="error.importResourceFailed" xml:space="preserve">
+                <source>An error occurred while reading the uploaded file</source>
+            </trans-unit>
+            <trans-unit id="error.csvFileNotSet" xml:space="preserve">
+                <source>You have to select a CSV file to import</source>
+            </trans-unit>
+            <trans-unit id="error.importCsvEmpty" xml:space="preserve">
+                <source>No entries were found in the CSV file</source>
+            </trans-unit>
+            <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
+                <source>The source path doesn't match the expression {0}</source>
+            </trans-unit>
+
+            <trans-unit id="host" xml:space="preserve">
+                <source>Origin domain</source>
+            </trans-unit>
+            <trans-unit id="csvFile" xml:space="preserve">
+                <source>CSV File</source>
+            </trans-unit>
+            <trans-unit id="sourceUriPath" xml:space="preserve">
+                <source>Source path</source>
+            </trans-unit>
+            <trans-unit id="sourceUriPath.help" xml:space="preserve">
+                <source>
+                    The source uri path is the relative path after the hostname.
+                    F.e. "my/subpage" without any leading or trailing slashes or query parameters.
+                    Those will be ignored by Neos when checking a url if it needs to be redirected.
+                </source>
+            </trans-unit>
+            <trans-unit id="statusCode" xml:space="preserve">
+                <source>Code</source>
+            </trans-unit>
+            <trans-unit id="targetUriPath" xml:space="preserve">
+                <source>Target uri or path</source>
+            </trans-unit>
+            <trans-unit id="startDateTime" xml:space="preserve">
+                <source>Active from</source>
+            </trans-unit>
+            <trans-unit id="startDateTime.placeholder" xml:space="preserve">
+                <source>E.g. 2019-08-30 13:45</source>
+            </trans-unit>
+            <trans-unit id="endDateTime" xml:space="preserve">
+                <source>Active until</source>
+            </trans-unit>
+            <trans-unit id="endDateTime.placeholder" xml:space="preserve">
+                <source>E.g. 2021-08-30 08:30</source>
+            </trans-unit>
+            <trans-unit id="comment" xml:space="preserve">
+                <source>Comment</source>
+            </trans-unit>
+            <trans-unit id="comment.placeholder" xml:space="preserve">
+                <source>Campaign for new product</source>
+            </trans-unit>
+            <trans-unit id="creator" xml:space="preserve">
+                <source>Creator</source>
+            </trans-unit>
+            <trans-unit id="hitCounter" xml:space="preserve">
+                <source>Hits</source>
+            </trans-unit>
+            <trans-unit id="creationDate" xml:space="preserve">
+                <source>Created</source>
+            </trans-unit>
+
+            <trans-unit id="field.delimiter.label" xml:space="preserve">
+                <source>Delimiter</source>
+            </trans-unit>
+            <trans-unit id="field.includeInactiveRedirects.label" xml:space="preserve">
+                <source>Include inactive redirects</source>
+            </trans-unit>
+            <trans-unit id="field.includeGeneratedRedirects.label" xml:space="preserve">
+                <source>Include automatically generated redirects</source>
+            </trans-unit>
+
+            <trans-unit id="header.importCsvForm" xml:space="preserve">
+                <source>Import redirects from a CSV file</source>
+            </trans-unit>
+            <trans-unit id="header.importProtocol" xml:space="preserve">
+                <source>Import protocol</source>
+            </trans-unit>
+            <trans-unit id="header.editRedirect" xml:space="preserve">
+                <source>Edit redirect</source>
+            </trans-unit>
+
+            <trans-unit id="actions" xml:space="preserve">
+                <source>Actions</source>
+            </trans-unit>
+            <trans-unit id="action.importCsvFile" xml:space="preserve">
+                <source>Import redirects from CSV file</source>
+            </trans-unit>
+            <trans-unit id="action.create" xml:space="preserve">
+                <source>Add redirect</source>
+            </trans-unit>
+            <trans-unit id="action.update" xml:space="preserve">
+                <source>Update redirect</source>
+            </trans-unit>
+            <trans-unit id="action.edit" xml:space="preserve">
+                <source>Edit redirect</source>
+            </trans-unit>
+            <trans-unit id="action.cancel" xml:space="preserve">
+                <source>Cancel</source>
+            </trans-unit>
+            <trans-unit id="action.backToList" xml:space="preserve">
+                <source>Back to redirect list</source>
+            </trans-unit>
+            <trans-unit id="action.exportCsv" xml:space="preserve">
+                <source>Export CSV file</source>
+            </trans-unit>
+            <trans-unit id="action.export" xml:space="preserve">
+                <source>Export redirect rules</source>
+            </trans-unit>
+            <trans-unit id="action.import" xml:space="preserve">
+                <source>Import redirect rules</source>
+            </trans-unit>
+
+            <trans-unit id="list.loading" xml:space="preserve">
+                <source>Loading…</source>
+            </trans-unit>
+            <trans-unit id="list.empty" xml:space="preserve">
+                <source>There are currently no redirects defined.</source>
+            </trans-unit>
+
+            <trans-unit id="hint.importCsvFile" xml:space="preserve">
+                <source>
+                    It is recommended to do an export of the existing redirects as CSV and work on that file, before importing again.
+                    This way the structure and required columns are already set up.
+                </source>
+            </trans-unit>
+            <trans-unit id="hint.importGetHelp" xml:space="preserve">
+                <source>Get more help.</source>
+            </trans-unit>
+
+            <trans-unit id="statusCodes.301.label" xml:space="preserve">
+                <source>301 - Moved Permanently</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.301.tooltip" xml:space="preserve">
+                <source>A 301 HTTP header is used when the requested URL permanently moved to a new location.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.302.label" xml:space="preserve">
+                <source>302 - Found</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.302.tooltip" xml:space="preserve">
+                <source>A 302 means that the target destination has been found, but it lives under a different location. Use a 302 redirect only if you want to temporarily redirect a URL to a different source and you are sure that you will use the same URL again.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.303.label" xml:space="preserve">
+                <source>303 - See Other</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.303.tooltip" xml:space="preserve">
+                <source>A 303 means that the response to the request can be found under another URI using the GET method. When received in response to a POST (or PUT/DELETE), the client should presume that the server has received the data and should issue a new GET request to the given URI.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.307.label" xml:space="preserve">
+                <source>307 - Temporary Redirect</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.307.tooltip" xml:space="preserve">
+                <source>A 307 can be used to temporarily redirect a URL to a new one while keeping the original request method intact. A 307 behaves like a 302, except that it tells specifically that the URL has a temporary new location.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.403.label" xml:space="preserve">
+                <source>403 - Forbidden</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.403.tooltip" xml:space="preserve">
+                <source>A 403 tells the browser that the requested content is forbidden for the user.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.404.label" xml:space="preserve">
+                <source>404 - Not Found</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.404.tooltip" xml:space="preserve">
+                <source>A 404 tells the browser that the content has not been found and has been probably deleted.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.410.label" xml:space="preserve">
+                <source>410 - Gone</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.410.tooltip" xml:space="preserve">
+                <source>The result from a 410 status code is the same as a 404 since the content has not been found. However, with a 410 you tell search engines that the requested content has been deleted, thus it’s much more specific than a 404.</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.451.label" xml:space="preserve">
+                <source>451 - Unavailable for Legal Reasons</source>
+            </trans-unit>
+            <trans-unit id="statusCodes.451.tooltip" xml:space="preserve">
+                <source>The 451 HTTP status code shows that the requested content has been deleted because of legal reasons.</source>
+            </trans-unit>
+        </body>
+    </file>
 </xliff>

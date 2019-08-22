@@ -1,0 +1,59 @@
+prototype(Neos.RedirectHandler.Ui:Module.Import) < prototype(Neos.Fusion:Component) {
+    csrfToken = ''
+    delimiterOptions = ${Configuration.setting('Neos.RedirectHandler.Ui.csv.delimiterOptions')}
+    importDocumentationUrl = 'https://neos-redirecthandler-adapter.readthedocs.io/en/latest/'
+
+    indexAction = Neos.Fusion:UriBuilder {
+        action = 'index'
+    }
+    importCsvAction = Neos.Fusion:UriBuilder {
+        action = 'importCsv'
+    }
+    exportAction = Neos.Fusion:UriBuilder {
+        action = 'export'
+    }
+
+    renderer = afx`
+        <div class="neos-content neos-container-fluid">
+            <div class="neos-row-fluid">
+                <h2>{I18n.translate('Neos.RedirectHandler.Ui:Modules:header.csvFormHeader')}</h2>
+                <br/>
+                <form action={props.importCsvAction} method="POST" class="import-redirects-form" enctype="multipart/form-data">
+                    <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
+                    <div class="row">
+                        <div class="neos-control-group">
+                            <input name="moduleArguments[csvFile]" id="csvFile" type="file" required="required"/>
+                        </div>
+                        <div class="neos-control-group">
+                            <label class="neos-control-label" for="delimiter">{I18n.translate('Neos.RedirectHandler.Ui:Modules:field.delimiter.label')}</label>
+                            <select name="moduleArguments[delimiter]" id="delimiter">
+                                <Neos.Fusion:Loop items={props.delimiterOptions} itemName="character">
+                                    <option value={character}>{character}</option>
+                                </Neos.Fusion:Loop>
+                            </select>
+                        </div>
+                        <div class="neos-control-group neos-control-group--auto">
+                            <p class="redirects-hint">
+                                {I18n.translate('Neos.RedirectHandler.Ui:Modules:hint.importCsvFile')}
+                                <a href={props.importDocumentationUrl} target="_blank">{I18n.translate('Neos.RedirectHandler.Ui:Modules:hint.importGetHelp')}</a>
+                            </p>
+                            <br/>
+                            <button type="submit" class="neos-button neos-button-primary">
+                                {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.importCsvFile')}
+                            </button>
+                        </div>
+                    </div>
+                </form>
+            </div>
+
+            <div class="neos-footer">
+                <a class="neos-button" href={props.indexAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.backToList')}
+                </a>
+                <a class="neos-button neos-button-success" href={props.exportAction}>
+                    {I18n.translate('Neos.RedirectHandler.Ui:Modules:action.export')}
+                </a>
+            </div>
+        </div>
+    `
+}
