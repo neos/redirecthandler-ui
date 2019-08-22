@@ -17,8 +17,15 @@ This package is compatible with Neos 3.x, 4.x and will be maintained for upcomin
 2. Then run `composer update` in your projects root folder.
 3. Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.
 
-## Screenshot
-![Redirects Module Screenshot](Documentation/redirects-module.png?raw=true "Redirects Module Screenshot")
+## Screenshots
+
+Listing and editing redirects:
+
+![Redirects Module Screenshot](Documentation/edit-redirects.png "Redirects Module Screenshot")
+
+Search & filter redirects:
+
+![Filtering redirects](Documentation/filter-redirects.png "Redirects Module Screenshot with active filter")
 
 ## Contributing
 
