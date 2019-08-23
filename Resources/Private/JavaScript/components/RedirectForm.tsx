@@ -5,6 +5,7 @@ import Redirect from '../interfaces/Redirect';
 import NeosNotification from '../interfaces/NeosNotification';
 import {formatReadable, formatW3CString} from '../util/datetime';
 import {parseURL} from '../util/url';
+import {statusCodeSupportsTarget} from '../util/helpers';
 
 const MAX_INPUT_LENGTH = 255;
 
@@ -85,6 +86,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             startDateTime,
             endDateTime,
             host,
+            statusCode,
             sourceUriPath,
             targetUriPath,
         } = this.state;
@@ -104,6 +106,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalHost: redirect ? redirect.host : null,
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
+                targetUriPath: statusCodeSupportsTarget(statusCode) ? targetUriPath : '/',
                 startDateTime: startDateTime ? formatW3CString(new Date(startDateTime)) : null,
                 endDateTime: endDateTime ? formatW3CString(new Date(endDateTime)) : null,
             }
@@ -306,13 +309,15 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             ))}
                         </select>
                     </div>
-                    <div className="neos-control-group">
-                        <label className="neos-control-label"
-                               htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
-                        <input name="targetUriPath" id={idPrefix + 'targetUriPath'} type="text"
-                               required={true} placeholder="(https://)the-new-url/product-a"
-                               value={targetUriPath || ''} onChange={this.handleInputChange}/>
-                    </div>
+                    {statusCodeSupportsTarget(statusCode) && (
+                        <div className="neos-control-group">
+                            <label className="neos-control-label"
+                                   htmlFor={idPrefix + 'targetUriPath'}>{translate('targetUriPath')}*</label>
+                            <input name="targetUriPath" id={idPrefix + 'targetUriPath'} type="text"
+                                   required={true} placeholder="(https://)the-new-url/product-a"
+                                   value={targetUriPath || ''} onChange={this.handleInputChange}/>
+                        </div>
+                    )}
                     <div className="neos-control-group">
                         <label className="neos-control-label">{translate('startDateTime')}</label>
                         {this.renderDatePicker('startDateTime', startDateTime, translate('startDateTime.placeholder'))}

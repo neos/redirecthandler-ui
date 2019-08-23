@@ -19,6 +19,15 @@ export function isSameRedirectAs(a: Redirect, b: Redirect): boolean {
 }
 
 /**
+ * Returns true if the given status code requires a target uri
+ *
+ * @param statusCode
+ */
+export function statusCodeSupportsTarget(statusCode: number): boolean {
+    return statusCode >= 300 && statusCode < 400;
+}
+
+/**
  * Replaces middle parts of a url path with ellipses when it's too long.
  *
  * @param path
