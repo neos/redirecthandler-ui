@@ -575,10 +575,12 @@ class ModuleController extends AbstractModuleController
         }
 
         // Check for existing redirect with the same properties before changing the edited redirect
-        $existingRedirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath,
-            $host ? $host : null, false);
-        if ($existingRedirect !== null) {
-            return [];
+        if ($originalSourceUriPath !== $sourceUriPath || $originalHost !== $host) {
+            $existingRedirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath,
+                $host ? $host : null, false);
+            if ($existingRedirect !== null) {
+                return [];
+            }
         }
 
         $go = false;
