@@ -54,7 +54,7 @@
             <trans-unit id="warning.redirectCreatedWithChanges" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created, but there were changes to other redirects!</source>
             </trans-unit>
-            <trans-unit id="message.redirectUpdatedWithChanges" xml:space="preserve">
+            <trans-unit id="warning.redirectUpdatedWithChanges" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
             </trans-unit>
 

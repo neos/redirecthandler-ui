@@ -667,11 +667,11 @@ class ModuleController extends AbstractModuleController
     /**
      * Shorthand to translate labels for this package
      *
-     * @param string $id
+     * @param string|null $id
      * @param array $arguments
      * @return string
      */
-    protected function translateById(string $id, array $arguments = []): string
+    protected function translateById(string $id, array $arguments = []): ?string
     {
         return $this->translator->translateById($id, $arguments, null, null, 'Modules',
             'Neos.RedirectHandler.Ui');

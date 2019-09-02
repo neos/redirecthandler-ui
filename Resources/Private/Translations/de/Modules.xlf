@@ -71,7 +71,7 @@
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created, but there were changes to other redirects!</source>
                 <target>Die Umleitung von "{0}/{1}" zu "/{2}" ({3}) wurde erstellt, aber weitere Umleitungen wurden automatisch angepasst!</target>
             </trans-unit>
-            <trans-unit id="message.redirectUpdatedWithChanges" xml:space="preserve">
+            <trans-unit id="warning.redirectUpdatedWithChanges" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
                 <target>Die Umleitung von "{0}/{1}" zu "/{2}" ({3}) wurde aktualisiert, aber weitere Umleitungen wurden angepasst!</target>
             </trans-unit>
