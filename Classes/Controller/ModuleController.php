@@ -135,7 +135,7 @@ class ModuleController extends AbstractModuleController
     {
         $redirects = $this->redirectStorage->getAll();
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
-        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $flashMessages = $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush();
         $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
 
         // Serialize redirects for the filterable list in the frontend
@@ -236,7 +236,7 @@ class ModuleController extends AbstractModuleController
                 'message' => empty($messageTitle) ? $message : $messageTitle,
                 'changedRedirects' => $changedRedirects,
                 // FIXME: The returned flash messages are empty
-                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+                'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
             $this->redirect('index');
@@ -326,7 +326,7 @@ class ModuleController extends AbstractModuleController
                 'message' => $messageTitle ?? $message,
                 'changedRedirects' => $changedRedirects,
                 // FIXME: The returned flash messages are empty
-                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+                'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
             $this->redirect('index');
@@ -360,7 +360,7 @@ class ModuleController extends AbstractModuleController
             return json_encode([
                 'success' => $status,
                 'message' => $message,
-                'messages' => $this->flashMessageContainer->getMessagesAndFlush(),
+                'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
             $this->redirect('index');
@@ -373,7 +373,7 @@ class ModuleController extends AbstractModuleController
     public function importAction(): void
     {
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
-        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $flashMessages = $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush();
         $this->view->assignMultiple([
             'csrfToken' => $csrfToken,
             'flashMessages' => $flashMessages,
@@ -480,7 +480,7 @@ class ModuleController extends AbstractModuleController
             $this->redirect('import');
         }
 
-        $flashMessages = $this->flashMessageContainer->getMessagesAndFlush();
+        $flashMessages = $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush();
         $this->view->assignMultiple([
             'protocol' => $protocol,
             'flashMessages' => $flashMessages,
