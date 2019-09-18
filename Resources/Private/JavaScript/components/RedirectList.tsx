@@ -93,17 +93,18 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param searchValue
      */
     private handleUpdateSearch(searchValue: string): void {
-        const {redirects, filterStatusCode, filterType, redirectCountByStatusCode} = this.state;
+        const {redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType} = this.state;
         let filteredRedirects: Array<Redirect> = redirects;
 
         searchValue = searchValue.trim().toLowerCase();
         const validStatusCodeSelection = redirectCountByStatusCode[filterStatusCode] > 0 ? filterStatusCode : -1;
+        const validFilterTypeSelection = redirectCountByType[filterType] > 0 ? filterType : '';
 
         // Filter by search value
-        if (searchValue || validStatusCodeSelection || filterType) {
+        if (searchValue || validStatusCodeSelection || validFilterTypeSelection) {
             filteredRedirects = filteredRedirects.filter(redirect => {
                 return (validStatusCodeSelection <= 0 || redirect.statusCode === validStatusCodeSelection) &&
-                    (!filterType || redirect.type === filterType) &&
+                    (!validFilterTypeSelection || redirect.type === validFilterTypeSelection) &&
                     (
                         !searchValue ||
                         redirect.sourceUriPath.toLowerCase().includes(searchValue) ||
@@ -117,6 +118,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             searchValue,
             filteredRedirects,
             filterStatusCode: validStatusCodeSelection,
+            filterType: validFilterTypeSelection,
             currentPage: 0,
         });
     }
