@@ -208,6 +208,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 dateFormat="yyyy-MM-dd HH:mm"
                 timeFormat="HH:mm"
                 showTimeSelect
+                minDate={new Date()}
                 timeIntervals={15}
                 todayButton={translate('datepicker.today', 'Today')}
                 placeholderText={placeholder}
