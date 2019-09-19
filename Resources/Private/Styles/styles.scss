@@ -92,6 +92,10 @@ $datepicker__header-color: white;
                     background-color: #{$primaryColor};
                 }
             }
+
+            &-popper {
+                z-index: 1000;
+            }
         }
 
         .react-datepicker__time-container {
@@ -328,18 +332,6 @@ $datepicker__header-color: white;
     max-width: 300px;
     margin-left: 1rem;
     box-shadow: 0 1px 3px 5px rgba(0, 0, 0, .15);
-}
-
-.tail-datetime-calendar {
-    .calendar-timepicker .timepicker-field:first-child input[type=number],
-    .calendar-timepicker .timepicker-field:last-child input[type=number],
-    .calendar-timepicker .timepicker-field input[type=number] {
-        background-color: #101418;
-    }
-
-    .calendar-datepicker table tr td.date-disabled:after {
-        display: none;
-    }
 }
 
 .neos-notification-content {
