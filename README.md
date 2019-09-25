@@ -10,12 +10,17 @@ This package is compatible with Neos 3.x, 4.x and will be maintained for upcomin
 
 ## Installation
 
-1. Run the following command in your site package
+1. Run the following command in your site package:
 
     `composer require neos/redirecthandler-ui --no-update`
     
-2. Then run `composer update` in your projects root folder.
-3. Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.
+2. If you don't have dependencies for the other redirect packages yet you should also run the following command:
+
+    `composer require neos/redirecthandler-neosadapter neos/redirecthandler-databasestorage --no-update`
+    
+3. Run `composer update` in your projects root folder.
+
+4. Then you can add the `RedirectAdministrator` role to the users who need access to the new backend module.
 
 ## Screenshots
 
@@ -44,4 +49,4 @@ is built with *React* and *Typescript*.
              
 ## License
 
-THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+See the [License](LICENSE.txt).
