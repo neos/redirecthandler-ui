@@ -22,7 +22,7 @@ prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fus
                     <td class={props.className + '-entry__label'}>
                         {entry.message}
                         <span @if.hasRedirect={entry.redirect}>
-                            {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; /{entry.redirect.targetUriPath} ({entry.redirect.statusCode})
+                            {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; {entry.redirect.targetUriPath} ({entry.redirect.statusCode})
                         </span>
                     </td>
                     <td>
