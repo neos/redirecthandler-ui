@@ -415,7 +415,9 @@ class ModuleController extends AbstractModuleController
         header("Content-Transfer-Encoding: binary");
         header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
 
-        return $content;
+        echo $content;
+
+        exit;
     }
 
     /**
