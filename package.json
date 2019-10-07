@@ -9,7 +9,7 @@
   "scripts": {
     "watch": "webpack --watch --progress --mode=development",
     "build": "webpack --mode=production",
-    "lint": "eslint Resources/Private/JavaScript/**/* && prettier --list-different Resources/Private/Styles/**/*.scss"
+    "lint": "eslint Resources/Private/JavaScript/**/* && stylelint Resources/Private/Styles/**/*.scss"
   },
   "repository": {
     "type": "git",
@@ -36,6 +36,10 @@
     "prettier": "^1.18.2",
     "sass-loader": "^7.3.1",
     "source-map-loader": "^0.2.4",
+    "stylelint": "^11.0.0",
+    "stylelint-config-recommended-scss": "^4.0.0",
+    "stylelint-prettier": "^1.1.1",
+    "stylelint-scss": "^3.11.1",
     "terser": "^4.3.8",
     "terser-webpack-plugin": "^1.4.1",
     "ts-loader": "^6.2.0",
