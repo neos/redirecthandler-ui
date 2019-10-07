@@ -93,14 +93,18 @@ $datepicker__header-color: white;
                 }
             }
 
-            &-popper {
+            &-popper[data-placement^="top"] {
                 z-index: 1000;
+                .react-datepicker__triangle {
+                    border-top-color: #{$datepicker__border-color};
+                }
             }
         }
 
         .react-datepicker__time-container {
             &--with-today-button {
                 border-color: #{$datepicker__border-color};
+                right: -90px;
             }
 
             .react-datepicker__time {
