@@ -571,7 +571,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                             showHitCount={showHitCount}
                                         />
                                         {editedRedirect === redirect && (
-                                            <tr className="redirect-edit-form">
+                                            <tr className="redirects-table__single-column-row">
                                                 <td colSpan={columnCount}>
                                                     <h6>{translate('header.editRedirect', 'Edit redirect')}</h6>
                                                     <RedirectForm
