@@ -25,6 +25,13 @@
         "semi": 0,
         "no-alert": 0,
         "no-await-in-loop": 0,
-        "react/jsx-indent-props": [2, "first"]
+        "react/jsx-indent-props": [2, "first"],
+        "prettier/prettier": ["error", {
+            "semi": true,
+            "trailingComma": "all",
+            "singleQuote": true,
+            "printWidth": 120,
+            "tabWidth": 4
+        }]
     }
 }
