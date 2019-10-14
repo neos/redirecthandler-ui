@@ -408,12 +408,12 @@ class ModuleController extends AbstractModuleController
         $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
 
         $content = $csvWriter->getContent();
-        header("Pragma: no-cache");
-        header("Content-type: application/text");
-        header("Content-Length: " . strlen($content));
-        header("Content-Disposition: attachment; filename=" . $filename);
-        header("Content-Transfer-Encoding: binary");
-        header("Cache-Control: must-revalidate, post-check=0, pre-check=0");
+        header('Pragma: no-cache');
+        header('Content-type: application/text');
+        header('Content-Length: ' . strlen($content));
+        header('Content-Disposition: attachment; filename=' . $filename);
+        header('Content-Transfer-Encoding: binary');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
 
         echo $content;
 
