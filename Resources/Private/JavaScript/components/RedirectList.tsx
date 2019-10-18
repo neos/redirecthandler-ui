@@ -93,7 +93,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param searchValue
      */
     private handleUpdateSearch(searchValue: string): void {
-        const {redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType} = this.state;
+        const {redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage} = this.state;
         let filteredRedirects: Array<Redirect> = redirects;
 
         searchValue = searchValue.trim().toLowerCase();
@@ -119,7 +119,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filteredRedirects,
             filterStatusCode: validStatusCodeSelection,
             filterType: validFilterTypeSelection,
-            currentPage: 0,
+            currentPage: Math.min(currentPage, this.getMaxPage(filteredRedirects)),
         });
     }
 
@@ -379,6 +379,13 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         );
     }
 
+    /**
+     * Return the highest page number for the pagination
+     */
+    private getMaxPage(redirects: Redirect[]): number {
+        return Math.ceil(redirects.length / ITEMS_PER_PAGE);
+    }
+
     public render(): JSX.Element {
         const {
             showHitCount,
@@ -412,7 +419,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filteredRedirects.length
         ];
 
-        const hasMorePages = pagingParameters[1] < filteredRedirects.length;
+        const hasMorePages = this.getMaxPage(filteredRedirects) > currentPage;
 
         // Sort by column
         let visibleRedirects = sortBy ? this.sortRedirects(filteredRedirects, sortBy, sortDirection) : filteredRedirects;
