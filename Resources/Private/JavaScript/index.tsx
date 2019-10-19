@@ -37,6 +37,7 @@ window.onload = async (): Promise<void> => {
         update: string;
     } = JSON.parse(redirectsList.dataset.actions);
     const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
+    const hostOptions: string[] = JSON.parse(redirectsList.dataset.hostOptions);
 
     const {
         csrfToken,
@@ -70,6 +71,7 @@ window.onload = async (): Promise<void> => {
             translate={translate}
             defaultStatusCode={defaultStatusCode}
             statusCodes={statusCodes}
+            hostOptions={hostOptions}
             validSourceUriPathPattern={validSourceUriPathPattern}
             notificationHelper={Notification}
             initialTypeFilter={initialTypeFilter}

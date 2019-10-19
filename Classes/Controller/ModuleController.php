@@ -35,6 +35,8 @@ use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\Security\Context as SecurityContext;
 
+use Neos\Neos\Domain\Model\Domain;
+use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\RedirectHandler\RedirectInterface;
 use Neos\RedirectHandler\Service\RedirectExportService;
 use Neos\RedirectHandler\Service\RedirectImportService;
@@ -123,6 +125,12 @@ class ModuleController extends AbstractModuleController
     protected $resourceManager;
 
     /**
+     * @Flow\Inject
+     * @var DomainRepository
+     */
+    protected $domainRepository;
+
+    /**
      * @Flow\InjectConfiguration(path="validation", package="Neos.RedirectHandler")
      * @var array
      */
@@ -137,18 +145,28 @@ class ModuleController extends AbstractModuleController
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
         $flashMessages = $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush();
         $currentLocale = $this->localizationService->getConfiguration()->getCurrentLocale();
+        $usedHostOptions = [];
 
         // Serialize redirects for the filterable list in the frontend
         // TODO: Provide the list via a json action to the frontend for async loading
         $redirectsJson = '';
         /** @var RedirectInterface $redirect */
         foreach ($redirects as $redirect) {
+            $usedHostOptions[$redirect->getHost()] = true;
             $redirectsJson .= json_encode($redirect) . ',';
         }
         $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
 
+        $domainOptions = array_map(function (Domain $domain) {
+            return $domain->getHostname();
+        }, $this->domainRepository->findAll()->toArray());
+
+        $hostOptions = array_filter(array_merge($domainOptions, array_keys($usedHostOptions)));
+        sort($hostOptions);
+
         $this->view->assignMultiple([
             'redirectsJson' => $redirectsJson,
+            'hostOptions' => $hostOptions,
             'flashMessages' => $flashMessages,
             'csrfToken' => $csrfToken,
             'locale' => $currentLocale,

@@ -28,6 +28,7 @@ export interface RedirectListProps {
     initialStatusCodeFilter: number;
     defaultStatusCode: number;
     statusCodes: { [index: string]: string };
+    hostOptions: string[];
     validSourceUriPathPattern: string;
     showHitCount: boolean;
     csrfToken: string;
@@ -406,6 +407,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             actions,
             csrfToken,
             statusCodes,
+            hostOptions,
             validSourceUriPathPattern,
             notificationHelper,
             initialStatusCodeFilter,
@@ -457,6 +459,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     handleCancelAction={null}
                     idPrefix=""
                     statusCodes={statusCodes}
+                    hostOptions={hostOptions}
                     validSourceUriPathPattern={validSourceUriPathPattern}
                     defaultStatusCode={defaultStatusCode}
                 />
@@ -585,6 +588,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                                         handleCancelAction={this.handleCancelAction}
                                                         idPrefix={'redirect-' + index + '-'}
                                                         statusCodes={statusCodes}
+                                                        hostOptions={hostOptions}
                                                         validSourceUriPathPattern={validSourceUriPathPattern}
                                                         defaultStatusCode={initialStatusCodeFilter}
                                                     />

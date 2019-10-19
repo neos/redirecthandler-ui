@@ -20,6 +20,7 @@ export interface RedirectFormProps {
     redirect: Redirect;
     idPrefix: string;
     statusCodes: { [index: string]: string };
+    hostOptions: string[];
     validSourceUriPathPattern: string;
     defaultStatusCode: number;
     handleNewRedirect: (changedRedirects: Redirect[]) => void;
@@ -82,7 +83,14 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             translate,
         } = this.props;
 
-        const { startDateTime, endDateTime, host, statusCode, sourceUriPath, targetUriPath } = this.state;
+        const {
+            startDateTime,
+            endDateTime,
+            host,
+            statusCode,
+            sourceUriPath,
+            targetUriPath,
+        } = this.state;
 
         if (!host || host === location.host) {
             const parsedSourceUrl: URL = parseURL(sourceUriPath, location.origin);
@@ -262,6 +270,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             translate,
             redirect,
             statusCodes,
+            hostOptions,
             idPrefix,
             validSourceUriPathPattern,
             handleCancelAction,
@@ -290,10 +299,16 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             name="host"
                             id={idPrefix + 'host'}
                             type="text"
+                            list="redirect-hosts"
                             placeholder="www.example.org"
                             value={host || ''}
                             onChange={this.handleInputChange}
                         />
+                        {hostOptions && (
+                            <datalist id="redirect-hosts">
+                                {hostOptions.map(hostOption => <option key={hostOption} value={hostOption}>{hostOption}</option>)}
+                            </datalist>
+                        )}
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'sourceUriPath'}>

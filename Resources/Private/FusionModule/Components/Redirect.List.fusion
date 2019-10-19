@@ -8,6 +8,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
     validSourceUriPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.sourceUriPath')}
     // Don't render disabled status codes
     statusCodes = ${Array.filter(Configuration.setting('Neos.RedirectHandler.Ui.statusCodes'), x => !!x)}
+    hostOptions = ${hostOptions}
 
     actions = Neos.Fusion:DataStructure {
         delete = Neos.Fusion:UriBuilder {
@@ -34,6 +35,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
              data-actions={Json.stringify(props.actions)}
              data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
              data-status-codes={Json.stringify(props.statusCodes)}
+             data-host-options={Json.stringify(props.hostOptions)}
              data-redirects-json={props.redirectsJson}>
             <p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:list.loading')}</p>
         </div>
