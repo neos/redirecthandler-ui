@@ -3,6 +3,8 @@ import * as ReactDOM from 'react-dom';
 
 import {RedirectList} from './components/RedirectList';
 import Redirect from './interfaces/Redirect';
+import NeosNotification from './interfaces/NeosNotification';
+import NeosI18n from './interfaces/NeosI18n';
 
 import '../Styles/styles.scss';
 
@@ -10,18 +12,8 @@ import '../Styles/styles.scss';
 declare global {
     interface Window {
         Typo3Neos: {
-            I18n: {
-                translate: Function;
-                addObserver: Function;
-                initialized: boolean;
-            };
-            Notification: {
-                notice: Function;
-                ok: Function;
-                error: Function;
-                warning: Function;
-                info: Function;
-            };
+            I18n: NeosI18n;
+            Notification: NeosNotification;
         };
     }
 }
@@ -37,7 +29,7 @@ window.onload = async (): Promise<void> => {
         return;
     }
 
-    const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset.redirectsJson);
+    const redirects: Redirect[] = JSON.parse(redirectsList.dataset.redirectsJson);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
     const actions: {
         delete: string;
@@ -65,7 +57,7 @@ window.onload = async (): Promise<void> => {
      * @param label
      * @param args
      */
-    const translate = (id: string, label = '', args: Array<any> = []): string => {
+    const translate = (id: string, label: string = '', args: any[] = []): string => {
         return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
 

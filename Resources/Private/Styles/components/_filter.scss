@@ -1,0 +1,48 @@
+.redirects-filter {
+    margin-bottom: 1.6rem;
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin: 0 -#{$fieldSpacing};
+    }
+
+    .neos-control-group {
+        flex: 0 1 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-left: #{$fieldSpacing};
+        padding-right: #{$fieldSpacing};
+
+        &--large {
+            flex-basis: 300px;
+        }
+
+        &--auto {
+            flex-basis: auto;
+            align-self: flex-end;
+        }
+    }
+
+    &__pagination {
+        padding: 5px 0;
+        user-select: none;
+
+        i {
+            cursor: pointer;
+            padding: 0 5px;
+            transition: color .1s ease-in;
+
+            &:not(.disabled):hover {
+                color: #{$primaryColor};
+            }
+
+            &.disabled {
+                cursor: initial;
+                color: #{$inactiveColor};
+            }
+        }
+    }
+}

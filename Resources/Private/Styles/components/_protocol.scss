@@ -1,0 +1,32 @@
+table.redirects-protocol {
+    td {
+        height: auto;
+        padding-top: .2rem;
+        padding-bottom: .2rem;
+        line-height: 1.3em;
+        vertical-align: top;
+    }
+
+    &-entry {
+        &--unchanged {
+            color: #{$inactiveColor};
+        }
+
+        &--created {
+            color: #{$newColor};
+        }
+
+        &--deleted {
+            color: #{$deletedColor};
+        }
+
+        &--error {
+            color: #{$warningColor};
+        }
+
+        &__label {
+            width: 500px;
+            max-width: 50%;
+        }
+    }
+}

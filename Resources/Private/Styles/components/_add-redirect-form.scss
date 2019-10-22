@@ -1,0 +1,48 @@
+.add-redirect-form {
+    margin-bottom: 1.6rem;
+
+    .row {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: flex-start;
+        margin: 0 -#{$fieldSpacing};
+    }
+
+    .neos-control-group {
+        flex: 0 1 200px;
+        display: flex;
+        flex-direction: column;
+        justify-content: flex-end;
+        padding-left: #{$fieldSpacing};
+        padding-right: #{$fieldSpacing};
+
+        &--large {
+            flex-basis: 300px;
+        }
+
+        &--auto {
+            flex-basis: auto;
+            align-self: flex-end;
+        }
+    }
+
+    .textarea-wrap {
+        position: relative;
+        height: 40px;
+    }
+
+    textarea {
+        width: 100%;
+        height: #{$commentFieldHeight};
+        transition: height .2s ease-in;
+        line-height: 36px;
+        position: absolute;
+        top: 0;
+
+        &:focus {
+            height: #{$commentFieldHeight * 4};
+        }
+    }
+
+    @import "../vendor/datepicker";
+}
