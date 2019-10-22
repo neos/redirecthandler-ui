@@ -12,7 +12,7 @@ Neos:
       initialTypeFilter: 'manual'
       validation:
         # This is the pattern for matching the input in the HTML forms
-        sourceUriPath: '^[a-zA-Z0-9\-\/\.]+$'
+        sourceUriPath: '^[a-zA-Z0-9_\-\/\.]+$'
       csv:
         delimiterOptions: [';', ',', '|']
       statusCodes:
