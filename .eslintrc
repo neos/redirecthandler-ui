@@ -19,6 +19,7 @@
     },
     "rules": {
         "@typescript-eslint/no-explicit-any": 0,
+        "@typescript-eslint/no-inferrable-types": 0,
         "@typescript-eslint/semi": ["error"],
         "@typescript-eslint/explicit-function-return-type": 0,
         "comma-dangle": 0,

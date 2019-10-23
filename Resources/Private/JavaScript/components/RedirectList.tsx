@@ -5,6 +5,7 @@ import { FormEvent } from 'react';
 import { copyTextToClipboard, isSameRedirectAs } from '../util/helpers';
 import NeosNotification from '../interfaces/NeosNotification';
 import { RedirectForm } from './RedirectForm';
+import { RedirectContext } from '../providers/RedirectProvider';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -26,12 +27,8 @@ export interface RedirectListProps {
     notificationHelper: NeosNotification;
     initialTypeFilter: string;
     initialStatusCodeFilter: number;
-    defaultStatusCode: number;
-    statusCodes: { [index: string]: string };
-    hostOptions: string[];
     validSourceUriPathPattern: string;
     showHitCount: boolean;
-    csrfToken: string;
     actions: {
         delete: string;
         update: string;
@@ -68,6 +65,8 @@ const initialState: RedirectListState = {
 };
 
 export class RedirectList extends React.Component<RedirectListProps, RedirectListState> {
+    static contextType = RedirectContext;
+
     constructor(props: RedirectListProps) {
         super(props);
         this.state = {
@@ -263,7 +262,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param redirect
      */
     private handleDeleteAction = (event: FormEvent, redirect: Redirect): void => {
-        const { csrfToken, notificationHelper, actions } = this.props;
+        const { notificationHelper, actions } = this.props;
+        const { csrfToken } = this.context;
 
         event.preventDefault();
 
@@ -401,18 +401,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     }
 
     public render(): JSX.Element {
-        const {
-            showHitCount,
-            translate,
-            actions,
-            csrfToken,
-            statusCodes,
-            hostOptions,
-            validSourceUriPathPattern,
-            notificationHelper,
-            initialStatusCodeFilter,
-            defaultStatusCode,
-        } = this.props;
+        const { showHitCount, translate, actions, validSourceUriPathPattern, notificationHelper } = this.props;
 
         const {
             redirects,
@@ -452,16 +441,12 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     translate={translate}
                     actions={actions}
                     redirect={null}
-                    csrfToken={csrfToken}
                     notificationHelper={notificationHelper}
                     handleNewRedirect={this.handleNewRedirect}
                     handleUpdatedRedirect={this.handleUpdatedRedirect}
                     handleCancelAction={null}
                     idPrefix=""
-                    statusCodes={statusCodes}
-                    hostOptions={hostOptions}
                     validSourceUriPathPattern={validSourceUriPathPattern}
-                    defaultStatusCode={defaultStatusCode}
                 />
 
                 <div className="redirects-filter">
@@ -581,16 +566,12 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                                         translate={translate}
                                                         actions={actions}
                                                         redirect={redirect}
-                                                        csrfToken={csrfToken}
                                                         notificationHelper={notificationHelper}
                                                         handleNewRedirect={this.handleNewRedirect}
                                                         handleUpdatedRedirect={this.handleUpdatedRedirect}
                                                         handleCancelAction={this.handleCancelAction}
                                                         idPrefix={'redirect-' + index + '-'}
-                                                        statusCodes={statusCodes}
-                                                        hostOptions={hostOptions}
                                                         validSourceUriPathPattern={validSourceUriPathPattern}
-                                                        defaultStatusCode={initialStatusCodeFilter}
                                                     />
                                                 </td>
                                             </tr>
