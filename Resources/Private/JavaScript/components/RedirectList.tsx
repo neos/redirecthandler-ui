@@ -383,7 +383,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * Return the highest page number for the pagination
      */
     private getMaxPage(redirects: Redirect[]): number {
-        return Math.ceil(redirects.length / ITEMS_PER_PAGE);
+        return Math.max(0, Math.ceil(redirects.length / ITEMS_PER_PAGE) - 1);
     }
 
     public render(): JSX.Element {
