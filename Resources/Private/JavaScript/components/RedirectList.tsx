@@ -1,10 +1,11 @@
 import * as React from 'react';
 import Redirect from '../interfaces/Redirect';
-import {RedirectListItem} from './RedirectListItem';
-import {FormEvent} from 'react';
-import {copyTextToClipboard, isSameRedirectAs} from '../util/helpers';
+import { RedirectListItem } from './RedirectListItem';
+import { FormEvent } from 'react';
+import { copyTextToClipboard, isSameRedirectAs } from '../util/helpers';
 import NeosNotification from '../interfaces/NeosNotification';
-import {RedirectForm} from './RedirectForm';
+import { RedirectForm } from './RedirectForm';
+import { RedirectContext } from '../providers/RedirectProvider';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -17,20 +18,17 @@ export enum Pagination {
     Left,
     Right,
     Start,
-    End
+    End,
 }
 
 export interface RedirectListProps {
-    redirects: Array<Redirect>;
-    translate: Function;
+    redirects: Redirect[];
+    translate: (id: string, label: string, args?: any[]) => string;
     notificationHelper: NeosNotification;
     initialTypeFilter: string;
     initialStatusCodeFilter: number;
-    defaultStatusCode: number;
-    statusCodes: { [index: string]: string };
     validSourceUriPathPattern: string;
     showHitCount: boolean;
-    csrfToken: string;
     actions: {
         delete: string;
         update: string;
@@ -45,9 +43,9 @@ export interface RedirectListState {
     filterType: string;
     filterStatusCode: number;
     currentPage: number;
-    redirects: Array<Redirect>;
-    filteredRedirects: Array<Redirect>;
-    redirectCountByStatusCode: Array<number>;
+    redirects: Redirect[];
+    filteredRedirects: Redirect[];
+    redirectCountByStatusCode: number[];
     redirectCountByType: { [index: string]: number };
     editedRedirect: Redirect;
 }
@@ -67,6 +65,8 @@ const initialState: RedirectListState = {
 };
 
 export class RedirectList extends React.Component<RedirectListProps, RedirectListState> {
+    static contextType = RedirectContext;
+
     constructor(props: RedirectListProps) {
         super(props);
         this.state = {
@@ -80,7 +80,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         };
     }
 
-    componentDidMount(): void {
+    public componentDidMount(): void {
         if (this.props.initialStatusCodeFilter) {
             this.handleUpdateSearch('');
         }
@@ -93,29 +93,29 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param searchValue
      */
     private handleUpdateSearch(searchValue: string): void {
-        const {redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage} = this.state;
-        let filteredRedirects: Array<Redirect> = redirects;
+        const { redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage } = this.state;
+        let filteredRedirects: Redirect[] = redirects;
 
-        searchValue = searchValue.trim().toLowerCase();
+        const cleanSearchValue = searchValue.trim().toLowerCase();
         const validStatusCodeSelection = redirectCountByStatusCode[filterStatusCode] > 0 ? filterStatusCode : -1;
         const validFilterTypeSelection = redirectCountByType[filterType] > 0 ? filterType : '';
 
         // Filter by search value
-        if (searchValue || validStatusCodeSelection || validFilterTypeSelection) {
+        if (cleanSearchValue || validStatusCodeSelection || validFilterTypeSelection) {
             filteredRedirects = filteredRedirects.filter(redirect => {
-                return (validStatusCodeSelection <= 0 || redirect.statusCode === validStatusCodeSelection) &&
+                return (
+                    (validStatusCodeSelection <= 0 || redirect.statusCode === validStatusCodeSelection) &&
                     (!validFilterTypeSelection || redirect.type === validFilterTypeSelection) &&
-                    (
-                        !searchValue ||
-                        redirect.sourceUriPath.toLowerCase().includes(searchValue) ||
-                        redirect.targetUriPath.toLowerCase().includes(searchValue) ||
-                        (redirect.comment || '').toLowerCase().includes(searchValue)
-                    );
+                    (!cleanSearchValue ||
+                        redirect.sourceUriPath.toLowerCase().includes(cleanSearchValue) ||
+                        redirect.targetUriPath.toLowerCase().includes(cleanSearchValue) ||
+                        (redirect.comment || '').toLowerCase().includes(cleanSearchValue))
+                );
             });
         }
 
         this.setState({
-            searchValue,
+            searchValue: cleanSearchValue,
             filteredRedirects,
             filterStatusCode: validStatusCodeSelection,
             filterType: validFilterTypeSelection,
@@ -127,11 +127,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * Refreshes the list
      */
     private refresh(): void {
-        const {redirects} = this.state;
-        this.setState({
-            redirectCountByStatusCode: RedirectList.calculateRedirectCountByStatusCode(redirects),
-            redirectCountByType: RedirectList.calculateRedirectCountByType(redirects),
-        }, () => this.handleUpdateSearch(this.state.searchValue));
+        const { redirects } = this.state;
+        this.setState(
+            {
+                redirectCountByStatusCode: RedirectList.calculateRedirectCountByStatusCode(redirects),
+                redirectCountByType: RedirectList.calculateRedirectCountByType(redirects),
+            },
+            () => this.handleUpdateSearch(this.state.searchValue),
+        );
     }
 
     /**
@@ -139,7 +142,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param redirects
      */
-    private static calculateRedirectCountByStatusCode(redirects: Array<Redirect>): Array<number> {
+    private static calculateRedirectCountByStatusCode(redirects: Redirect[]): number[] {
         return redirects.reduce((counts, redirect) => {
             counts[redirect.statusCode] = counts[redirect.statusCode] ? counts[redirect.statusCode] + 1 : 1;
             return counts;
@@ -151,7 +154,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param redirects
      */
-    private static calculateRedirectCountByType(redirects: Array<Redirect>): { [index: string]: number } {
+    private static calculateRedirectCountByType(redirects: Redirect[]): { [index: string]: number } {
         const counts: { [index: string]: number } = {};
         return redirects.reduce((counts, redirect) => {
             counts[redirect.type] = counts[redirect.type] ? counts[redirect.type] + 1 : 1;
@@ -165,7 +168,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param filterStatusCode
      */
     private handleUpdateFilterStatusCode(filterStatusCode: number): void {
-        this.setState({filterStatusCode}, this.refresh);
+        this.setState({ filterStatusCode }, this.refresh);
     }
 
     /**
@@ -174,7 +177,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param filterType
      */
     private handleUpdateFilterType(filterType: string): void {
-        this.setState({filterType}, this.refresh);
+        this.setState({ filterType }, this.refresh);
     }
 
     /**
@@ -187,7 +190,10 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         const previousSortBy = this.state.sortBy;
         this.setState({
             sortBy,
-            sortDirection: sortBy === previousSortBy && this.state.sortDirection !== SortDirection.Desc ? SortDirection.Desc : SortDirection.Asc,
+            sortDirection:
+                sortBy === previousSortBy && this.state.sortDirection !== SortDirection.Desc
+                    ? SortDirection.Desc
+                    : SortDirection.Asc,
         });
     }
 
@@ -197,19 +203,19 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param action
      */
     private handlePagination(action: Pagination): void {
-        const {currentPage} = this.state;
+        const { currentPage } = this.state;
 
         switch (action) {
             case Pagination.Left:
                 if (currentPage > 0) {
                     this.setState({
-                        currentPage: currentPage - 1
+                        currentPage: currentPage - 1,
                     });
                 }
                 break;
             case Pagination.Right:
                 this.setState({
-                    currentPage: currentPage + 1
+                    currentPage: currentPage + 1,
                 });
                 break;
             default:
@@ -224,7 +230,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param propertyName
      * @param sortDirection
      */
-    private sortRedirects(redirects: Array<Redirect>, propertyName: string, sortDirection: SortDirection): Array<Redirect> {
+    private sortRedirects(redirects: Redirect[], propertyName: string, sortDirection: SortDirection): Redirect[] {
         const sortedRedirects = redirects.sort((a, b) => {
             let x = a[propertyName];
             if (typeof x === 'string') {
@@ -256,20 +262,27 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param redirect
      */
     private handleDeleteAction = (event: FormEvent, redirect: Redirect): void => {
-        const {csrfToken, notificationHelper, actions} = this.props;
+        const { notificationHelper, actions } = this.props;
+        const { csrfToken } = this.context;
 
         event.preventDefault();
 
-        if (!confirm(this.props.translate('list.action.confirmDelete', 'Delete the redirect "{0}"?', [(redirect.host || '') + '/' + redirect.sourceUriPath]))) {
+        if (
+            !confirm(
+                this.props.translate('list.action.confirmDelete', 'Delete the redirect "{0}"?', [
+                    (redirect.host || '') + '/' + redirect.sourceUriPath,
+                ]),
+            )
+        ) {
             return;
         }
 
         const data = {
-            '__csrfToken': csrfToken,
+            __csrfToken: csrfToken,
             moduleArguments: {
                 host: redirect.host,
                 sourceUriPath: redirect.sourceUriPath,
-            }
+            },
         };
 
         fetch(actions.delete, {
@@ -279,24 +292,26 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                 'Content-Type': 'application/json; charset=UTF-8',
             },
             body: JSON.stringify(data),
-        }
-        )
+        })
             .then(response => response.json())
             .then(data => {
                 if (data.success) {
-                    const {redirects} = this.state;
+                    const { redirects } = this.state;
                     const filteredRedirects = redirects.filter(storedRedirect => redirect !== storedRedirect);
-                    this.setState({
-                        redirects: filteredRedirects,
-                    }, this.refresh);
+                    this.setState(
+                        {
+                            redirects: filteredRedirects,
+                        },
+                        this.refresh,
+                    );
                     notificationHelper.ok(data.message);
                 } else {
                     notificationHelper.error(data.message);
                 }
-            }).catch(error => {
+            })
+            .catch(error => {
                 notificationHelper.error(error);
-            }
-        );
+            });
     };
 
     /**
@@ -304,14 +319,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      */
     private handleEditAction = (event: FormEvent, editedRedirect: Redirect): void => {
         event.preventDefault();
-        this.setState({editedRedirect});
+        this.setState({ editedRedirect });
     };
 
     /**
      * Unset the currently edited redirect which will hide the editing form
      */
     private handleCancelAction = (): void => {
-        this.setState({editedRedirect: null});
+        this.setState({ editedRedirect: null });
     };
 
     /**
@@ -319,11 +334,13 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param changedRedirects
      */
-    private handleNewRedirect = (changedRedirects: Array<Redirect>): void => {
-        let {redirects} = this.state;
+    private handleNewRedirect = (changedRedirects: Redirect[]): void => {
+        let { redirects } = this.state;
 
         redirects.forEach((redirect, index, list) => {
-            const changedRedirectIndex = changedRedirects.findIndex(changedRedirect => isSameRedirectAs(changedRedirect, redirect));
+            const changedRedirectIndex = changedRedirects.findIndex(changedRedirect =>
+                isSameRedirectAs(changedRedirect, redirect),
+            );
             if (changedRedirectIndex >= 0) {
                 list[index] = changedRedirects[changedRedirectIndex];
                 changedRedirects.splice(changedRedirectIndex, 1);
@@ -333,10 +350,13 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         // Append remaining redirects which were not updates to existing ones
         redirects = redirects.concat(changedRedirects);
 
-        this.setState({
-            redirects,
-            editedRedirect: null,
-        }, this.refresh);
+        this.setState(
+            {
+                redirects,
+                editedRedirect: null,
+            },
+            this.refresh,
+        );
     };
 
     /**
@@ -345,10 +365,10 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param changedRedirects
      * @param oldRedirect
      */
-    private handleUpdatedRedirect = (changedRedirects: Array<Redirect>, oldRedirect: Redirect): void => {
-        let {redirects} = this.state;
+    private handleUpdatedRedirect = (changedRedirects: Redirect[], oldRedirect: Redirect): void => {
+        let { redirects } = this.state;
         redirects = redirects.filter(redirect => redirect !== oldRedirect);
-        this.setState({redirects}, () => this.handleNewRedirect(changedRedirects));
+        this.setState({ redirects }, () => this.handleNewRedirect(changedRedirects));
     };
 
     /**
@@ -368,13 +388,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param label
      */
     private renderColumnHeader(identifier: string, label: string): JSX.Element {
-        const {sortBy, sortDirection} = this.state;
+        const { sortBy, sortDirection } = this.state;
         const isActive = sortBy === identifier;
         return (
             <th onClick={() => this.handleUpdateSorting(identifier)} className={isActive ? 'active' : ''}>
-                {this.props.translate(identifier, label)} {isActive && (
-                <i className={'fas fa-sort-amount-' + (sortDirection === SortDirection.Asc ? 'down' : 'up')}/>
-            )}
+                {this.props.translate(identifier, label)}{' '}
+                {isActive && (
+                    <i className={'fas fa-sort-amount-' + (sortDirection === SortDirection.Asc ? 'down' : 'up')} />
+                )}
             </th>
         );
     }
@@ -387,17 +408,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     }
 
     public render(): JSX.Element {
-        const {
-            showHitCount,
-            translate,
-            actions,
-            csrfToken,
-            statusCodes,
-            validSourceUriPathPattern,
-            notificationHelper,
-            initialStatusCodeFilter,
-            defaultStatusCode,
-        } = this.props;
+        const { showHitCount, translate, actions, validSourceUriPathPattern, notificationHelper } = this.props;
 
         const {
             redirects,
@@ -414,15 +425,17 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         } = this.state;
 
         const pagingParameters = [
-            (currentPage * ITEMS_PER_PAGE) + 1,
+            currentPage * ITEMS_PER_PAGE + 1,
             Math.min((currentPage + 1) * ITEMS_PER_PAGE, filteredRedirects.length),
-            filteredRedirects.length
+            filteredRedirects.length,
         ];
 
         const hasMorePages = this.getMaxPage(filteredRedirects) > currentPage;
 
         // Sort by column
-        let visibleRedirects = sortBy ? this.sortRedirects(filteredRedirects, sortBy, sortDirection) : filteredRedirects;
+        let visibleRedirects = sortBy
+            ? this.sortRedirects(filteredRedirects, sortBy, sortDirection)
+            : filteredRedirects;
 
         // Show only a limited number of redirects
         visibleRedirects = visibleRedirects.slice(pagingParameters[0] - 1, pagingParameters[1]);
@@ -435,36 +448,42 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     translate={translate}
                     actions={actions}
                     redirect={null}
-                    csrfToken={csrfToken}
                     notificationHelper={notificationHelper}
                     handleNewRedirect={this.handleNewRedirect}
                     handleUpdatedRedirect={this.handleUpdatedRedirect}
                     handleCancelAction={null}
                     idPrefix=""
-                    statusCodes={statusCodes}
                     validSourceUriPathPattern={validSourceUriPathPattern}
-                    defaultStatusCode={defaultStatusCode}/>
+                />
 
                 <div className="redirects-filter">
                     <div className="row">
                         <div className="neos-control-group">
                             <label htmlFor="redirects-search">{translate('filter.search', 'Search')}</label>
-                            <input id="redirects-search" type="text" placeholder="Search"
-                                   onChange={e => this.handleUpdateSearch(e.target.value)}/>
+                            <input
+                                id="redirects-search"
+                                type="text"
+                                placeholder="Search"
+                                onChange={e => this.handleUpdateSearch(e.target.value)}
+                            />
                         </div>
 
                         <div className="neos-control-group">
                             <label htmlFor="redirects-filter-status-code">
                                 {translate('filter.statusCode', 'Code')}
                             </label>
-                            <select id="redirects-filter-status-code" defaultValue={filterStatusCode.toString()}
-                                    onChange={e => this.handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}>
+                            <select
+                                id="redirects-filter-status-code"
+                                defaultValue={filterStatusCode.toString()}
+                                onChange={e => this.handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}
+                            >
                                 <option value="-1">All</option>
                                 {redirectCountByStatusCode.map((numberOfRedirects, statusCode) => {
                                     return (
                                         <option key={statusCode} value={statusCode}>
                                             {statusCode}
-                                            &nbsp;{translate('filter.resultsCountSuffix', 'results', [numberOfRedirects])}
+                                            &nbsp;
+                                            {translate('filter.resultsCountSuffix', 'results', [numberOfRedirects])}
                                         </option>
                                     );
                                 })}
@@ -472,17 +491,21 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                         </div>
 
                         <div className="neos-control-group">
-                            <label htmlFor="redirects-filter-type">
-                                {translate('filter.type', 'Type')}
-                            </label>
-                            <select id="redirects-filter-type" defaultValue={filterType}
-                                    onChange={e => this.handleUpdateFilterType(e.target.value)}>
+                            <label htmlFor="redirects-filter-type">{translate('filter.type', 'Type')}</label>
+                            <select
+                                id="redirects-filter-type"
+                                defaultValue={filterType}
+                                onChange={e => this.handleUpdateFilterType(e.target.value)}
+                            >
                                 <option value="">All</option>
                                 {Object.keys(redirectCountByType).map(type => {
                                     return (
                                         <option key={type} value={type}>
                                             {translate('filter.type.' + type, type)}
-                                            &nbsp;{translate('filter.resultsCountSuffix', 'results', [redirectCountByType[type]])}
+                                            &nbsp;
+                                            {translate('filter.resultsCountSuffix', 'results', [
+                                                redirectCountByType[type],
+                                            ])}
                                         </option>
                                     );
                                 })}
@@ -491,13 +514,21 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     </div>
                     <div className="redirects-filter__pagination">
                         {filteredRedirects.length > 0 && (
-                            <i role="button" className={'fas fa-caret-left' + (currentPage > 0 ? '' : ' disabled')}
-                               onClick={() => currentPage > 0 && this.handlePagination(Pagination.Left)}/>
+                            <i
+                                role="button"
+                                className={'fas fa-caret-left' + (currentPage > 0 ? '' : ' disabled')}
+                                onClick={() => currentPage > 0 && this.handlePagination(Pagination.Left)}
+                            />
                         )}
-                        {filteredRedirects.length > 0 ? translate('pagination.position', 'Showing {0}-{1} of {2}', pagingParameters) : translate('pagination.noResults', 'No redirects match your search')}
+                        {filteredRedirects.length > 0
+                            ? translate('pagination.position', 'Showing {0}-{1} of {2}', pagingParameters)
+                            : translate('pagination.noResults', 'No redirects match your search')}
                         {filteredRedirects.length > 0 && (
-                            <i role="button" className={'fas fa-caret-right' + (hasMorePages ? '' : ' disabled')}
-                               onClick={() => hasMorePages && this.handlePagination(Pagination.Right)}/>
+                            <i
+                                role="button"
+                                className={'fas fa-caret-right' + (hasMorePages ? '' : ' disabled')}
+                                onClick={() => hasMorePages && this.handlePagination(Pagination.Right)}
+                            />
                         )}
                     </div>
                 </div>
@@ -516,45 +547,50 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                     {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
                                     {this.renderColumnHeader('creationDate', 'Created')}
                                     {this.renderColumnHeader('creator', 'Creator')}
-                                    <th className="redirect-table__heading-actions">{translate('actions', 'Actions')}</th>
+                                    <th className="redirect-table__heading-actions">
+                                        {translate('actions', 'Actions')}
+                                    </th>
                                 </tr>
                             </thead>
                             <tbody>
                                 {visibleRedirects.map((redirect, index) => (
                                     <React.Fragment key={index}>
-                                        <RedirectListItem redirect={redirect}
-                                                          rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
-                                                          translate={translate}
-                                                          handleDeleteAction={this.handleDeleteAction}
-                                                          handleEditAction={this.handleEditAction}
-                                                          handleCopyPathAction={this.handleCopyPathAction}
-                                                          searchValue={searchValue}
-                                                          showHitCount={showHitCount}/>
+                                        <RedirectListItem
+                                            redirect={redirect}
+                                            rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
+                                            translate={translate}
+                                            handleDeleteAction={this.handleDeleteAction}
+                                            handleEditAction={this.handleEditAction}
+                                            handleCopyPathAction={this.handleCopyPathAction}
+                                            searchValue={searchValue}
+                                            showHitCount={showHitCount}
+                                        />
                                         {editedRedirect === redirect && (
-                                        <tr className="redirect-edit-form">
-                                            <td colSpan={columnCount}>
-                                                <h6>{translate('header.editRedirect')}</h6>
-                                                <RedirectForm translate={translate}
-                                                              actions={actions}
-                                                              redirect={redirect}
-                                                              csrfToken={csrfToken}
-                                                              notificationHelper={notificationHelper}
-                                                              handleNewRedirect={this.handleNewRedirect}
-                                                              handleUpdatedRedirect={this.handleUpdatedRedirect}
-                                                              handleCancelAction={this.handleCancelAction}
-                                                              idPrefix={'redirect-' + index + '-'}
-                                                              statusCodes={statusCodes}
-                                                              validSourceUriPathPattern={validSourceUriPathPattern}
-                                                              defaultStatusCode={initialStatusCodeFilter}/>
-                                            </td>
-                                        </tr>
-                                    )}
+                                            <tr className="redirects-table__single-column-row">
+                                                <td colSpan={columnCount}>
+                                                    <h6>{translate('header.editRedirect', 'Edit redirect')}</h6>
+                                                    <RedirectForm
+                                                        translate={translate}
+                                                        actions={actions}
+                                                        redirect={redirect}
+                                                        notificationHelper={notificationHelper}
+                                                        handleNewRedirect={this.handleNewRedirect}
+                                                        handleUpdatedRedirect={this.handleUpdatedRedirect}
+                                                        handleCancelAction={this.handleCancelAction}
+                                                        idPrefix={'redirect-' + index + '-'}
+                                                        validSourceUriPathPattern={validSourceUriPathPattern}
+                                                    />
+                                                </td>
+                                            </tr>
+                                        )}
                                     </React.Fragment>
-                            ))}
+                                ))}
                             </tbody>
                         </table>
                     </div>
-                ) : <div>{translate('list.empty', 'No redirects found')}</div>}
+                ) : (
+                    <div>{translate('list.empty', 'No redirects found')}</div>
+                )}
             </React.Fragment>
         );
     }

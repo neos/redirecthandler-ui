@@ -1,0 +1,11 @@
+// Custom tooltip (should later be replaced by Neos core feature)
+.redirect-tooltip {
+    position: absolute;
+    padding: 1rem;
+    background-color: #3f3f3f;
+    z-index: 1;
+    margin-left: 1rem;
+    max-width: 300px;
+    white-space: normal;
+    box-shadow: 0 1px 3px 5px rgba(0, 0, 0, .15);
+}

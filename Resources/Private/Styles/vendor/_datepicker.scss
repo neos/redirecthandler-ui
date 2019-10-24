@@ -1,0 +1,51 @@
+@import '../../../../node_modules/react-datepicker/src/stylesheets/datepicker';
+
+.react-datepicker {
+    line-height: initial;
+    background-color: #{$datepicker__background-color};
+
+    &__navigation {
+        &:hover {
+            background-color: transparent;
+        }
+
+        &--next--with-time {
+            right: 10px;
+        }
+    }
+
+    &__day {
+        &:hover {
+            background-color: #{$primaryColor};
+        }
+    }
+
+    &-popper{
+        z-index: 1000;
+
+        &[data-placement^="top"] {
+            .react-datepicker__triangle {
+                border-top-color: #{$datepicker__border-color};
+            }
+        }
+    }
+}
+
+.react-datepicker__time-container {
+    &--with-today-button {
+        border-color: #{$datepicker__border-color};
+        right: -90px;
+    }
+
+    .react-datepicker__time {
+        background-color: #{$datepicker__background-color};
+
+        .react-datepicker__time-box ul.react-datepicker__time-list li.react-datepicker__time-list-item {
+            height: auto;
+
+            &:hover {
+                background-color: #{$primaryColor};
+            }
+        }
+    }
+}

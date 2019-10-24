@@ -1,0 +1,127 @@
+.redirects-table {
+    &-wrap {
+        overflow-x: auto;
+    }
+
+    thead {
+        th {
+            padding: 0 4px 4px 0;
+            white-space: nowrap;
+            cursor: pointer;
+            user-select: none;
+            transition: color .1s ease-in;
+
+            &.redirect-table__heading-actions {
+                text-align: center;
+            }
+
+            &:hover {
+                color: #{$primaryColor};
+            }
+        }
+    }
+
+    tbody {
+        td {
+            padding: 0 4px 0 0;
+            height: auto;
+            white-space: nowrap;
+            text-overflow: ellipsis;
+            overflow: hidden;
+            font-size: 80%;
+
+            .redirects-table__single-column-row & {
+                padding: 1rem;
+                border-top: 0;
+            }
+
+            .redirects-table__row--inactive & {
+                color: #{$inactiveColor};
+            }
+
+            .redirects-table__row.odd & {
+                background-color: #{$alternatingBackgroundColor};
+
+                .neos-button {
+                    &:not(:hover) {
+                        background-color: #{$alternatingBackgroundColor} !important;
+                    }
+                }
+            }
+        }
+
+        .neos-action {
+            width: #{2 * 46px};
+
+            form {
+                display: inline-block;
+            }
+        }
+    }
+
+    &__row {
+        mark {
+            background-color: transparent;
+            font-weight: bold;
+            color: white;
+            text-decoration: underline;
+        }
+
+        &__column-status-code,
+        &__column-hit-count {
+            width: 80px;
+        }
+
+        &__column-status-code {
+            border-left: 3px solid #{$newColor};
+
+            .redirects-table__row--inactive & {
+                border-left: 3px solid #{$inactiveColor};
+            }
+        }
+
+        &__column-comment {
+            max-width: 200px;
+        }
+
+        &__column-source-uri-path,
+        &__column-target-uri-path {
+            min-width: 200px;
+            max-width: 450px;
+
+            .copy-path {
+                opacity: 0;
+                visibility: hidden;
+                cursor: pointer;
+                margin-left: .5rem;
+                transition: color .1s ease-in, opacity .1s ease-in;
+
+                &:hover {
+                    color: #{$primaryColor};
+                }
+            }
+
+            &:hover {
+                .copy-path {
+                    opacity: 1;
+                    visibility: visible;
+                }
+            }
+        }
+
+        &__column-creation-date-time {
+            width: 90px;
+        }
+
+        &--inactive {
+            .redirects-table__row__column-start,
+            .redirects-table__row__column-end {
+                color: #{$warningColor};
+            }
+        }
+
+        .redirect__type {
+            color: #{$inactiveColor};
+        }
+    }
+}

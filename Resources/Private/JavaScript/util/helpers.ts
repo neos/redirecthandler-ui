@@ -5,7 +5,7 @@ const HTML_ESCAPE_MAP: { [index: string]: string } = {
     '<': '&lt;',
     '>': '&gt;',
     '"': '&quot;',
-    '\'': '&#039;'
+    "'": '&#039;',
 };
 
 /**
@@ -39,7 +39,12 @@ export function shortenPath(path: string, maxLength: number): string {
     }
     const pathParts = path.split('/');
     if (pathParts.length > 3) {
-        return pathParts[0] + (pathParts[0].length <= 6 ? '/' + pathParts[1] : '') + '/…/' + pathParts[pathParts.length - 1];
+        return (
+            pathParts[0] +
+            (pathParts[0].length <= 6 ? '/' + pathParts[1] : '') +
+            '/…/' +
+            pathParts[pathParts.length - 1]
+        );
     }
     return path;
 }
@@ -52,8 +57,8 @@ export function shortenPath(path: string, maxLength: number): string {
  */
 export function highlight(text: string, keyword: string): string {
     if (keyword) {
-        keyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
-        const searchRegExp = new RegExp('(' + keyword + ')', 'ig');
+        const cleanKeyword = keyword.replace(/[.*+?^${}()|[\]\\]/g, '\\$&');
+        const searchRegExp = new RegExp('(' + cleanKeyword + ')', 'ig');
         return text.replace(searchRegExp, '<mark>$1</mark>');
     }
     return text;
@@ -85,8 +90,8 @@ function fallbackCopyTextToClipboard(text: string): void {
 
     try {
         document.execCommand('copy');
-    } catch {
-    }
+        // tslint:disable-next-line:no-empty
+    } catch {}
 
     document.body.removeChild(textArea);
 }

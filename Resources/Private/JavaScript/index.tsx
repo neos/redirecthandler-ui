@@ -1,8 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {RedirectList} from './components/RedirectList';
+import { RedirectList } from './components/RedirectList';
 import Redirect from './interfaces/Redirect';
+import NeosNotification from './interfaces/NeosNotification';
+import NeosI18n from './interfaces/NeosI18n';
+import { RedirectProvider } from './providers/RedirectProvider';
 
 import '../Styles/styles.scss';
 
@@ -10,18 +13,8 @@ import '../Styles/styles.scss';
 declare global {
     interface Window {
         Typo3Neos: {
-            I18n: {
-                translate: Function;
-                addObserver: Function;
-                initialized: boolean;
-            };
-            Notification: {
-                notice: Function;
-                ok: Function;
-                error: Function;
-                warning: Function;
-                info: Function;
-            };
+            I18n: NeosI18n;
+            Notification: NeosNotification;
         };
     }
 }
@@ -37,7 +30,7 @@ window.onload = async (): Promise<void> => {
         return;
     }
 
-    const redirects: Array<Redirect> = JSON.parse(redirectsList.dataset.redirectsJson);
+    const redirects: Redirect[] = JSON.parse(redirectsList.dataset.redirectsJson);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
     const actions: {
         delete: string;
@@ -45,11 +38,9 @@ window.onload = async (): Promise<void> => {
         update: string;
     } = JSON.parse(redirectsList.dataset.actions);
     const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
+    const hostOptions: string[] = JSON.parse(redirectsList.dataset.hostOptions);
 
-    const {
-        csrfToken,
-        validSourceUriPathPattern
-    } = redirectsList.dataset;
+    const { csrfToken, validSourceUriPathPattern } = redirectsList.dataset;
 
     const initialTypeFilter = redirectsList.dataset.initialTypeFilter || '';
     const defaultStatusCode = parseInt(redirectsList.dataset.defaultStatusCode, 10);
@@ -58,29 +49,30 @@ window.onload = async (): Promise<void> => {
         initialStatusCodeFilter = -1;
     }
 
-    const {I18n, Notification} = window.Typo3Neos;
+    const { I18n, Notification } = window.Typo3Neos;
 
     /**
      * @param id
      * @param label
      * @param args
      */
-    const translate = (id: string, label = '', args: Array<any> = []): string => {
+    const translate = (id: string, label: string = '', args: any[] = []): string => {
         return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
 
     ReactDOM.render(
-        <RedirectList
-            redirects={redirects}
-            csrfToken={csrfToken}
-            actions={actions}
-            showHitCount={showHitCount}
-            translate={translate}
-            defaultStatusCode={defaultStatusCode}
-            statusCodes={statusCodes}
-            validSourceUriPathPattern={validSourceUriPathPattern}
-            notificationHelper={Notification}
-            initialTypeFilter={initialTypeFilter}
-            initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
+        <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
+            <RedirectList
+                redirects={redirects}
+                actions={actions}
+                showHitCount={showHitCount}
+                translate={translate}
+                validSourceUriPathPattern={validSourceUriPathPattern}
+                notificationHelper={Notification}
+                initialTypeFilter={initialTypeFilter}
+                initialStatusCodeFilter={initialStatusCodeFilter}
+            />
+        </RedirectProvider>,
+        redirectsList,
+    );
 };
-
