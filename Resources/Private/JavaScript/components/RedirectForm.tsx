@@ -6,22 +6,20 @@ import NeosNotification from '../interfaces/NeosNotification';
 import { formatReadable, formatW3CString } from '../util/datetime';
 import { parseURL } from '../util/url';
 import { statusCodeSupportsTarget } from '../util/helpers';
+import { RedirectContext } from '../providers/RedirectProvider';
 
 const MAX_INPUT_LENGTH = 255;
 
 export interface RedirectFormProps {
     translate: (id: string, label: string, args?: any[]) => string;
     notificationHelper: NeosNotification;
-    csrfToken: string;
     actions: {
         create: string;
         update: string;
     };
     redirect: Redirect;
     idPrefix: string;
-    statusCodes: { [index: string]: string };
     validSourceUriPathPattern: string;
-    defaultStatusCode: number;
     handleNewRedirect: (changedRedirects: Redirect[]) => void;
     handleUpdatedRedirect: (changedRedirects: Redirect[], oldRedirect: Redirect) => void;
     handleCancelAction: () => void;
@@ -54,11 +52,12 @@ const initialState: RedirectFormState = {
 };
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
+    static contextType = RedirectContext;
+
     constructor(props: RedirectFormProps) {
         super(props);
         this.state = {
             ...initialState,
-            statusCode: props.defaultStatusCode,
             ...props.redirect,
         };
     }
@@ -73,16 +72,17 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         const {
             redirect,
-            csrfToken,
             notificationHelper,
             actions,
             handleNewRedirect,
             handleUpdatedRedirect,
-            defaultStatusCode,
             translate,
         } = this.props;
 
+        const { csrfToken, defaultStatusCode } = this.context;
+
         const { startDateTime, endDateTime, host, statusCode, sourceUriPath, targetUriPath } = this.state;
+        const finalStatusCode = statusCode > 0 ? statusCode : defaultStatusCode;
 
         if (!host || host === location.host) {
             const parsedSourceUrl: URL = parseURL(sourceUriPath, location.origin);
@@ -101,7 +101,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalHost: redirect ? redirect.host : null,
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
-                targetUriPath: statusCodeSupportsTarget(statusCode) ? targetUriPath : '/',
+                targetUriPath: statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
                 startDateTime: startDateTime ? formatW3CString(new Date(startDateTime)) : null,
                 endDateTime: endDateTime ? formatW3CString(new Date(endDateTime)) : null,
             },
@@ -258,14 +258,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     };
 
     public render(): React.ReactElement {
-        const {
-            translate,
-            redirect,
-            statusCodes,
-            idPrefix,
-            validSourceUriPathPattern,
-            handleCancelAction,
-        } = this.props;
+        const { translate, redirect, idPrefix, validSourceUriPathPattern, handleCancelAction } = this.props;
+
+        const { statusCodes, hostOptions } = this.context;
 
         const {
             host,
@@ -290,10 +285,20 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             name="host"
                             id={idPrefix + 'host'}
                             type="text"
+                            list="redirect-hosts"
                             placeholder="www.example.org"
                             value={host || ''}
                             onChange={this.handleInputChange}
                         />
+                        {hostOptions && (
+                            <datalist id="redirect-hosts">
+                                {hostOptions.map((hostOption: string) => (
+                                    <option key={hostOption} value={hostOption}>
+                                        {hostOption}
+                                    </option>
+                                ))}
+                            </datalist>
+                        )}
                     </div>
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'sourceUriPath'}>

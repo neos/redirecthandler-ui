@@ -1,10 +1,11 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import {RedirectList} from './components/RedirectList';
+import { RedirectList } from './components/RedirectList';
 import Redirect from './interfaces/Redirect';
 import NeosNotification from './interfaces/NeosNotification';
 import NeosI18n from './interfaces/NeosI18n';
+import { RedirectProvider } from './providers/RedirectProvider';
 
 import '../Styles/styles.scss';
 
@@ -37,11 +38,9 @@ window.onload = async (): Promise<void> => {
         update: string;
     } = JSON.parse(redirectsList.dataset.actions);
     const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
+    const hostOptions: string[] = JSON.parse(redirectsList.dataset.hostOptions);
 
-    const {
-        csrfToken,
-        validSourceUriPathPattern
-    } = redirectsList.dataset;
+    const { csrfToken, validSourceUriPathPattern } = redirectsList.dataset;
 
     const initialTypeFilter = redirectsList.dataset.initialTypeFilter || '';
     const defaultStatusCode = parseInt(redirectsList.dataset.defaultStatusCode, 10);
@@ -50,7 +49,7 @@ window.onload = async (): Promise<void> => {
         initialStatusCodeFilter = -1;
     }
 
-    const {I18n, Notification} = window.Typo3Neos;
+    const { I18n, Notification } = window.Typo3Neos;
 
     /**
      * @param id
@@ -62,17 +61,18 @@ window.onload = async (): Promise<void> => {
     };
 
     ReactDOM.render(
-        <RedirectList
-            redirects={redirects}
-            csrfToken={csrfToken}
-            actions={actions}
-            showHitCount={showHitCount}
-            translate={translate}
-            defaultStatusCode={defaultStatusCode}
-            statusCodes={statusCodes}
-            validSourceUriPathPattern={validSourceUriPathPattern}
-            notificationHelper={Notification}
-            initialTypeFilter={initialTypeFilter}
-            initialStatusCodeFilter={initialStatusCodeFilter}/>, redirectsList);
+        <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
+            <RedirectList
+                redirects={redirects}
+                actions={actions}
+                showHitCount={showHitCount}
+                translate={translate}
+                validSourceUriPathPattern={validSourceUriPathPattern}
+                notificationHelper={Notification}
+                initialTypeFilter={initialTypeFilter}
+                initialStatusCodeFilter={initialStatusCodeFilter}
+            />
+        </RedirectProvider>,
+        redirectsList,
+    );
 };
-

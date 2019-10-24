@@ -1,5 +1,6 @@
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
     redirectsJson = '[]'
+    hostOptions = '[]'
     csrfToken = ''
 
     importAction = Neos.Fusion:UriBuilder {
@@ -12,7 +13,10 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
-                <Neos.RedirectHandler.Ui:Component.Redirect.List redirectsJson={props.redirectsJson} csrfToken={props.csrfToken}/>
+                <Neos.RedirectHandler.Ui:Component.Redirect.List
+                        redirectsJson={props.redirectsJson}
+                        hostOptions={props.hostOptions}
+                        csrfToken={props.csrfToken}/>
             </div>
 
             <div class="neos-footer">
