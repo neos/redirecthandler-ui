@@ -62,6 +62,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         };
     }
 
+    public componentDidMount(): void {
+        // Context cannot be accessed in the constructor therefore set the default here is necessary
+        if (this.state.statusCode === -1) {
+            this.setState({ statusCode: this.context.defaultStatusCode });
+        }
+    }
+
     /**
      * Edits an existing redirect or creates a new one
      *
