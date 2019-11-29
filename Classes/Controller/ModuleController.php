@@ -152,7 +152,7 @@ class ModuleController extends AbstractModuleController
         $redirectsJson = '';
         /** @var RedirectInterface $redirect */
         foreach ($redirects as $redirect) {
-            $usedHostOptions[$redirect->getHost()] = true;
+            $usedHostOptions[] = $redirect->getHost();
             $redirectsJson .= json_encode($redirect) . ',';
         }
         $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
@@ -161,7 +161,7 @@ class ModuleController extends AbstractModuleController
             return $domain->getHostname();
         }, $this->domainRepository->findAll()->toArray());
 
-        $hostOptions = array_filter(array_merge($domainOptions, array_keys($usedHostOptions)));
+        $hostOptions = array_filter(array_unique(array_merge($domainOptions, $usedHostOptions)));
         sort($hostOptions);
 
         $this->view->assignMultiple([
