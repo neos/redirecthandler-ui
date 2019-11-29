@@ -14,7 +14,6 @@ namespace Neos\RedirectHandler\Ui\Controller;
  * source code.
  */
 
-use AppendIterator;
 use DateTime;
 use Exception;
 use League\Csv\CannotInsertRecord;
