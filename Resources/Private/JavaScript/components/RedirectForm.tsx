@@ -53,6 +53,7 @@ const initialState: RedirectFormState = {
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
     static contextType = RedirectContext;
+    protected sourceUriPathInputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: RedirectFormProps) {
         super(props);
@@ -60,6 +61,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             ...initialState,
             ...props.redirect,
         };
+
+        this.sourceUriPathInputRef = React.createRef();
     }
 
     public componentDidMount(): void {
@@ -133,6 +136,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                         ...redirect,
                         isSendingData: false,
                     });
+
+                    this.sourceUriPathInputRef.current.focus();
                 }
 
                 if (changedRedirects.length > 1) {
@@ -327,6 +332,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                         <input
                             name="sourceUriPath"
                             id={idPrefix + 'sourceUriPath'}
+                            ref={this.sourceUriPathInputRef}
                             type="text"
                             title={validSourceUriPathPattern}
                             onChange={this.handleInputChange}
