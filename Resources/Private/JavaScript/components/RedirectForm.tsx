@@ -207,7 +207,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      */
     private renderDatePicker = (property: string, dateTimeString: string, placeholder: string): React.ReactElement => {
         const { translate } = this.props;
-        const dateTime = dateTimeString ? new Date(dateTimeString) : null;
+        // We need to modify the format to make it valid for all browsers (Safari, Firefox, etc...)
+        const validDateTimeString = dateTimeString.replace(' ', 'T') + 'Z';
+        const dateTime = dateTimeString ? new Date(validDateTimeString) : null;
 
         return (
             <DatePicker
