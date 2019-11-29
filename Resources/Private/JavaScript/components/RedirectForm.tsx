@@ -132,8 +132,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     // Reset form when a redirect was created but not when it was just updated
                     this.setState({
                         ...initialState,
-                        statusCode: defaultStatusCode,
-                        ...redirect,
+                        statusCode: this.state.statusCode,
                         isSendingData: false,
                     });
 
