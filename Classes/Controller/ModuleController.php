@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Neos\RedirectHandler\Ui\Controller;
 
@@ -238,14 +238,16 @@ class ModuleController extends AbstractModuleController
             /** @var RedirectInterface $createdRedirect */
             $createdRedirect = $changedRedirects[0];
 
-            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges', [
-                $createdRedirect->getHost(),
-                $createdRedirect->getSourceUriPath(),
-                $createdRedirect->getTargetUriPath(),
-                $createdRedirect->getStatusCode()
-            ]);
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges',
+                [
+                    $createdRedirect->getHost(),
+                    $createdRedirect->getSourceUriPath(),
+                    $createdRedirect->getTargetUriPath(),
+                    $createdRedirect->getStatusCode()
+                ]);
 
-            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+            $this->addFlashMessage($message, $messageTitle,
+                count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
         if ($this->request->getFormat() === 'json') {
@@ -328,14 +330,16 @@ class ModuleController extends AbstractModuleController
             /** @var RedirectInterface $createdRedirect */
             $createdRedirect = $changedRedirects[0];
 
-            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges', [
-                $createdRedirect->getHost(),
-                $createdRedirect->getSourceUriPath(),
-                $createdRedirect->getTargetUriPath(),
-                $createdRedirect->getStatusCode()
-            ]);
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges',
+                [
+                    $createdRedirect->getHost(),
+                    $createdRedirect->getSourceUriPath(),
+                    $createdRedirect->getTargetUriPath(),
+                    $createdRedirect->getStatusCode()
+                ]);
 
-            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+            $this->addFlashMessage($message, $messageTitle,
+                count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
         if ($this->request->getFormat() === 'json') {
