@@ -188,7 +188,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      * @param datetime
      */
     private handleDatePickerChange(property: string, datetime: Date | string): void {
-        const formattedValue = typeof datetime === 'string' ? datetime : formatReadable(datetime);
+        const formattedValue = typeof datetime === 'string' ? datetime : datetime ? formatReadable(datetime) : '';
         this.setState({
             [property]: formattedValue,
         });
