@@ -294,6 +294,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             type="text"
                             list="redirect-hosts"
                             placeholder="www.example.org"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck={false}
                             value={host || ''}
                             onChange={this.handleInputChange}
                         />
@@ -330,6 +333,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             autoFocus={true}
                             required={true}
                             placeholder="the-old-url/product-a"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck={false}
                             pattern={validSourceUriPathPattern}
                             value={sourceUriPath || ''}
                         />
@@ -372,6 +379,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 type="text"
                                 required={true}
                                 placeholder="(https://)the-new-url/product-a"
+                                autoComplete="off"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                spellCheck={false}
                                 value={targetUriPath || ''}
                                 onChange={this.handleInputChange}
                             />
