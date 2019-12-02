@@ -1,6 +1,6 @@
 <?php
 
-declare(strict_types = 1);
+declare(strict_types=1);
 
 namespace Neos\RedirectHandler\Ui\Controller;
 
@@ -14,7 +14,6 @@ namespace Neos\RedirectHandler\Ui\Controller;
  * source code.
  */
 
-use AppendIterator;
 use DateTime;
 use Exception;
 use League\Csv\CannotInsertRecord;
@@ -152,7 +151,7 @@ class ModuleController extends AbstractModuleController
         $redirectsJson = '';
         /** @var RedirectInterface $redirect */
         foreach ($redirects as $redirect) {
-            $usedHostOptions[$redirect->getHost()] = true;
+            $usedHostOptions[] = $redirect->getHost();
             $redirectsJson .= json_encode($redirect) . ',';
         }
         $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
@@ -161,7 +160,7 @@ class ModuleController extends AbstractModuleController
             return $domain->getHostname();
         }, $this->domainRepository->findAll()->toArray());
 
-        $hostOptions = array_filter(array_merge($domainOptions, array_keys($usedHostOptions)));
+        $hostOptions = array_filter(array_unique(array_merge($domainOptions, $usedHostOptions)));
         sort($hostOptions);
 
         $this->view->assignMultiple([
@@ -238,14 +237,16 @@ class ModuleController extends AbstractModuleController
             /** @var RedirectInterface $createdRedirect */
             $createdRedirect = $changedRedirects[0];
 
-            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges', [
-                $createdRedirect->getHost(),
-                $createdRedirect->getSourceUriPath(),
-                $createdRedirect->getTargetUriPath(),
-                $createdRedirect->getStatusCode()
-            ]);
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectCreated' : 'warning.redirectCreatedWithChanges',
+                [
+                    $createdRedirect->getHost(),
+                    $createdRedirect->getSourceUriPath(),
+                    $createdRedirect->getTargetUriPath(),
+                    $createdRedirect->getStatusCode()
+                ]);
 
-            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+            $this->addFlashMessage($message, $messageTitle,
+                count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
         if ($this->request->getFormat() === 'json') {
@@ -328,14 +329,16 @@ class ModuleController extends AbstractModuleController
             /** @var RedirectInterface $createdRedirect */
             $createdRedirect = $changedRedirects[0];
 
-            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges', [
-                $createdRedirect->getHost(),
-                $createdRedirect->getSourceUriPath(),
-                $createdRedirect->getTargetUriPath(),
-                $createdRedirect->getStatusCode()
-            ]);
+            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges',
+                [
+                    $createdRedirect->getHost(),
+                    $createdRedirect->getSourceUriPath(),
+                    $createdRedirect->getTargetUriPath(),
+                    $createdRedirect->getStatusCode()
+                ]);
 
-            $this->addFlashMessage($message, $messageTitle, count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
+            $this->addFlashMessage($message, $messageTitle,
+                count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
         }
 
         if ($this->request->getFormat() === 'json') {

@@ -1,19 +1,19 @@
 export function formatReadable(date: Date): string {
-    const year: number | string = date.getFullYear();
-    let month: number | string = date.getMonth();
+    const year: number | string = date.getUTCFullYear();
+    let month: number | string = date.getUTCMonth();
     month++;
     if (month < 10) {
         month = '0' + month;
     }
-    let day: number | string = date.getDate();
+    let day: number | string = date.getUTCDate();
     if (day < 10) {
         day = '0' + day;
     }
-    let hours: number | string = date.getHours();
+    let hours: number | string = date.getUTCHours();
     if (hours < 10) {
         hours = '0' + hours;
     }
-    let minutes: number | string = date.getMinutes();
+    let minutes: number | string = date.getUTCMinutes();
     if (minutes < 10) {
         minutes = '0' + minutes;
     }

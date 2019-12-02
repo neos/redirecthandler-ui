@@ -53,6 +53,7 @@ const initialState: RedirectFormState = {
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
     static contextType = RedirectContext;
+    protected sourceUriPathInputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: RedirectFormProps) {
         super(props);
@@ -60,6 +61,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             ...initialState,
             ...props.redirect,
         };
+
+        this.sourceUriPathInputRef = React.createRef();
     }
 
     public componentDidMount(): void {
@@ -102,6 +105,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             }
         }
 
+        const validStartDateTimeString = startDateTime.indexOf('T') === -1 ? startDateTime.replace(' ', 'T') + 'Z' : startDateTime;
+        const validStartDateTime = startDateTime ? new Date(validStartDateTimeString) : null;
+        const validEndDateTimeString = endDateTime.indexOf('T') === -1 ? endDateTime.replace(' ', 'T') + 'Z' : endDateTime;
+        const validEndDateTime = endDateTime ? new Date(validEndDateTimeString) : null;
+
         const data = {
             __csrfToken: csrfToken,
             moduleArguments: {
@@ -109,8 +117,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
                 targetUriPath: statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
-                startDateTime: startDateTime ? formatW3CString(new Date(startDateTime)) : null,
-                endDateTime: endDateTime ? formatW3CString(new Date(endDateTime)) : null,
+                startDateTime: validStartDateTime ? formatW3CString(validStartDateTime) : null,
+                endDateTime: validEndDateTime ? formatW3CString(validEndDateTime) : null,
             },
         };
 
@@ -129,10 +137,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                     // Reset form when a redirect was created but not when it was just updated
                     this.setState({
                         ...initialState,
-                        statusCode: defaultStatusCode,
-                        ...redirect,
+                        statusCode: this.state.statusCode,
                         isSendingData: false,
                     });
+
+                    this.sourceUriPathInputRef.current.focus();
                 }
 
                 if (changedRedirects.length > 1) {
@@ -188,7 +197,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      * @param datetime
      */
     private handleDatePickerChange(property: string, datetime: Date | string): void {
-        const formattedValue = typeof datetime === 'string' ? datetime : formatReadable(datetime);
+        const formattedValue = typeof datetime === 'string' ? datetime : datetime ? formatReadable(datetime) : '';
         this.setState({
             [property]: formattedValue,
         });
@@ -203,7 +212,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      */
     private renderDatePicker = (property: string, dateTimeString: string, placeholder: string): React.ReactElement => {
         const { translate } = this.props;
-        const dateTime = dateTimeString ? new Date(dateTimeString) : null;
+        // We need to modify the format to make it valid for all browsers (Safari, Firefox, etc...)
+        const validDateTimeString = dateTimeString.indexOf('T') === -1 ? dateTimeString.replace(' ', 'T') + 'Z' : dateTimeString;
+        const dateTime = dateTimeString ? new Date(validDateTimeString) : null;
 
         return (
             <DatePicker
@@ -294,6 +305,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             type="text"
                             list="redirect-hosts"
                             placeholder="www.example.org"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck={false}
                             value={host || ''}
                             onChange={this.handleInputChange}
                         />
@@ -324,12 +338,17 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                         <input
                             name="sourceUriPath"
                             id={idPrefix + 'sourceUriPath'}
+                            ref={this.sourceUriPathInputRef}
                             type="text"
                             title={validSourceUriPathPattern}
                             onChange={this.handleInputChange}
                             autoFocus={true}
                             required={true}
                             placeholder="the-old-url/product-a"
+                            autoComplete="off"
+                            autoCorrect="off"
+                            autoCapitalize="off"
+                            spellCheck={false}
                             pattern={validSourceUriPathPattern}
                             value={sourceUriPath || ''}
                         />
@@ -372,6 +391,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 type="text"
                                 required={true}
                                 placeholder="(https://)the-new-url/product-a"
+                                autoComplete="off"
+                                autoCorrect="off"
+                                autoCapitalize="off"
+                                spellCheck={false}
                                 value={targetUriPath || ''}
                                 onChange={this.handleInputChange}
                             />
