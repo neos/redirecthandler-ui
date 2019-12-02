@@ -105,6 +105,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             }
         }
 
+        const validStartDateTimeString = startDateTime.indexOf('T') === -1 ? startDateTime.replace(' ', 'T') + 'Z' : startDateTime;
+        const validStartDateTime = startDateTime ? new Date(validStartDateTimeString) : null;
+        const validEndDateTimeString = endDateTime.indexOf('T') === -1 ? endDateTime.replace(' ', 'T') + 'Z' : endDateTime;
+        const validEndDateTime = endDateTime ? new Date(validEndDateTimeString) : null;
+
         const data = {
             __csrfToken: csrfToken,
             moduleArguments: {
@@ -112,8 +117,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
                 targetUriPath: statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
-                startDateTime: startDateTime ? formatW3CString(new Date(startDateTime)) : null,
-                endDateTime: endDateTime ? formatW3CString(new Date(endDateTime)) : null,
+                startDateTime: validStartDateTime ? formatW3CString(validStartDateTime) : null,
+                endDateTime: validEndDateTime ? formatW3CString(validEndDateTime) : null,
             },
         };
 
@@ -208,7 +213,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     private renderDatePicker = (property: string, dateTimeString: string, placeholder: string): React.ReactElement => {
         const { translate } = this.props;
         // We need to modify the format to make it valid for all browsers (Safari, Firefox, etc...)
-        const validDateTimeString = dateTimeString.replace(' ', 'T') + 'Z';
+        const validDateTimeString = dateTimeString.indexOf('T') === -1 ? dateTimeString.replace(' ', 'T') + 'Z' : dateTimeString;
         const dateTime = dateTimeString ? new Date(validDateTimeString) : null;
 
         return (
