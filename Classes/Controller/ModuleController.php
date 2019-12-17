@@ -406,6 +406,10 @@ class ModuleController extends AbstractModuleController
      */
     public function exportAction(): void
     {
+        $csrfToken = $this->securityContext->getCsrfProtectionToken();
+        $this->view->assignMultiple([
+            'csrfToken' => $csrfToken,
+        ]);
     }
 
     /**
