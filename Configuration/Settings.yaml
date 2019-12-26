@@ -37,7 +37,7 @@ Neos:
             label: 'Neos.RedirectHandler.Ui:Modules:module.label'
             controller: '\Neos\RedirectHandler\Ui\Controller\ModuleController'
             description: 'Neos.RedirectHandler.Ui:Modules:module.description'
-            icon: 'icon-mail-forward'
+            icon: 'fas fa-share'
             resource: 'Neos.RedirectHandler.Ui:Backend.Module'
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
             additionalResources:
