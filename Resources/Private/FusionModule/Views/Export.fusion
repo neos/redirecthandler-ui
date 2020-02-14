@@ -1,4 +1,6 @@
 prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Component) {
+    csrfToken = ''
+
     indexAction = Neos.Fusion:UriBuilder {
         action = 'index'
     }
@@ -12,7 +14,8 @@ prototype(Neos.RedirectHandler.Ui:Module.Export) < prototype(Neos.Fusion:Compone
     renderer = afx`
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
-                <form action={props.exportCsvAction} method="GET" class="export-redirects-form">
+                <form action={props.exportCsvAction} method="POST" class="export-redirects-form">
+                    <input type="hidden" name="__csrfToken" value={String.htmlSpecialChars(props.csrfToken)}/>
                     <div class="neos-control-group neos-control-group--checkbox">
                         <label class="neos-control-label" for="includeInactiveRedirects">
                             <input name="moduleArguments[includeInactiveRedirects]" id="includeInactiveRedirects"

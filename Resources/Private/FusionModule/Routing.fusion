@@ -15,7 +15,7 @@ Neos.RedirectHandler.Ui.ModuleController {
     `
 
     export = afx`
-        <Neos.RedirectHandler.Ui:Module.Export/>
+        <Neos.RedirectHandler.Ui:Module.Export csrfToken={csrfToken}/>
         <Neos.RedirectHandler.Ui:Component.FlashMessages flashMessages={flashMessages}/>
     `
 }
