@@ -1,5 +1,5 @@
 import * as React from 'react';
-import { useContext, createContext, ComponentType } from 'react';
+import { useContext, createContext } from 'react';
 
 export interface RedirectContextInterface {
     statusCodes: { [index: string]: string };

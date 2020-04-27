@@ -1,9 +1,9 @@
 import * as React from 'react';
-import Redirect from '../interfaces/Redirect';
-import { RedirectListItem } from './RedirectListItem';
 import { FormEvent } from 'react';
-import { copyTextToClipboard, isSameRedirectAs } from '../util/helpers';
-import NeosNotification from '../interfaces/NeosNotification';
+
+import { Helpers } from '../util';
+import { Redirect, NeosNotification } from '../interfaces';
+import { RedirectListItem } from './RedirectListItem';
 import { RedirectForm } from './RedirectForm';
 import { RedirectContext } from '../providers/RedirectProvider';
 
@@ -93,7 +93,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param searchValue
      */
     private handleUpdateSearch(searchValue: string): void {
-        const { redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage } = this.state;
+        const {
+            redirects,
+            filterStatusCode,
+            filterType,
+            redirectCountByStatusCode,
+            redirectCountByType,
+            currentPage,
+        } = this.state;
         let filteredRedirects: Redirect[] = redirects;
 
         const cleanSearchValue = searchValue.trim().toLowerCase();
@@ -339,7 +346,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         redirects.forEach((redirect, index, list) => {
             const changedRedirectIndex = changedRedirects.findIndex(changedRedirect =>
-                isSameRedirectAs(changedRedirect, redirect),
+                Helpers.isSameRedirectAs(changedRedirect, redirect),
             );
             if (changedRedirectIndex >= 0) {
                 list[index] = changedRedirects[changedRedirectIndex];
@@ -377,7 +384,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param text
      */
     private handleCopyPathAction = (text: string): void => {
-        copyTextToClipboard(text);
+        Helpers.copyTextToClipboard(text);
         this.props.notificationHelper.info(this.props.translate('list.action.copyPath', 'Copied path to clipboard'));
     };
 
