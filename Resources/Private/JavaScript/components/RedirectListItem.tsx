@@ -56,10 +56,10 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
         const parsedEndDateTime = redirect.endDateTime ? Date.parse(redirect.endDateTime) : null;
         const now = Date.now();
 
+        const isNotActiveYet = parsedStartDateTime && parsedStartDateTime > now;
+        const isExpired = parsedEndDateTime && parsedEndDateTime < now;
+
         const rowBaseClass = rowClassNames[0];
-        if ((parsedStartDateTime && parsedStartDateTime > now) || (parsedEndDateTime && parsedEndDateTime < now)) {
-            rowClassNames.push(rowBaseClass + '--inactive');
-        }
 
         return (
             <tr className={rowClassNames.join(' ')}>
@@ -69,7 +69,16 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 >
                     {redirect.statusCode}
                 </td>
-                <td>{redirect.host || '*'}</td>
+                <td>
+                    {redirect.host || (
+                        <span
+                            className="neos-label neos-label-info"
+                            title={translate('host.allDomains.title', 'This redirect applies to all domains')}
+                        >
+                            {translate('host.allDomains', 'All')}
+                        </span>
+                    )}
+                </td>
                 <td title={redirect.sourceUriPath} className={rowBaseClass + '__column-source-uri-path'}>
                     <span dangerouslySetInnerHTML={{ __html: this.renderPath(redirect.sourceUriPath) }} />
                     {redirect.sourceUriPath && (
@@ -95,10 +104,14 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                     )}
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
-                    {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
+                    <span className={isNotActiveYet && 'neos-label neos-label-warning'}>
+                        {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
+                    </span>
                 </td>
                 <td className={rowBaseClass + '__column-end'}>
-                    {redirect.endDateTime ? new Date(redirect.endDateTime).toLocaleString() : EMPTY_VALUE}
+                    <span className={isExpired && 'neos-label neos-label-important'}>
+                        {redirect.endDateTime ? new Date(redirect.endDateTime).toLocaleString() : EMPTY_VALUE}
+                    </span>
                 </td>
                 <td
                     className={rowBaseClass + '__column-comment'}

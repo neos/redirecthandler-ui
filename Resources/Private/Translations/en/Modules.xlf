@@ -114,6 +114,12 @@
             <trans-unit id="host" xml:space="preserve">
                 <source>Origin domain</source>
             </trans-unit>
+            <trans-unit id="host.allDomains.title" xml:space="preserve">
+                <source>This redirect applies to all domains</source>
+            </trans-unit>
+            <trans-unit id="host.allDomains" xml:space="preserve">
+                <source>All</source>
+            </trans-unit>
             <trans-unit id="csvFile" xml:space="preserve">
                 <source>CSV File</source>
             </trans-unit>

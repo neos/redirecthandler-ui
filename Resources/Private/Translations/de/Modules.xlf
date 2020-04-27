@@ -150,6 +150,14 @@
                 <source>Origin domain</source>
                 <target>Ursprungsdomäne</target>
             </trans-unit>
+            <trans-unit id="host.allDomains.title" xml:space="preserve">
+                <source>This redirect applies to all domains</source>
+                <target>Diese Umleitung betrifft alle Domains</target>
+            </trans-unit>
+            <trans-unit id="host.allDomains" xml:space="preserve">
+                <source>All</source>
+                <target>Alle</target>
+            </trans-unit>
             <trans-unit id="csvFile" xml:space="preserve">
                 <source>CSV File</source>
                 <target>CSV Datei</target>

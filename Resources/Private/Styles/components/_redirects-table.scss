@@ -48,6 +48,23 @@
                     }
                 }
             }
+
+            .neos-label {
+                user-select: none;
+                font-weight: bold !important;
+
+                &-info {
+                    background-color: #{$primaryColor} !important;
+                }
+
+                &-warning {
+                    background-color: #{$deletedColor} !important;
+                }
+
+                &-important {
+                    background-color: #{$warningColor} !important;
+                }
+            }
         }
 
         .neos-action {
@@ -111,13 +128,6 @@
 
         &__column-creation-date-time {
             width: 90px;
-        }
-
-        &--inactive {
-            .redirects-table__row__column-start,
-            .redirects-table__row__column-end {
-                color: #{$warningColor};
-            }
         }
 
         .redirect__type {
