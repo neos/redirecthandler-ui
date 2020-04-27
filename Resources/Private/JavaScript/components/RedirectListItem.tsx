@@ -104,12 +104,12 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                     )}
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
-                    <span className={isNotActiveYet && 'neos-label neos-label-warning'}>
+                    <span className={isNotActiveYet ? 'neos-label neos-label-warning' : ''}>
                         {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
                     </span>
                 </td>
                 <td className={rowBaseClass + '__column-end'}>
-                    <span className={isExpired && 'neos-label neos-label-important'}>
+                    <span className={isExpired ? 'neos-label neos-label-important' : ''}>
                         {redirect.endDateTime ? new Date(redirect.endDateTime).toLocaleString() : EMPTY_VALUE}
                     </span>
                 </td>

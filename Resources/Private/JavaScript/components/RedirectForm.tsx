@@ -5,6 +5,7 @@ import DatePicker from 'react-datepicker';
 import { NeosNotification, Redirect } from '../interfaces';
 import { DateTimeUtil, UrlUtil, Helpers } from '../util';
 import { RedirectContext } from '../providers/RedirectProvider';
+import { Tooltip } from './index';
 
 const MAX_INPUT_LENGTH = 255;
 
@@ -264,20 +265,6 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         this.setState({ activeHelpMessage: activeHelpMessage === identifier ? '' : identifier });
     };
 
-    /**
-     * Renders a tooltip with the given caption and it will close when clicked
-     *
-     * @param identifier
-     * @param caption
-     */
-    private renderTooltip = (identifier: string, caption: string): React.ReactElement => {
-        return (
-            <div role="tooltip" onClick={() => this.toggleHelpMessage(identifier)} className="redirect-tooltip">
-                {caption}
-            </div>
-        );
-    };
-
     public render(): React.ReactElement {
         const { translate, redirect, idPrefix, validSourceUriPathPattern, handleCancelAction } = this.props;
 
@@ -332,11 +319,12 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 className={'fas fa-question-circle'}
                                 onClick={() => this.toggleHelpMessage('sourceUriPath')}
                             />
-                            {activeHelpMessage === 'sourceUriPath' &&
-                                this.renderTooltip(
-                                    sourceUriPath,
-                                    translate('sourceUriPath.help', 'Explanation of the source path'),
-                                )}
+                            {activeHelpMessage === 'sourceUriPath' && (
+                                <Tooltip
+                                    caption={translate('sourceUriPath.help', 'Explanation of the source path')}
+                                    onClick={() => this.toggleHelpMessage(sourceUriPath)}
+                                />
+                            )}
                         </label>
                         <input
                             name="sourceUriPath"
