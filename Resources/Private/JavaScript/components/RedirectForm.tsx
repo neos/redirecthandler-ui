@@ -91,8 +91,12 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         const { csrfToken, defaultStatusCode } = this.context;
 
-        const { startDateTime, endDateTime, host, statusCode, sourceUriPath, targetUriPath } = this.state;
+        const { startDateTime, endDateTime, statusCode, sourceUriPath, targetUriPath } = this.state;
+        let { host } = this.state;
         const finalStatusCode = statusCode > 0 ? statusCode : defaultStatusCode;
+
+        // Replace a single asterisk with an empty value to match any domain
+        host = host && host.trim() === '*' ? '' : host;
 
         if (!host || host === location.host) {
             const parsedSourceUrl: URL = UrlUtil.parseURL(sourceUriPath, location.origin);
@@ -118,6 +122,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalHost: redirect ? redirect.host : null,
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
+                host,
                 targetUriPath: Helpers.statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
                 startDateTime: validStartDateTime ? DateTimeUtil.formatW3CString(validStartDateTime) : null,
                 endDateTime: validEndDateTime ? DateTimeUtil.formatW3CString(validEndDateTime) : null,
