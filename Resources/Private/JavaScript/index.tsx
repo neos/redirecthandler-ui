@@ -1,10 +1,8 @@
 import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
-import { RedirectList } from './components/RedirectList';
-import Redirect from './interfaces/Redirect';
-import NeosNotification from './interfaces/NeosNotification';
-import NeosI18n from './interfaces/NeosI18n';
+import { RedirectList } from './components';
+import { Redirect, NeosNotification, NeosI18n } from './interfaces';
 import { RedirectProvider } from './providers/RedirectProvider';
 
 import '../Styles/styles.scss';

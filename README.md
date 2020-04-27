@@ -44,8 +44,8 @@ is built with *React* and *Typescript*.
 #### Recompiling the js and css parts
 
 1. Use *nvm* so you have the correct *npm* version.
-2. Run `npm install` in the package folder.
-3. Run `npm run watch` during development or `npm run build` for a new release.
+2. Run `yarn` in the package folder.
+3. Run `yarn watch` during development or `yarn build` for a new release.
              
 ## License
 

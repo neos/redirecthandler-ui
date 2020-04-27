@@ -1,7 +1,9 @@
 import * as React from 'react';
-import Redirect from '../interfaces/Redirect';
-import { highlight, shortenPath, escapeHtml } from '../util/helpers';
 import { FormEvent } from 'react';
+
+import { Redirect } from '../interfaces';
+import { highlight, shortenPath, escapeHtml } from '../util/helpers';
+import { Icon } from './index';
 
 const EMPTY_VALUE = '–';
 const URI_PATH_MAX_LENGTH = 80;
@@ -71,21 +73,25 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 <td title={redirect.sourceUriPath} className={rowBaseClass + '__column-source-uri-path'}>
                     <span dangerouslySetInnerHTML={{ __html: this.renderPath(redirect.sourceUriPath) }} />
                     {redirect.sourceUriPath && (
-                        <i
+                        <span
                             role="button"
-                            className="copy-path fas fa-clipboard"
+                            className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.sourceUriPath)}
-                        />
+                        >
+                            <Icon icon="clipboard" />
+                        </span>
                     )}
                 </td>
                 <td title={redirect.targetUriPath} className={rowBaseClass + '__column-target-uri-path'}>
                     <span dangerouslySetInnerHTML={{ __html: this.renderPath(redirect.targetUriPath || '/') }} />
                     {redirect.targetUriPath && (
-                        <i
+                        <span
                             role="button"
-                            className="copy-path fas fa-clipboard"
+                            className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.targetUriPath)}
-                        />
+                        >
+                            <Icon icon="clipboard" />
+                        </span>
                     )}
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
@@ -128,7 +134,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                         title={translate('list.action.edit', 'Edit')}
                         data-edit-redirect-id={identifier}
                     >
-                        <i className="fa fa-pencil-alt icon-pencil icon-white" />
+                        <Icon icon="pencil-alt" />
                     </button>
                     <button
                         type="submit"
@@ -136,7 +142,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                         onClick={e => handleDeleteAction(e, redirect)}
                         title={translate('list.action.delete', 'Delete')}
                     >
-                        <i className="fa fa-trash-alt icon-trash icon-white" />
+                        <Icon icon="trash-alt" />
                     </button>
                 </td>
             </tr>
