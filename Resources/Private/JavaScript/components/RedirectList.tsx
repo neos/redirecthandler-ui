@@ -302,7 +302,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                const { success, messages } = data;
+                if (success) {
                     const { redirects } = this.state;
                     const filteredRedirects = redirects.filter(storedRedirect => redirect !== storedRedirect);
                     this.setState(
@@ -311,10 +312,10 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                         },
                         this.refresh,
                     );
-                    notificationHelper.ok(data.message);
-                } else {
-                    notificationHelper.error(data.message);
                 }
+                messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
             })
             .catch(error => {
                 notificationHelper.error(error);

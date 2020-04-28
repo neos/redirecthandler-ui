@@ -133,7 +133,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         this.postRedirect(redirect ? actions.update : actions.create, data)
             .then(data => {
-                const { message, changedRedirects } = data;
+                const { messages, changedRedirects } = data;
 
                 // Depending on whether an existing redirect was edited handle the list of changes but keep the original
                 if (redirect) {
@@ -153,13 +153,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
                 if (changedRedirects.length > 1) {
                     const changeList = this.renderChangedRedirects(changedRedirects);
-                    notificationHelper.warning(message, changeList);
-                } else {
-                    notificationHelper.ok(message);
+                    notificationHelper.warning(translate('message.updatedRedirects', 'Changed redirects'), changeList);
                 }
+                messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
             })
-            .catch(error => {
-                notificationHelper.error(error);
+            .catch(() => {
                 this.setState({
                     isSendingData: false,
                 });
@@ -167,6 +167,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     };
 
     private postRedirect = (path: string, body?: any): Promise<any> => {
+        const { notificationHelper } = this.props;
+
         return fetch(path, {
             method: 'POST',
             credentials: 'include',
@@ -180,7 +182,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 if (data.success) {
                     return data;
                 }
-                throw new Error(data.message);
+                data.messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
+                throw new Error();
             });
     };
 

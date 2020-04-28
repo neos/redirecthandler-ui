@@ -138,7 +138,7 @@ class ModuleController extends AbstractModuleController
     /**
      * Renders the list of all redirects and allows modifying them.
      */
-    public function indexAction()
+    public function indexAction(): void
     {
         $redirects = $this->redirectStorage->getAll();
         $csrfToken = $this->securityContext->getCsrfProtectionToken();
@@ -173,12 +173,7 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
-     * Creates a single redirect and goes back to the list
-     *
-     * @return void|string
-     * @throws StopActionException
      */
-    public function createAction(): ?string
     {
         $creationStatus = true;
 
@@ -217,6 +212,13 @@ class ModuleController extends AbstractModuleController
             }
         }
 
+    /**
+     * Creates a single redirect and goes back to the list
+     *
+     * @return void
+     * @throws StopActionException
+     */
+    public function createAction(): void
         if ($creationStatus) {
             $changedRedirects = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
@@ -250,11 +252,9 @@ class ModuleController extends AbstractModuleController
         }
 
         if ($this->request->getFormat() === 'json') {
-            return json_encode([
+            $this->view->assign('value', [
                 'success' => $creationStatus,
-                'message' => empty($messageTitle) ? $message : $messageTitle,
                 'changedRedirects' => $changedRedirects,
-                // FIXME: The returned flash messages are empty
                 'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
@@ -265,10 +265,10 @@ class ModuleController extends AbstractModuleController
     /**
      * Updates a single redirect and goes back to the list
      *
-     * @return void|string
+     * @return void
      * @throws StopActionException
      */
-    public function updateAction(): ?string
+    public function updateAction(): void
     {
         $updateStatus = true;
 
@@ -342,11 +342,9 @@ class ModuleController extends AbstractModuleController
         }
 
         if ($this->request->getFormat() === 'json') {
-            return json_encode([
+            $this->view->assign('value', [
                 'success' => $updateStatus,
-                'message' => $messageTitle ?? $message,
                 'changedRedirects' => $changedRedirects,
-                // FIXME: The returned flash messages are empty
                 'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
@@ -357,10 +355,10 @@ class ModuleController extends AbstractModuleController
     /**
      * Deletes a single redirect and goes back to the list
      *
-     * @return void|string
+     * @return void
      * @throws StopActionException
      */
-    public function deleteAction(): ?string
+    public function deleteAction(): void
     {
         [
             'host' => $host,
@@ -378,9 +376,8 @@ class ModuleController extends AbstractModuleController
         }
 
         if ($this->request->getFormat() === 'json') {
-            return json_encode([
+            $this->view->assign('value', [
                 'success' => $status,
-                'message' => $message,
                 'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
             ]);
         } else {
