@@ -21,6 +21,8 @@ use League\Csv\Exception as CsvException;
 use League\Csv\Reader;
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
+use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
+use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
@@ -173,10 +175,45 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * @param string|null $startDateTime
+     * @param string|null $endDateTime
+     * @return array
      */
+    protected function processRedirectStartAndEndDate(string $startDateTime = null, string $endDateTime = null): array
     {
-        $creationStatus = true;
+        $valid = true;
+        if (empty($startDateTime)) {
+            $startDateTime = null;
+        } else {
+            try {
+                $startDateTime = new \DateTime($startDateTime);
+            } catch (Exception $e) {
+                $valid = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'), Message::SEVERITY_ERROR);
+            }
+        }
+        if (empty($endDateTime)) {
+            $endDateTime = null;
+        } else {
+            try {
+                $endDateTime = new \DateTime($endDateTime);
+            } catch (Exception $e) {
+                $valid = false;
+                $this->addFlashMessage('', $this->translateById('error.invalidEndDateTime'), Message::SEVERITY_ERROR);
+            }
+        }
 
+        return [$startDateTime, $endDateTime, $valid];
+    }
+
+    /**
+     * Creates a single redirect and goes back to the list
+     *
+     * @return void
+     * @throws StopActionException
+     */
+    public function createAction(): void
+    {
         [
             'host' => $host,
             'sourceUriPath' => $sourceUriPath,
@@ -187,38 +224,10 @@ class ModuleController extends AbstractModuleController
             'comment' => $comment,
         ] = $this->request->getArguments();
 
-        $statusCode = intval($statusCode);
+        $statusCode = (int)$statusCode;
 
-        if (empty($startDateTime)) {
-            $startDateTime = null;
-        } else {
-            try {
-                $startDateTime = new DateTime($startDateTime);
-            } catch (Exception $e) {
-                $creationStatus = false;
-                $message = $this->translateById('error.invalidStartDateTime');
-                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
-            }
-        }
-        if (empty($endDateTime)) {
-            $endDateTime = null;
-        } else {
-            try {
-                $endDateTime = new DateTime($endDateTime);
-            } catch (Exception $e) {
-                $creationStatus = false;
-                $message = $this->translateById('error.invalidEndDateTime');
-                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
-            }
-        }
+        [$startDateTime, $endDateTime, $creationStatus] = $this->processRedirectStartAndEndDate($startDateTime, $endDateTime);
 
-    /**
-     * Creates a single redirect and goes back to the list
-     *
-     * @return void
-     * @throws StopActionException
-     */
-    public function createAction(): void
         if ($creationStatus) {
             $changedRedirects = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
@@ -270,8 +279,6 @@ class ModuleController extends AbstractModuleController
      */
     public function updateAction(): void
     {
-        $updateStatus = true;
-
         [
             'host' => $host,
             'originalHost' => $originalHost,
@@ -284,30 +291,9 @@ class ModuleController extends AbstractModuleController
             'comment' => $comment,
         ] = $this->request->getArguments();
 
-        $statusCode = intval($statusCode);
+        $statusCode = (int)$statusCode;
 
-        if (empty($startDateTime)) {
-            $startDateTime = null;
-        } else {
-            try {
-                $startDateTime = new DateTime($startDateTime);
-            } catch (Exception $e) {
-                $updateStatus = false;
-                $message = $this->translateById('error.invalidStartDateTime');
-                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
-            }
-        }
-        if (empty($endDateTime)) {
-            $endDateTime = null;
-        } else {
-            try {
-                $endDateTime = new DateTime($endDateTime);
-            } catch (Exception $e) {
-                $updateStatus = false;
-                $message = $this->translateById('error.invalidEndDateTime');
-                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
-            }
-        }
+        [$startDateTime, $endDateTime, $updateStatus] = $this->processRedirectStartAndEndDate($startDateTime, $endDateTime);
 
         if ($updateStatus) {
             $changedRedirects = $this->updateRedirect(
@@ -329,13 +315,15 @@ class ModuleController extends AbstractModuleController
             /** @var RedirectInterface $createdRedirect */
             $createdRedirect = $changedRedirects[0];
 
-            $messageTitle = $this->translateById(count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges',
+            $messageTitle = $this->translateById(
+                count($changedRedirects) === 1 ? 'message.redirectUpdated' : 'warning.redirectUpdatedWithChanges',
                 [
                     $createdRedirect->getHost(),
                     $createdRedirect->getSourceUriPath(),
                     $createdRedirect->getTargetUriPath(),
                     $createdRedirect->getStatusCode()
-                ]);
+                ]
+            );
 
             $this->addFlashMessage($message, $messageTitle,
                 count($changedRedirects) === 1 ? Message::SEVERITY_OK : Message::SEVERITY_WARNING);
@@ -585,21 +573,24 @@ class ModuleController extends AbstractModuleController
         $targetUriPath = trim($targetUriPath);
 
         if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
+            $this->addFlashMessage('', $this->translateById('error.redirectNotValid'), Message::SEVERITY_ERROR);
             return [];
         }
 
         // Check for existing redirect with the same properties before changing the edited redirect
         if ($originalSourceUriPath !== $sourceUriPath || $originalHost !== $host) {
             $existingRedirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath,
-                $host ? $host : null, false);
+                $host ?: null, false);
             if ($existingRedirect !== null) {
+                $this->addFlashMessage('', 'error.redirectExists', Message::SEVERITY_ERROR);
                 return [];
             }
         }
 
         $go = false;
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($originalSourceUriPath,
-            $originalHost ? $originalHost : null, false);
+            $originalHost ?: null, false);
+
         if ($redirect !== null && $force === false) {
             $this->deleteRedirect($originalSourceUriPath, $originalHost);
             $go = true;

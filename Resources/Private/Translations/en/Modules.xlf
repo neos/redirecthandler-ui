@@ -58,6 +58,9 @@
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
             </trans-unit>
 
+            <trans-unit id="message.updatedRedirects" xml:space="preserve">
+                <source>The following redirects have been updated</source>
+            </trans-unit>
             <trans-unit id="message.redirectCreated" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
             </trans-unit>
@@ -77,6 +80,12 @@
                 <source>The redirects from the CSV file were imported but there were some errors. See the protocol for details.</source>
             </trans-unit>
 
+            <trans-unit id="error.redirectNotValid" xml:space="preserve">
+                <source>The redirect is not valid</source>
+            </trans-unit>
+            <trans-unit id="error.redirectExists" xml:space="preserve">
+                <source>The redirect already exists</source>
+            </trans-unit>
             <trans-unit id="error.redirectNotDeleted" xml:space="preserve">
                 <source>The redirect could not be removed</source>
             </trans-unit>
