@@ -6,7 +6,7 @@ This package provides a backend module to manage [Neos.RedirectHandler](https://
 
 ## Compatibility and Maintenance
 
-This package is compatible with Neos 3.x, 4.x and will be maintained for upcoming versions.
+This package is compatible with Neos 3.x, 4.x, 5.x and will be maintained for upcoming versions.
 
 ## Installation
 
@@ -31,6 +31,11 @@ Listing and editing redirects:
 Search & filter redirects:
 
 ![Filtering redirects](Documentation/filter-redirects.png "Redirects Module Screenshot with active filter")
+
+## Documentation
+
+This package belongs to a group of packages which provides redirect functionality to the Flow Framework and to Neos.
+Therefore you can find the documentation regarding Neos [here](https://neos-redirecthandler-adapter.readthedocs.io/en/latest/). 
 
 ## Contributing
 

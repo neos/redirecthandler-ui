@@ -1,6 +1,14 @@
 .redirects-table {
+    margin-top: 1rem;
+
     &-wrap {
         overflow-x: auto;
+    }
+
+    &.detail-view {
+        tbody td {
+            font-size: 80%;
+        }
     }
 
     thead {
@@ -28,7 +36,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
-            font-size: 80%;
 
             .redirects-table__single-column-row & {
                 padding: 1rem;

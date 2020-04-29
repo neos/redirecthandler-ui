@@ -4,7 +4,7 @@ import DatePicker from 'react-datepicker';
 
 import { NeosNotification, Redirect } from '../interfaces';
 import { DateTimeUtil, UrlUtil, Helpers } from '../util';
-import { RedirectContext } from '../providers/RedirectProvider';
+import { RedirectContext } from '../providers';
 import { Tooltip } from './index';
 
 const MAX_INPUT_LENGTH = 255;
@@ -439,7 +439,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 : translate('action.create', 'Add redirect')}
                         </button>
                     </div>
-                    {redirect && (
+                    {handleCancelAction && (
                         <div className="neos-control-group neos-control-group--auto">
                             <a
                                 role="button"

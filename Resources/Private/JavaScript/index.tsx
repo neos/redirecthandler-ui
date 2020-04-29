@@ -2,20 +2,10 @@ import * as React from 'react';
 import * as ReactDOM from 'react-dom';
 
 import { RedirectList } from './components';
-import { Redirect, NeosNotification, NeosI18n } from './interfaces';
-import { RedirectProvider } from './providers/RedirectProvider';
+import { Redirect } from './interfaces';
+import { RedirectProvider, IntlProvider } from './providers';
 
 import '../Styles/styles.scss';
-
-// Declare interface for Neos backend API
-declare global {
-    interface Window {
-        Typo3Neos: {
-            I18n: NeosI18n;
-            Notification: NeosNotification;
-        };
-    }
-}
 
 window.onload = async (): Promise<void> => {
     while (!window.Typo3Neos || !window.Typo3Neos.I18n.initialized) {
@@ -54,22 +44,24 @@ window.onload = async (): Promise<void> => {
      * @param label
      * @param args
      */
-    const translate = (id: string, label: string = '', args: any[] = []): string => {
+    const translate = (id: string, label = '', args = []): string => {
         return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
 
     ReactDOM.render(
         <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
-            <RedirectList
-                redirects={redirects}
-                actions={actions}
-                showHitCount={showHitCount}
-                translate={translate}
-                validSourceUriPathPattern={validSourceUriPathPattern}
-                notificationHelper={Notification}
-                initialTypeFilter={initialTypeFilter}
-                initialStatusCodeFilter={initialStatusCodeFilter}
-            />
+            <IntlProvider translate={translate}>
+                <RedirectList
+                    redirects={redirects}
+                    actions={actions}
+                    translate={translate}
+                    showHitCount={showHitCount}
+                    validSourceUriPathPattern={validSourceUriPathPattern}
+                    notificationHelper={Notification}
+                    initialTypeFilter={initialTypeFilter}
+                    initialStatusCodeFilter={initialStatusCodeFilter}
+                />
+            </IntlProvider>
         </RedirectProvider>,
         redirectsList,
     );

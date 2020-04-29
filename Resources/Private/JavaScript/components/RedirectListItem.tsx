@@ -17,6 +17,7 @@ export interface RedirectListItemProps {
     handleEditAction: (event: FormEvent, editedRedirect: Redirect) => void;
     handleDeleteAction: (event: FormEvent, redirect: Redirect) => void;
     handleCopyPathAction: (text: string) => void;
+    showDetails: boolean;
 }
 
 export class RedirectListItem extends React.PureComponent<RedirectListItemProps, {}> {
@@ -41,6 +42,23 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
         return EMPTY_VALUE;
     };
 
+    /**
+     *
+     * @param date
+     */
+    private formatDate = (date: string): string => {
+        if (date) {
+            return new Date(date).toLocaleString([], {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        }
+        return EMPTY_VALUE;
+    };
+
     public render(): React.ReactElement {
         const {
             redirect,
@@ -50,6 +68,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
             handleDeleteAction,
             handleEditAction,
             handleCopyPathAction,
+            showDetails,
         } = this.props;
         const identifier = redirect.host + '/' + redirect.sourceUriPath;
         const parsedStartDateTime = redirect.startDateTime ? Date.parse(redirect.startDateTime) : null;
@@ -105,40 +124,44 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
                     <span className={isNotActiveYet ? 'neos-label neos-label-warning' : ''}>
-                        {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
+                        {this.formatDate(redirect.startDateTime)}
                     </span>
                 </td>
                 <td className={rowBaseClass + '__column-end'}>
                     <span className={isExpired ? 'neos-label neos-label-important' : ''}>
-                        {redirect.endDateTime ? new Date(redirect.endDateTime).toLocaleString() : EMPTY_VALUE}
+                        {this.formatDate(redirect.endDateTime)}
                     </span>
                 </td>
-                <td
-                    className={rowBaseClass + '__column-comment'}
-                    title={redirect.comment}
-                    dangerouslySetInnerHTML={{ __html: this.renderComment() }}
-                />
-                {showHitCount && (
-                    <td
-                        className={rowBaseClass + '__column-hit-count'}
-                        title={
-                            redirect.lastHit
-                                ? translate('list.lastHit', 'Last hit at {0}', [
-                                      new Date(redirect.lastHit).toLocaleString(),
-                                  ])
-                                : translate('list.neverHit', 'Never hit')
-                        }
-                    >
-                        {redirect.hitCounter}
-                    </td>
+                {showDetails && (
+                    <>
+                        <td
+                            className={rowBaseClass + '__column-comment'}
+                            title={redirect.comment}
+                            dangerouslySetInnerHTML={{ __html: this.renderComment() }}
+                        />
+                        {showHitCount && (
+                            <td
+                                className={rowBaseClass + '__column-hit-count'}
+                                title={
+                                    redirect.lastHit
+                                        ? translate('list.lastHit', 'Last hit at {0}', [
+                                              new Date(redirect.lastHit).toLocaleString(),
+                                          ])
+                                        : translate('list.neverHit', 'Never hit')
+                                }
+                            >
+                                {redirect.hitCounter}
+                            </td>
+                        )}
+                        <td className={rowBaseClass + '__column-creation-date-time'} title={redirect.creationDateTime}>
+                            {this.formatDate(redirect.creationDateTime)}
+                        </td>
+                        <td>
+                            {redirect.creator}{' '}
+                            {redirect.type !== 'manual' && <span className="redirect__type">({redirect.type})</span>}
+                        </td>
+                    </>
                 )}
-                <td className={rowBaseClass + '__column-creation-date-time'} title={redirect.creationDateTime}>
-                    {redirect.creationDateTime ? new Date(redirect.creationDateTime).toLocaleDateString() : EMPTY_VALUE}
-                </td>
-                <td>
-                    {redirect.creator}{' '}
-                    {redirect.type !== 'manual' && <span className="redirect__type">({redirect.type})</span>}
-                </td>
                 <td className="neos-action">
                     <button
                         type="button"

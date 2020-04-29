@@ -12,17 +12,26 @@
             <trans-unit id="filter.search" xml:space="preserve">
                 <source>Search</source>
             </trans-unit>
+            <trans-unit id="filter.search.placeholder" xml:space="preserve">
+                <source>Search for a redirect</source>
+            </trans-unit>
             <trans-unit id="filter.statusCode" xml:space="preserve">
                 <source>Code</source>
             </trans-unit>
             <trans-unit id="filter.resultsCountSuffix" xml:space="preserve">
                 <source>({0} total results)</source>
             </trans-unit>
+            <trans-unit id="filter.type" xml:space="preserve">
+                <source>Type</source>
+            </trans-unit>
             <trans-unit id="filter.type.manual" xml:space="preserve">
                 <source>Manual</source>
             </trans-unit>
             <trans-unit id="filter.type.generated" xml:space="preserve">
                 <source>Generated</source>
+            </trans-unit>
+            <trans-unit id="filter.showDetails" xml:space="preserve">
+                <source>Show details</source>
             </trans-unit>
 
             <trans-unit id="pagination.position" xml:space="preserve">
@@ -194,6 +203,9 @@
             </trans-unit>
             <trans-unit id="header.editRedirect" xml:space="preserve">
                 <source>Edit redirect</source>
+            </trans-unit>
+            <trans-unit id="header.manageRedirects" xml:space="preserve">
+                <source>Manage redirects</source>
             </trans-unit>
 
             <trans-unit id="actions" xml:space="preserve">

@@ -16,6 +16,10 @@
                 <source>Search</source>
                 <target>Suche</target>
             </trans-unit>
+            <trans-unit id="filter.search.placeholder" xml:space="preserve">
+                <source>Search for a redirect</source>
+                <target>Nach einer Weiterleitung suchen</target>
+            </trans-unit>
             <trans-unit id="filter.statusCode" xml:space="preserve">
                 <source>Code</source>
                 <target>Code</target>
@@ -24,6 +28,10 @@
                 <source>({0} total results)</source>
                 <target>({0} Ergebnisse)</target>
             </trans-unit>
+            <trans-unit id="filter.type" xml:space="preserve">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
             <trans-unit id="filter.type.manual" xml:space="preserve">
                 <source>Manual</source>
                 <target>Manuell erstellt</target>
@@ -31,6 +39,10 @@
             <trans-unit id="filter.type.generated" xml:space="preserve">
                 <source>Generated</source>
                 <target>Automatisch erstellt</target>
+            </trans-unit>
+            <trans-unit id="filter.showDetails" xml:space="preserve">
+                <source>Show details</source>
+                <target>Details zeigen</target>
             </trans-unit>
 
             <trans-unit id="pagination.position" xml:space="preserve">
@@ -259,6 +271,10 @@
             <trans-unit id="header.editRedirect" xml:space="preserve">
                 <source>Edit redirect</source>
                 <target>Weiterleitung bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="header.manageRedirects" xml:space="preserve">
+                <source>Manage redirects</source>
+                <target>Weiterleitungen verwalten</target>
             </trans-unit>
 
             <trans-unit id="actions" xml:space="preserve">
