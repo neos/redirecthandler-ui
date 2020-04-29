@@ -7,8 +7,8 @@
   "private": true,
   "main": "Resources/Public/JavaScript/main.bundle.js",
   "scripts": {
-    "watch": "parcel watch Resources/Private/JavaScript/index.tsx --out-dir Resources/Public/Assets -o main.bundle.js",
-    "build": "parcel build Resources/Private/JavaScript/index.tsx --out-dir Resources/Public/Assets -o main.bundle.js",
+    "watch": "parcel watch Resources/Private/JavaScript/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
+    "build": "parcel build Resources/Private/JavaScript/index.tsx --public-url . --out-dir Resources/Public/Assets -o main.bundle.js",
     "lint": "eslint Resources/Private/JavaScript/**/* && stylelint Resources/Private/Styles/**/*.scss"
   },
   "repository": {
