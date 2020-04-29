@@ -7,6 +7,17 @@
         align-items: flex-start;
         margin: 0 -#{$fieldSpacing};
         max-width: 60rem;
+
+        &--actions {
+            .neos-control-group {
+                align-self: flex-end;
+                flex: 0 1 auto;
+            }
+        }
+
+        & + .row {
+            margin-top: 1rem;
+        }
     }
 
     .neos-control-group {
@@ -17,9 +28,8 @@
         padding-left: #{$fieldSpacing};
         padding-right: #{$fieldSpacing};
 
-        &--auto {
-            flex-basis: auto;
-            align-self: flex-end;
+        &--half {
+            flex: 0 1 calc(25% - #{$fieldSpacing} * 2);
         }
 
         input,

@@ -80,7 +80,7 @@
                 width: #{$size - 2 * $padding};
                 left: #{$padding};
                 bottom: #{$padding};
-                background-color: white;
+                background-color: rgba(255, 255, 255, .9);
                 transition: .2s;
             }
         }

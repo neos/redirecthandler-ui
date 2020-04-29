@@ -354,6 +354,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             value={sourceUriPath || ''}
                         />
                     </div>
+                </div>
+                <div className="row">
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'statusCode'}>
                             {translate('statusCode', 'Code')}
@@ -401,7 +403,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             />
                         </div>
                     )}
-                    <div className="neos-control-group">
+                </div>
+                <div className="row">
+                    <div className="neos-control-group neos-control-group--half">
                         <label className="neos-control-label">{translate('startDateTime', 'Start date')}</label>
                         {this.renderDatePicker(
                             'startDateTime',
@@ -409,7 +413,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             translate('startDateTime.placeholder', 'Enter start date'),
                         )}
                     </div>
-                    <div className="neos-control-group">
+                    <div className="neos-control-group neos-control-group--half">
                         <label className="neos-control-label">{translate('endDateTime', 'End date')}</label>
                         {this.renderDatePicker(
                             'endDateTime',
@@ -417,7 +421,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             translate('endDateTime.placeholder', 'Enter end date'),
                         )}
                     </div>
-                    <div className="neos-control-group neos-control-group--large">
+                    <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'comment'}>
                             {translate('comment', 'Comment')}
                         </label>
@@ -432,15 +436,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             />
                         </div>
                     </div>
-                    <div className="neos-control-group neos-control-group--auto">
-                        <button type="submit" disabled={isSendingData} className="neos-button neos-button-primary">
-                            {redirect
-                                ? translate('action.update', 'Update redirect')
-                                : translate('action.create', 'Add redirect')}
-                        </button>
-                    </div>
+                </div>
+                <div className="row row--actions">
                     {handleCancelAction && (
-                        <div className="neos-control-group neos-control-group--auto">
+                        <div className="neos-control-group">
                             <a
                                 role="button"
                                 className="neos-button add-redirect-form__cancel"
@@ -450,6 +449,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             </a>
                         </div>
                     )}
+                    <div className="neos-control-group">
+                        <button type="submit" disabled={isSendingData} className="neos-button neos-button-primary">
+                            {redirect
+                                ? translate('action.update', 'Update redirect')
+                                : translate('action.create', 'Add redirect')}
+                        </button>
+                    </div>
                 </div>
             </form>
         );
