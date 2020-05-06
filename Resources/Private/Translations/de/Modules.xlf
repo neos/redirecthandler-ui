@@ -5,16 +5,20 @@
         <body>
             <trans-unit id="module.label" xml:space="preserve">
                 <source>Redirects</source>
-                <target>Umleitungen</target>
+                <target>Weiterleitungen</target>
             </trans-unit>
             <trans-unit id="module.description" xml:space="preserve">
                 <source>This module contains the overview of all redirects and allows to add new redirects and edit or delete existing ones.</source>
-                <target>Dieses Modul bietet einen Überblick aller Umleitungen und ermöglicht es, neue Umleitungen hinzuzufügen, bestehende zu bearbeiten oder zu löschen.</target>
+                <target>Dieses Modul bietet einen Überblick aller Weiterleitungen und ermöglicht es, neue Weiterleitungen hinzuzufügen, bestehende zu bearbeiten oder zu löschen.</target>
             </trans-unit>
 
             <trans-unit id="filter.search" xml:space="preserve">
                 <source>Search</source>
                 <target>Suche</target>
+            </trans-unit>
+            <trans-unit id="filter.search.placeholder" xml:space="preserve">
+                <source>Search for a redirect</source>
+                <target>Nach einer Weiterleitung suchen</target>
             </trans-unit>
             <trans-unit id="filter.statusCode" xml:space="preserve">
                 <source>Code</source>
@@ -24,6 +28,10 @@
                 <source>({0} total results)</source>
                 <target>({0} Ergebnisse)</target>
             </trans-unit>
+            <trans-unit id="filter.type" xml:space="preserve">
+                <source>Type</source>
+                <target>Typ</target>
+            </trans-unit>
             <trans-unit id="filter.type.manual" xml:space="preserve">
                 <source>Manual</source>
                 <target>Manuell erstellt</target>
@@ -32,6 +40,10 @@
                 <source>Generated</source>
                 <target>Automatisch erstellt</target>
             </trans-unit>
+            <trans-unit id="filter.showDetails" xml:space="preserve">
+                <source>Show details</source>
+                <target>Details zeigen</target>
+            </trans-unit>
 
             <trans-unit id="pagination.position" xml:space="preserve">
                 <source>Showing {0}-{1} of {2}</source>
@@ -39,7 +51,7 @@
             </trans-unit>
             <trans-unit id="pagination.noResults" xml:space="preserve">
                 <source>No redirects match your search</source>
-                <target>Keine Umleitungen passen zu den Suchparametern</target>
+                <target>Keine Weiterleitungen passen zu den Suchparametern</target>
             </trans-unit>
 
             <trans-unit id="list.neverHit" xml:space="preserve">
@@ -56,11 +68,11 @@
             </trans-unit>
             <trans-unit id="list.action.delete" xml:space="preserve">
                 <source>Delete redirect</source>
-                <target>Umleitung löschen</target>
+                <target>Weiterleitung löschen</target>
             </trans-unit>
             <trans-unit id="list.action.confirmDelete" xml:space="preserve">
                 <source>Delete the redirect "{0}"?</source>
-                <target>Soll die Umleitung "{0}" wirklich gelöscht werden?</target>
+                <target>Soll die Weiterleitung "{0}" wirklich gelöscht werden?</target>
             </trans-unit>
             <trans-unit id="list.action.copyPath" xml:space="preserve">
                 <source>Copied path to clipboard</source>
@@ -69,16 +81,20 @@
 
             <trans-unit id="warning.redirectCreatedWithChanges" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created, but there were changes to other redirects!</source>
-                <target>Die Umleitung von "{0}/{1}" zu "/{2}" ({3}) wurde erstellt, aber weitere Umleitungen wurden automatisch angepasst!</target>
+                <target>Die Weiterleitung von "{0}/{1}" zu "/{2}" ({3}) wurde erstellt, aber weitere Weiterleitungen wurden automatisch angepasst!</target>
             </trans-unit>
             <trans-unit id="warning.redirectUpdatedWithChanges" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been updated, but there were changes to other redirects!</source>
-                <target>Die Umleitung von "{0}/{1}" zu "/{2}" ({3}) wurde aktualisiert, aber weitere Umleitungen wurden angepasst!</target>
+                <target>Die Weiterleitung von "{0}/{1}" zu "/{2}" ({3}) wurde aktualisiert, aber weitere Weiterleitungen wurden angepasst!</target>
             </trans-unit>
 
+            <trans-unit id="message.updatedRedirects" xml:space="preserve">
+                <source>The following redirects have been updated</source>
+                <target>Die folgenden Weiterleitungen wurden aktualisiert</target>
+            </trans-unit>
             <trans-unit id="message.redirectCreated" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" to "/{2}" ({3}) has been created</source>
-                <target>Die Umleitung von "{0}/{1}" zu "/{2}" ({3}) wurde erstellt</target>
+                <target>Die Weiterleitung von "{0}/{1}" zu "/{2}" ({3}) wurde erstellt</target>
             </trans-unit>
             <trans-unit id="message.relatedChanges" xml:space="preserve">
                 <source>Related changes:</source>
@@ -86,32 +102,40 @@
             </trans-unit>
             <trans-unit id="message.redirectUpdated" xml:space="preserve">
                 <source>The redirect has been updated</source>
-                <target>Die Umleitung wurde aktualisiert</target>
+                <target>Die Weiterleitung wurde aktualisiert</target>
             </trans-unit>
             <trans-unit id="message.redirectDeleted" xml:space="preserve">
                 <source>The redirect from "{0}/{1}" has been deleted</source>
-                <target>Die Umleitung von "{0}/{1}" wurde gelöscht</target>
+                <target>Die Weiterleitung von "{0}/{1}" wurde gelöscht</target>
             </trans-unit>
             <trans-unit id="message.importCsvSuccess" xml:space="preserve">
                 <source>The redirects from the CSV file were imported successfully. See the protocol for details.</source>
-                <target>Die Umleitungen aus der CSV Datei wurden erfolgreich importiert. Das Protokoll zeigt alle Änderungen.</target>
+                <target>Die Weiterleitungen aus der CSV Datei wurden erfolgreich importiert. Das Protokoll zeigt alle Änderungen.</target>
             </trans-unit>
             <trans-unit id="message.importCsvSuccessWithErrors" xml:space="preserve">
                 <source>The redirects from the CSV file were imported but there were some errors. See the protocol for details.</source>
-                <target>Die Umleitungen aus der CSV Datei wurden importiert, aber es gab Fehler. Das Protokoll enthält die Details.</target>
+                <target>Die Weiterleitungen aus der CSV Datei wurden importiert, aber es gab Fehler. Das Protokoll enthält die Details.</target>
             </trans-unit>
 
+            <trans-unit id="error.redirectNotValid" xml:space="preserve">
+                <source>The redirect is not valid</source>
+                <target>Die Weiterleitung ist nicht gültig</target>
+            </trans-unit>
+            <trans-unit id="error.redirectExists" xml:space="preserve">
+                <source>The redirect already exists</source>
+                <source>Die Weiterleitung existiert bereits</source>
+            </trans-unit>
             <trans-unit id="error.redirectNotDeleted" xml:space="preserve">
                 <source>The redirect could not be removed</source>
-                <target>Die Umleitung konnte nicht entfernt werden</target>
+                <target>Die Weiterleitung konnte nicht entfernt werden</target>
             </trans-unit>
             <trans-unit id="error.redirectNotCreated" xml:space="preserve">
                 <source>The redirect could not be created</source>
-                <target>Die Umleitung konnte nicht erstellt werden</target>
+                <target>Die Weiterleitung konnte nicht erstellt werden</target>
             </trans-unit>
             <trans-unit id="error.redirectNotUpdated" xml:space="preserve">
                 <source>The redirect could not be updated</source>
-                <target>Die Umleitung konnte nicht aktualisiert werden</target>
+                <target>Die Weiterleitung konnte nicht aktualisiert werden</target>
             </trans-unit>
             <trans-unit id="error.invalidStartDateTime" xml:space="preserve">
                 <source>The start datetime is invalid</source>
@@ -150,6 +174,14 @@
                 <source>Origin domain</source>
                 <target>Ursprungsdomäne</target>
             </trans-unit>
+            <trans-unit id="host.allDomains.title" xml:space="preserve">
+                <source>This redirect applies to all domains</source>
+                <target>Diese Weiterleitung betrifft alle Domains</target>
+            </trans-unit>
+            <trans-unit id="host.allDomains" xml:space="preserve">
+                <source>All</source>
+                <target>Alle</target>
+            </trans-unit>
             <trans-unit id="csvFile" xml:space="preserve">
                 <source>CSV File</source>
                 <target>CSV Datei</target>
@@ -167,7 +199,7 @@
                 <target>
                     Der Quellpfad ist der relative Pfad nach dem Hostnamen.
                     Zum Beispiel "meine/unterseite" ohne Schrägstriche am Anfang oder am Ende und keine Parameter.
-                    Diese ignoriert Neos, wenn für eine aufgerufene Url geprüft wird, ob eine Umleitung erfolgen soll.
+                    Diese ignoriert Neos, wenn für eine aufgerufene Url geprüft wird, ob eine Weiterleitung erfolgen soll.
                 </target>
             </trans-unit>
             <trans-unit id="statusCode" xml:space="preserve">
@@ -221,16 +253,16 @@
             </trans-unit>
             <trans-unit id="field.includeInactiveRedirects.label" xml:space="preserve">
                 <source>Include inactive redirects</source>
-                <target>Inaktive Umleitungen exportieren</target>
+                <target>Inaktive Weiterleitungen exportieren</target>
             </trans-unit>
             <trans-unit id="field.includeGeneratedRedirects.label" xml:space="preserve">
                 <source>Include automatically generated redirects</source>
-                <target>Automatisch generierte Umleitungen exportieren</target>
+                <target>Automatisch generierte Weiterleitungen exportieren</target>
             </trans-unit>
 
             <trans-unit id="header.importCsvForm" xml:space="preserve">
                 <source>Import redirects from a CSV file</source>
-                <target>Umleitungen aus einer CSV Datei importieren</target>
+                <target>Weiterleitungen aus einer CSV Datei importieren</target>
             </trans-unit>
             <trans-unit id="header.importProtocol" xml:space="preserve">
                 <source>Import protocol</source>
@@ -238,7 +270,11 @@
             </trans-unit>
             <trans-unit id="header.editRedirect" xml:space="preserve">
                 <source>Edit redirect</source>
-                <target>Umleitung bearbeiten</target>
+                <target>Weiterleitung bearbeiten</target>
+            </trans-unit>
+            <trans-unit id="header.manageRedirects" xml:space="preserve">
+                <source>Manage redirects</source>
+                <target>Weiterleitungen verwalten</target>
             </trans-unit>
 
             <trans-unit id="actions" xml:space="preserve">
@@ -247,19 +283,19 @@
             </trans-unit>
             <trans-unit id="action.importCsvFile" xml:space="preserve">
                 <source>Import redirects from CSV file</source>
-                <target>Umleitungen aus einer CSV Datei importieren</target>
+                <target>Weiterleitungen aus einer CSV Datei importieren</target>
             </trans-unit>
             <trans-unit id="action.create" xml:space="preserve">
                 <source>Add redirect</source>
-                <target>Umleitung hinzufügen</target>
+                <target>Weiterleitung hinzufügen</target>
             </trans-unit>
             <trans-unit id="action.update" xml:space="preserve">
                 <source>Update redirect</source>
-                <target>Umleitung aktualisieren</target>
+                <target>Weiterleitung aktualisieren</target>
             </trans-unit>
             <trans-unit id="action.edit" xml:space="preserve">
                 <source>Edit redirect</source>
-                <target>Umleitung bearbeiten</target>
+                <target>Weiterleitung bearbeiten</target>
             </trans-unit>
             <trans-unit id="action.cancel" xml:space="preserve">
                 <source>Cancel</source>
@@ -267,7 +303,7 @@
             </trans-unit>
             <trans-unit id="action.backToList" xml:space="preserve">
                 <source>Back to redirect list</source>
-                <target>Zurück zur Umleitungsliste</target>
+                <target>Zurück zur Weiterleitungsliste</target>
             </trans-unit>
             <trans-unit id="action.exportCsv" xml:space="preserve">
                 <source>Export CSV file</source>
@@ -275,11 +311,11 @@
             </trans-unit>
             <trans-unit id="action.export" xml:space="preserve">
                 <source>Export redirect rules</source>
-                <target>Umleitungsregeln exportieren</target>
+                <target>Weiterleitungsregeln exportieren</target>
             </trans-unit>
             <trans-unit id="action.import" xml:space="preserve">
                 <source>Import redirect rules</source>
-                <target>Umleitungsregeln importieren</target>
+                <target>Weiterleitungsregeln importieren</target>
             </trans-unit>
 
             <trans-unit id="list.loading" xml:space="preserve">
@@ -288,7 +324,7 @@
             </trans-unit>
             <trans-unit id="list.empty" xml:space="preserve">
                 <source>There are currently no redirects defined.</source>
-                <target>Bisher wurden keine Umleitungen definiert.</target>
+                <target>Bisher wurden keine Weiterleitungen definiert.</target>
             </trans-unit>
 
             <trans-unit id="hint.importCsvFile" xml:space="preserve">
@@ -297,8 +333,8 @@
                     This way the structure and required columns are already set up.
                 </source>
                 <target>
-                    Es wird empfohlen die existierenden Umleitungen zu exportieren und an der resultierenden Datei zu arbeiten,
-                    bevor Umleitungen importiert werden.
+                    Es wird empfohlen die existierenden Weiterleitungen zu exportieren und an der resultierenden Datei zu arbeiten,
+                    bevor Weiterleitungen importiert werden.
                     Auf diese Weise erhält man automatisch die richtige Struktur.
                 </target>
             </trans-unit>

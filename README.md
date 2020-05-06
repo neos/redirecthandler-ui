@@ -6,7 +6,7 @@ This package provides a backend module to manage [Neos.RedirectHandler](https://
 
 ## Compatibility and Maintenance
 
-This package is compatible with Neos 3.x, 4.x and will be maintained for upcoming versions.
+This package is compatible with Neos 3.x, 4.x, 5.x and will be maintained for upcoming versions.
 
 ## Installation
 
@@ -32,6 +32,11 @@ Search & filter redirects:
 
 ![Filtering redirects](Documentation/filter-redirects.png "Redirects Module Screenshot with active filter")
 
+## Documentation
+
+This package belongs to a group of packages which provides redirect functionality to the Flow Framework and to Neos.
+Therefore you can find the documentation regarding Neos [here](https://neos-redirecthandler-adapter.readthedocs.io/en/latest/). 
+
 ## Contributing
 
 Please create issues on [Github](https://github.com/neos/redirecthandler-ui) if you encounter bugs or other issues.
@@ -44,8 +49,8 @@ is built with *React* and *Typescript*.
 #### Recompiling the js and css parts
 
 1. Use *nvm* so you have the correct *npm* version.
-2. Run `npm install` in the package folder.
-3. Run `npm run watch` during development or `npm run build` for a new release.
+2. Run `yarn` in the package folder.
+3. Run `yarn watch` during development or `yarn build` for a new release.
              
 ## License
 

@@ -1,7 +1,9 @@
 import * as React from 'react';
-import Redirect from '../interfaces/Redirect';
-import { highlight, shortenPath, escapeHtml } from '../util/helpers';
 import { FormEvent } from 'react';
+
+import { Redirect } from '../interfaces';
+import { highlight, shortenPath, escapeHtml } from '../util/helpers';
+import { Icon } from './index';
 
 const EMPTY_VALUE = '–';
 const URI_PATH_MAX_LENGTH = 80;
@@ -15,6 +17,7 @@ export interface RedirectListItemProps {
     handleEditAction: (event: FormEvent, editedRedirect: Redirect) => void;
     handleDeleteAction: (event: FormEvent, redirect: Redirect) => void;
     handleCopyPathAction: (text: string) => void;
+    showDetails: boolean;
 }
 
 export class RedirectListItem extends React.PureComponent<RedirectListItemProps, {}> {
@@ -39,6 +42,23 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
         return EMPTY_VALUE;
     };
 
+    /**
+     *
+     * @param date
+     */
+    private formatDate = (date: string): string => {
+        if (date) {
+            return new Date(date).toLocaleString([], {
+                year: 'numeric',
+                month: 'numeric',
+                day: 'numeric',
+                hour: '2-digit',
+                minute: '2-digit',
+            });
+        }
+        return EMPTY_VALUE;
+    };
+
     public render(): React.ReactElement {
         const {
             redirect,
@@ -48,16 +68,17 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
             handleDeleteAction,
             handleEditAction,
             handleCopyPathAction,
+            showDetails,
         } = this.props;
         const identifier = redirect.host + '/' + redirect.sourceUriPath;
         const parsedStartDateTime = redirect.startDateTime ? Date.parse(redirect.startDateTime) : null;
         const parsedEndDateTime = redirect.endDateTime ? Date.parse(redirect.endDateTime) : null;
         const now = Date.now();
 
+        const isNotActiveYet = parsedStartDateTime && parsedStartDateTime > now;
+        const isExpired = parsedEndDateTime && parsedEndDateTime < now;
+
         const rowBaseClass = rowClassNames[0];
-        if ((parsedStartDateTime && parsedStartDateTime > now) || (parsedEndDateTime && parsedEndDateTime < now)) {
-            rowClassNames.push(rowBaseClass + '--inactive');
-        }
 
         return (
             <tr className={rowClassNames.join(' ')}>
@@ -67,59 +88,80 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                 >
                     {redirect.statusCode}
                 </td>
-                <td>{redirect.host || '*'}</td>
+                <td>
+                    {redirect.host || (
+                        <span
+                            className="neos-label neos-label-info"
+                            title={translate('host.allDomains.title', 'This redirect applies to all domains')}
+                        >
+                            {translate('host.allDomains', 'All')}
+                        </span>
+                    )}
+                </td>
                 <td title={redirect.sourceUriPath} className={rowBaseClass + '__column-source-uri-path'}>
                     <span dangerouslySetInnerHTML={{ __html: this.renderPath(redirect.sourceUriPath) }} />
                     {redirect.sourceUriPath && (
-                        <i
+                        <span
                             role="button"
-                            className="copy-path fas fa-clipboard"
+                            className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.sourceUriPath)}
-                        />
+                        >
+                            <Icon icon="clipboard" />
+                        </span>
                     )}
                 </td>
                 <td title={redirect.targetUriPath} className={rowBaseClass + '__column-target-uri-path'}>
                     <span dangerouslySetInnerHTML={{ __html: this.renderPath(redirect.targetUriPath || '/') }} />
                     {redirect.targetUriPath && (
-                        <i
+                        <span
                             role="button"
-                            className="copy-path fas fa-clipboard"
+                            className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.targetUriPath)}
-                        />
+                        >
+                            <Icon icon="clipboard" />
+                        </span>
                     )}
                 </td>
                 <td className={rowBaseClass + '__column-start'}>
-                    {redirect.startDateTime ? new Date(redirect.startDateTime).toLocaleString() : EMPTY_VALUE}
+                    <span className={isNotActiveYet ? 'neos-label neos-label-warning' : ''}>
+                        {this.formatDate(redirect.startDateTime)}
+                    </span>
                 </td>
                 <td className={rowBaseClass + '__column-end'}>
-                    {redirect.endDateTime ? new Date(redirect.endDateTime).toLocaleString() : EMPTY_VALUE}
+                    <span className={isExpired ? 'neos-label neos-label-important' : ''}>
+                        {this.formatDate(redirect.endDateTime)}
+                    </span>
                 </td>
-                <td
-                    className={rowBaseClass + '__column-comment'}
-                    title={redirect.comment}
-                    dangerouslySetInnerHTML={{ __html: this.renderComment() }}
-                />
-                {showHitCount && (
-                    <td
-                        className={rowBaseClass + '__column-hit-count'}
-                        title={
-                            redirect.lastHit
-                                ? translate('list.lastHit', 'Last hit at {0}', [
-                                      new Date(redirect.lastHit).toLocaleString(),
-                                  ])
-                                : translate('list.neverHit', 'Never hit')
-                        }
-                    >
-                        {redirect.hitCounter}
-                    </td>
+                {showDetails && (
+                    <>
+                        <td
+                            className={rowBaseClass + '__column-comment'}
+                            title={redirect.comment}
+                            dangerouslySetInnerHTML={{ __html: this.renderComment() }}
+                        />
+                        {showHitCount && (
+                            <td
+                                className={rowBaseClass + '__column-hit-count'}
+                                title={
+                                    redirect.lastHit
+                                        ? translate('list.lastHit', 'Last hit at {0}', [
+                                              new Date(redirect.lastHit).toLocaleString(),
+                                          ])
+                                        : translate('list.neverHit', 'Never hit')
+                                }
+                            >
+                                {redirect.hitCounter}
+                            </td>
+                        )}
+                        <td className={rowBaseClass + '__column-creation-date-time'} title={redirect.creationDateTime}>
+                            {this.formatDate(redirect.creationDateTime)}
+                        </td>
+                        <td>
+                            {redirect.creator}{' '}
+                            {redirect.type !== 'manual' && <span className="redirect__type">({redirect.type})</span>}
+                        </td>
+                    </>
                 )}
-                <td className={rowBaseClass + '__column-creation-date-time'} title={redirect.creationDateTime}>
-                    {redirect.creationDateTime ? new Date(redirect.creationDateTime).toLocaleDateString() : EMPTY_VALUE}
-                </td>
-                <td>
-                    {redirect.creator}{' '}
-                    {redirect.type !== 'manual' && <span className="redirect__type">({redirect.type})</span>}
-                </td>
                 <td className="neos-action">
                     <button
                         type="button"
@@ -128,7 +170,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                         title={translate('list.action.edit', 'Edit')}
                         data-edit-redirect-id={identifier}
                     >
-                        <i className="fa fa-pencil-alt icon-pencil icon-white" />
+                        <Icon icon="pencil-alt" />
                     </button>
                     <button
                         type="submit"
@@ -136,7 +178,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                         onClick={e => handleDeleteAction(e, redirect)}
                         title={translate('list.action.delete', 'Delete')}
                     >
-                        <i className="fa fa-trash-alt icon-trash icon-white" />
+                        <Icon icon="trash-alt" />
                     </button>
                 </td>
             </tr>

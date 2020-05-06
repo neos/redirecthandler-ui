@@ -42,6 +42,6 @@ Neos:
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
             additionalResources:
               styleSheets:
-                - 'resource://Neos.RedirectHandler.Ui/Public/Styles/main.css'
+                - 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.css'
               javaScripts:
-                - 'resource://Neos.RedirectHandler.Ui/Public/JavaScript/main.bundle.js'
+                - 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.js'

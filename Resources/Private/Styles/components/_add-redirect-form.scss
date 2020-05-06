@@ -1,28 +1,40 @@
 .add-redirect-form {
-    margin-bottom: 1.6rem;
+    margin-bottom: .8rem;
 
     .row {
         display: flex;
         flex-wrap: wrap;
         align-items: flex-start;
         margin: 0 -#{$fieldSpacing};
+        max-width: 60rem;
+
+        &--actions {
+            .neos-control-group {
+                align-self: flex-end;
+                flex: 0 1 auto;
+            }
+        }
+
+        & + .row {
+            margin-top: 1rem;
+        }
     }
 
     .neos-control-group {
-        flex: 0 1 200px;
+        flex: 0 1 calc(50% - #{$fieldSpacing} * 2);
         display: flex;
         flex-direction: column;
         justify-content: flex-end;
         padding-left: #{$fieldSpacing};
         padding-right: #{$fieldSpacing};
 
-        &--large {
-            flex-basis: 300px;
+        &--half {
+            flex: 0 1 calc(25% - #{$fieldSpacing} * 2);
         }
 
-        &--auto {
-            flex-basis: auto;
-            align-self: flex-end;
+        input,
+        select {
+            width: 100%;
         }
     }
 

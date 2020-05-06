@@ -1,12 +1,11 @@
 import * as React from 'react';
 import { ChangeEvent, PureComponent } from 'react';
 import DatePicker from 'react-datepicker';
-import Redirect from '../interfaces/Redirect';
-import NeosNotification from '../interfaces/NeosNotification';
-import { formatReadable, formatW3CString } from '../util/datetime';
-import { parseURL } from '../util/url';
-import { statusCodeSupportsTarget } from '../util/helpers';
-import { RedirectContext } from '../providers/RedirectProvider';
+
+import { NeosNotification, Redirect } from '../interfaces';
+import { DateTimeUtil, UrlUtil, Helpers } from '../util';
+import { RedirectContext } from '../providers';
+import { Tooltip } from './index';
 
 const MAX_INPUT_LENGTH = 255;
 
@@ -53,6 +52,7 @@ const initialState: RedirectFormState = {
 
 export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormState> {
     static contextType = RedirectContext;
+
     protected sourceUriPathInputRef: React.RefObject<HTMLInputElement>;
 
     constructor(props: RedirectFormProps) {
@@ -91,12 +91,16 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         const { csrfToken, defaultStatusCode } = this.context;
 
-        const { startDateTime, endDateTime, host, statusCode, sourceUriPath, targetUriPath } = this.state;
+        const { startDateTime, endDateTime, statusCode, sourceUriPath, targetUriPath } = this.state;
+        let { host } = this.state;
         const finalStatusCode = statusCode > 0 ? statusCode : defaultStatusCode;
 
+        // Replace a single asterisk with an empty value to match any domain
+        host = host && host.trim() === '*' ? '' : host;
+
         if (!host || host === location.host) {
-            const parsedSourceUrl: URL = parseURL(sourceUriPath, location.origin);
-            const parsedTargetUrl: URL = parseURL(targetUriPath, location.origin);
+            const parsedSourceUrl: URL = UrlUtil.parseURL(sourceUriPath, location.origin);
+            const parsedTargetUrl: URL = UrlUtil.parseURL(targetUriPath, location.origin);
             if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
                 notificationHelper.warning(
                     translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same'),
@@ -105,9 +109,11 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             }
         }
 
-        const validStartDateTimeString = startDateTime.indexOf('T') === -1 ? startDateTime.replace(' ', 'T') + 'Z' : startDateTime;
+        const validStartDateTimeString =
+            startDateTime.indexOf('T') === -1 ? startDateTime.replace(' ', 'T') + 'Z' : startDateTime;
         const validStartDateTime = startDateTime ? new Date(validStartDateTimeString) : null;
-        const validEndDateTimeString = endDateTime.indexOf('T') === -1 ? endDateTime.replace(' ', 'T') + 'Z' : endDateTime;
+        const validEndDateTimeString =
+            endDateTime.indexOf('T') === -1 ? endDateTime.replace(' ', 'T') + 'Z' : endDateTime;
         const validEndDateTime = endDateTime ? new Date(validEndDateTimeString) : null;
 
         const data = {
@@ -116,9 +122,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 originalHost: redirect ? redirect.host : null,
                 originalSourceUriPath: redirect ? redirect.sourceUriPath : null,
                 ...this.state,
-                targetUriPath: statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
-                startDateTime: validStartDateTime ? formatW3CString(validStartDateTime) : null,
-                endDateTime: validEndDateTime ? formatW3CString(validEndDateTime) : null,
+                host,
+                targetUriPath: Helpers.statusCodeSupportsTarget(finalStatusCode) ? targetUriPath : '/',
+                startDateTime: validStartDateTime ? DateTimeUtil.formatW3CString(validStartDateTime) : null,
+                endDateTime: validEndDateTime ? DateTimeUtil.formatW3CString(validEndDateTime) : null,
             },
         };
 
@@ -126,7 +133,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
         this.postRedirect(redirect ? actions.update : actions.create, data)
             .then(data => {
-                const { message, changedRedirects } = data;
+                const { messages, changedRedirects } = data;
 
                 // Depending on whether an existing redirect was edited handle the list of changes but keep the original
                 if (redirect) {
@@ -146,13 +153,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
 
                 if (changedRedirects.length > 1) {
                     const changeList = this.renderChangedRedirects(changedRedirects);
-                    notificationHelper.warning(message, changeList);
-                } else {
-                    notificationHelper.ok(message);
+                    notificationHelper.warning(translate('message.updatedRedirects', 'Changed redirects'), changeList);
                 }
+                messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
             })
-            .catch(error => {
-                notificationHelper.error(error);
+            .catch(() => {
                 this.setState({
                     isSendingData: false,
                 });
@@ -160,6 +167,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     };
 
     private postRedirect = (path: string, body?: any): Promise<any> => {
+        const { notificationHelper } = this.props;
+
         return fetch(path, {
             method: 'POST',
             credentials: 'include',
@@ -173,7 +182,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 if (data.success) {
                     return data;
                 }
-                throw new Error(data.message);
+                data.messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
+                throw new Error();
             });
     };
 
@@ -197,7 +209,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
      * @param datetime
      */
     private handleDatePickerChange(property: string, datetime: Date | string): void {
-        const formattedValue = typeof datetime === 'string' ? datetime : datetime ? formatReadable(datetime) : '';
+        const formattedValue =
+            typeof datetime === 'string' ? datetime : datetime ? DateTimeUtil.formatReadable(datetime) : '';
         this.setState({
             [property]: formattedValue,
         });
@@ -213,7 +226,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     private renderDatePicker = (property: string, dateTimeString: string, placeholder: string): React.ReactElement => {
         const { translate } = this.props;
         // We need to modify the format to make it valid for all browsers (Safari, Firefox, etc...)
-        const validDateTimeString = dateTimeString.indexOf('T') === -1 ? dateTimeString.replace(' ', 'T') + 'Z' : dateTimeString;
+        const validDateTimeString =
+            dateTimeString.indexOf('T') === -1 ? dateTimeString.replace(' ', 'T') + 'Z' : dateTimeString;
         const dateTime = dateTimeString ? new Date(validDateTimeString) : null;
 
         return (
@@ -259,20 +273,6 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     private toggleHelpMessage = (identifier: string): void => {
         const { activeHelpMessage } = this.state;
         this.setState({ activeHelpMessage: activeHelpMessage === identifier ? '' : identifier });
-    };
-
-    /**
-     * Renders a tooltip with the given caption and it will close when clicked
-     *
-     * @param identifier
-     * @param caption
-     */
-    private renderTooltip = (identifier: string, caption: string): React.ReactElement => {
-        return (
-            <div role="tooltip" onClick={() => this.toggleHelpMessage(identifier)} className="redirect-tooltip">
-                {caption}
-            </div>
-        );
     };
 
     public render(): React.ReactElement {
@@ -329,11 +329,12 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 className={'fas fa-question-circle'}
                                 onClick={() => this.toggleHelpMessage('sourceUriPath')}
                             />
-                            {activeHelpMessage === 'sourceUriPath' &&
-                                this.renderTooltip(
-                                    sourceUriPath,
-                                    translate('sourceUriPath.help', 'Explanation of the source path'),
-                                )}
+                            {activeHelpMessage === 'sourceUriPath' && (
+                                <Tooltip
+                                    caption={translate('sourceUriPath.help', 'Explanation of the source path')}
+                                    onClick={() => this.toggleHelpMessage(sourceUriPath)}
+                                />
+                            )}
                         </label>
                         <input
                             name="sourceUriPath"
@@ -353,6 +354,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             value={sourceUriPath || ''}
                         />
                     </div>
+                </div>
+                <div className="row">
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'statusCode'}>
                             {translate('statusCode', 'Code')}
@@ -380,7 +383,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             ))}
                         </select>
                     </div>
-                    {statusCodeSupportsTarget(statusCode) && (
+                    {Helpers.statusCodeSupportsTarget(statusCode) && (
                         <div className="neos-control-group">
                             <label className="neos-control-label" htmlFor={idPrefix + 'targetUriPath'}>
                                 {translate('targetUriPath', 'Target uri or path')}*
@@ -400,7 +403,9 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             />
                         </div>
                     )}
-                    <div className="neos-control-group">
+                </div>
+                <div className="row">
+                    <div className="neos-control-group neos-control-group--half">
                         <label className="neos-control-label">{translate('startDateTime', 'Start date')}</label>
                         {this.renderDatePicker(
                             'startDateTime',
@@ -408,7 +413,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             translate('startDateTime.placeholder', 'Enter start date'),
                         )}
                     </div>
-                    <div className="neos-control-group">
+                    <div className="neos-control-group neos-control-group--half">
                         <label className="neos-control-label">{translate('endDateTime', 'End date')}</label>
                         {this.renderDatePicker(
                             'endDateTime',
@@ -416,7 +421,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             translate('endDateTime.placeholder', 'Enter end date'),
                         )}
                     </div>
-                    <div className="neos-control-group neos-control-group--large">
+                    <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'comment'}>
                             {translate('comment', 'Comment')}
                         </label>
@@ -431,15 +436,10 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             />
                         </div>
                     </div>
-                    <div className="neos-control-group neos-control-group--auto">
-                        <button type="submit" disabled={isSendingData} className="neos-button neos-button-primary">
-                            {redirect
-                                ? translate('action.update', 'Update redirect')
-                                : translate('action.create', 'Add redirect')}
-                        </button>
-                    </div>
-                    {redirect && (
-                        <div className="neos-control-group neos-control-group--auto">
+                </div>
+                <div className="row row--actions">
+                    {handleCancelAction && (
+                        <div className="neos-control-group">
                             <a
                                 role="button"
                                 className="neos-button add-redirect-form__cancel"
@@ -449,6 +449,13 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             </a>
                         </div>
                     )}
+                    <div className="neos-control-group">
+                        <button type="submit" disabled={isSendingData} className="neos-button neos-button-primary">
+                            {redirect
+                                ? translate('action.update', 'Update redirect')
+                                : translate('action.create', 'Add redirect')}
+                        </button>
+                    </div>
                 </div>
             </form>
         );

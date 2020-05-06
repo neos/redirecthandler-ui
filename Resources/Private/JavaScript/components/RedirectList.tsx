@@ -1,24 +1,18 @@
 import * as React from 'react';
-import Redirect from '../interfaces/Redirect';
-import { RedirectListItem } from './RedirectListItem';
 import { FormEvent } from 'react';
-import { copyTextToClipboard, isSameRedirectAs } from '../util/helpers';
-import NeosNotification from '../interfaces/NeosNotification';
+
+import { Helpers } from '../util';
+import { Redirect, NeosNotification } from '../interfaces';
+import { RedirectListItem } from './RedirectListItem';
 import { RedirectForm } from './RedirectForm';
-import { RedirectContext } from '../providers/RedirectProvider';
+import { RedirectContext } from '../providers';
+import Filters, { Pagination } from './Filters';
 
 const ITEMS_PER_PAGE = 20;
 
 export enum SortDirection {
     Asc,
     Desc,
-}
-
-export enum Pagination {
-    Left,
-    Right,
-    Start,
-    End,
 }
 
 export interface RedirectListProps {
@@ -48,6 +42,8 @@ export interface RedirectListState {
     redirectCountByStatusCode: number[];
     redirectCountByType: { [index: string]: number };
     editedRedirect: Redirect;
+    showDetails: boolean;
+    showForm: boolean;
 }
 
 const initialState: RedirectListState = {
@@ -62,6 +58,8 @@ const initialState: RedirectListState = {
     redirectCountByStatusCode: [],
     redirectCountByType: {},
     editedRedirect: null,
+    showDetails: false,
+    showForm: false,
 };
 
 export class RedirectList extends React.Component<RedirectListProps, RedirectListState> {
@@ -93,7 +91,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param searchValue
      */
     private handleUpdateSearch(searchValue: string): void {
-        const { redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage } = this.state;
+        const {
+            redirects,
+            filterStatusCode,
+            filterType,
+            redirectCountByStatusCode,
+            redirectCountByType,
+            currentPage,
+        } = this.state;
         let filteredRedirects: Redirect[] = redirects;
 
         const cleanSearchValue = searchValue.trim().toLowerCase();
@@ -119,7 +124,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filteredRedirects,
             filterStatusCode: validStatusCodeSelection,
             filterType: validFilterTypeSelection,
-            currentPage: Math.min(currentPage, this.getMaxPage(filteredRedirects)),
+            currentPage: Math.min(currentPage, RedirectList.getMaxPage(filteredRedirects)),
         });
     }
 
@@ -167,18 +172,18 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param filterStatusCode
      */
-    private handleUpdateFilterStatusCode(filterStatusCode: number): void {
+    private handleUpdateFilterStatusCode = (filterStatusCode: number): void => {
         this.setState({ filterStatusCode }, this.refresh);
-    }
+    };
 
     /**
      * Updates the currently filtered redirect type and triggers a refresh on the search
      *
      * @param filterType
      */
-    private handleUpdateFilterType(filterType: string): void {
+    private handleUpdateFilterType = (filterType: string): void => {
         this.setState({ filterType }, this.refresh);
-    }
+    };
 
     /**
      * Selecting a new property to sort by will set the sorting direction to ascending.
@@ -186,7 +191,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param sortBy
      */
-    private handleUpdateSorting(sortBy: string): void {
+    private handleUpdateSorting = (sortBy: string): void => {
         const previousSortBy = this.state.sortBy;
         this.setState({
             sortBy,
@@ -195,14 +200,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                     ? SortDirection.Desc
                     : SortDirection.Asc,
         });
-    }
+    };
 
     /**
      * Updates the pagination state based on the pagination action
      *
      * @param action
      */
-    private handlePagination(action: Pagination): void {
+    private handlePagination = (action: Pagination): void => {
         const { currentPage } = this.state;
 
         switch (action) {
@@ -221,7 +226,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             default:
                 break;
         }
-    }
+    };
 
     /**
      * Sorts redirects ascending by the given property.
@@ -295,7 +300,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         })
             .then(response => response.json())
             .then(data => {
-                if (data.success) {
+                const { success, messages } = data;
+                if (success) {
                     const { redirects } = this.state;
                     const filteredRedirects = redirects.filter(storedRedirect => redirect !== storedRedirect);
                     this.setState(
@@ -304,10 +310,10 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                         },
                         this.refresh,
                     );
-                    notificationHelper.ok(data.message);
-                } else {
-                    notificationHelper.error(data.message);
                 }
+                messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
             })
             .catch(error => {
                 notificationHelper.error(error);
@@ -330,6 +336,20 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     };
 
     /**
+     * Toggles the detail view of the redirect table
+     */
+    private handleToggleDetails = (): void => {
+        this.setState({ showDetails: !this.state.showDetails });
+    };
+
+    /**
+     * Toggles the redirect creation form
+     */
+    private handleToggleForm = (): void => {
+        this.setState({ showForm: !this.state.showForm });
+    };
+
+    /**
      * Adds or updates redirects in the list and triggers a refresh
      *
      * @param changedRedirects
@@ -339,7 +359,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         redirects.forEach((redirect, index, list) => {
             const changedRedirectIndex = changedRedirects.findIndex(changedRedirect =>
-                isSameRedirectAs(changedRedirect, redirect),
+                Helpers.isSameRedirectAs(changedRedirect, redirect),
             );
             if (changedRedirectIndex >= 0) {
                 list[index] = changedRedirects[changedRedirectIndex];
@@ -377,7 +397,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param text
      */
     private handleCopyPathAction = (text: string): void => {
-        copyTextToClipboard(text);
+        Helpers.copyTextToClipboard(text);
         this.props.notificationHelper.info(this.props.translate('list.action.copyPath', 'Copied path to clipboard'));
     };
 
@@ -403,7 +423,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     /**
      * Return the highest page number for the pagination
      */
-    private getMaxPage(redirects: Redirect[]): number {
+    private static getMaxPage(redirects: Redirect[]): number {
         return Math.max(0, Math.ceil(redirects.length / ITEMS_PER_PAGE) - 1);
     }
 
@@ -422,6 +442,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filterType,
             searchValue,
             editedRedirect,
+            showDetails,
+            showForm,
         } = this.state;
 
         const pagingParameters = [
@@ -430,7 +452,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filteredRedirects.length,
         ];
 
-        const hasMorePages = this.getMaxPage(filteredRedirects) > currentPage;
+        const hasMorePages = RedirectList.getMaxPage(filteredRedirects) > currentPage;
 
         // Sort by column
         let visibleRedirects = sortBy
@@ -444,97 +466,51 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         return (
             <React.Fragment>
-                <RedirectForm
-                    translate={translate}
-                    actions={actions}
-                    redirect={null}
-                    notificationHelper={notificationHelper}
-                    handleNewRedirect={this.handleNewRedirect}
-                    handleUpdatedRedirect={this.handleUpdatedRedirect}
-                    handleCancelAction={null}
-                    idPrefix=""
-                    validSourceUriPathPattern={validSourceUriPathPattern}
+                {!showForm && (
+                    <button className="neos-button neos-button-primary" onClick={() => this.handleToggleForm()}>
+                        {translate('action.create', 'Add redirect')}
+                    </button>
+                )}
+
+                {showForm && (
+                    <>
+                        <h2 className="redirects-list__header">{translate('action.create', 'Add redirect')}</h2>
+
+                        <RedirectForm
+                            translate={translate}
+                            actions={actions}
+                            redirect={null}
+                            notificationHelper={notificationHelper}
+                            handleNewRedirect={this.handleNewRedirect}
+                            handleUpdatedRedirect={this.handleUpdatedRedirect}
+                            handleCancelAction={this.handleToggleForm}
+                            idPrefix=""
+                            validSourceUriPathPattern={validSourceUriPathPattern}
+                        />
+                    </>
+                )}
+
+                <h2 className="redirects-list__header">{translate('header.manageRedirects', 'Manage redirects')}</h2>
+
+                <Filters
+                    handleUpdateSearch={this.handleUpdateSearch}
+                    currentPage={currentPage}
+                    showDetails={showDetails}
+                    filteredRedirects={filteredRedirects}
+                    filterStatusCode={filterStatusCode}
+                    filterType={filterType}
+                    handlePagination={this.handlePagination}
+                    handleUpdateFilterStatusCode={this.handleUpdateFilterStatusCode}
+                    handleUpdateFilterType={this.handleUpdateFilterType}
+                    handleToggleDetails={this.handleToggleDetails}
+                    hasMorePages={hasMorePages}
+                    pagingParameters={pagingParameters}
+                    redirectCountByStatusCode={redirectCountByStatusCode}
+                    redirectCountByType={redirectCountByType}
                 />
-
-                <div className="redirects-filter">
-                    <div className="row">
-                        <div className="neos-control-group">
-                            <label htmlFor="redirects-search">{translate('filter.search', 'Search')}</label>
-                            <input
-                                id="redirects-search"
-                                type="text"
-                                placeholder="Search"
-                                onChange={e => this.handleUpdateSearch(e.target.value)}
-                            />
-                        </div>
-
-                        <div className="neos-control-group">
-                            <label htmlFor="redirects-filter-status-code">
-                                {translate('filter.statusCode', 'Code')}
-                            </label>
-                            <select
-                                id="redirects-filter-status-code"
-                                defaultValue={filterStatusCode.toString()}
-                                onChange={e => this.handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}
-                            >
-                                <option value="-1">All</option>
-                                {redirectCountByStatusCode.map((numberOfRedirects, statusCode) => {
-                                    return (
-                                        <option key={statusCode} value={statusCode}>
-                                            {statusCode}
-                                            &nbsp;
-                                            {translate('filter.resultsCountSuffix', 'results', [numberOfRedirects])}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
-
-                        <div className="neos-control-group">
-                            <label htmlFor="redirects-filter-type">{translate('filter.type', 'Type')}</label>
-                            <select
-                                id="redirects-filter-type"
-                                defaultValue={filterType}
-                                onChange={e => this.handleUpdateFilterType(e.target.value)}
-                            >
-                                <option value="">All</option>
-                                {Object.keys(redirectCountByType).map(type => {
-                                    return (
-                                        <option key={type} value={type}>
-                                            {translate('filter.type.' + type, type)}
-                                            &nbsp;
-                                            {translate('filter.resultsCountSuffix', 'results', [
-                                                redirectCountByType[type],
-                                            ])}
-                                        </option>
-                                    );
-                                })}
-                            </select>
-                        </div>
-                    </div>
-                    <div className="redirects-filter__pagination">
-                        {filteredRedirects.length > 0 && (
-                            <i
-                                role="button"
-                                className={'fas fa-caret-left' + (currentPage > 0 ? '' : ' disabled')}
-                                onClick={() => currentPage > 0 && this.handlePagination(Pagination.Left)}
-                            />
-                        )}
-                        {filteredRedirects.length > 0
-                            ? translate('pagination.position', 'Showing {0}-{1} of {2}', pagingParameters)
-                            : translate('pagination.noResults', 'No redirects match your search')}
-                        {filteredRedirects.length > 0 && (
-                            <i
-                                role="button"
-                                className={'fas fa-caret-right' + (hasMorePages ? '' : ' disabled')}
-                                onClick={() => hasMorePages && this.handlePagination(Pagination.Right)}
-                            />
-                        )}
-                    </div>
-                </div>
                 {redirects.length > 0 ? (
                     <div className="redirects-table-wrap">
-                        <table className="neos-table redirects-table">
+                        <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
                             <thead>
                                 <tr>
                                     {this.renderColumnHeader('statusCode', 'Code')}
@@ -543,10 +519,14 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                     {this.renderColumnHeader('targetUriPath', 'Target uri or path')}
                                     {this.renderColumnHeader('startDateTime', 'Active from')}
                                     {this.renderColumnHeader('endDateTime', 'Active until')}
-                                    {this.renderColumnHeader('comment', 'Comment')}
-                                    {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
-                                    {this.renderColumnHeader('creationDate', 'Created')}
-                                    {this.renderColumnHeader('creator', 'Creator')}
+                                    {showDetails && (
+                                        <>
+                                            {this.renderColumnHeader('comment', 'Comment')}
+                                            {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
+                                            {this.renderColumnHeader('creationDate', 'Created')}
+                                            {this.renderColumnHeader('creator', 'Creator')}
+                                        </>
+                                    )}
                                     <th className="redirect-table__heading-actions">
                                         {translate('actions', 'Actions')}
                                     </th>
@@ -564,6 +544,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                             handleCopyPathAction={this.handleCopyPathAction}
                                             searchValue={searchValue}
                                             showHitCount={showHitCount}
+                                            showDetails={showDetails}
                                         />
                                         {editedRedirect === redirect && (
                                             <tr className="redirects-table__single-column-row">

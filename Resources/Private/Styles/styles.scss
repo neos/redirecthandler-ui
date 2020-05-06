@@ -1,6 +1,7 @@
 @import "variables";
 
 .neos {
+    @import "components/list";
     @import "components/add-redirect-form";
     @import "components/export-redirects-form";
     @import "components/filter";

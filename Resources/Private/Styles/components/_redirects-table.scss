@@ -1,6 +1,14 @@
 .redirects-table {
+    margin-top: 1rem;
+
     &-wrap {
         overflow-x: auto;
+    }
+
+    &.detail-view {
+        tbody td {
+            font-size: 80%;
+        }
     }
 
     thead {
@@ -28,7 +36,6 @@
             white-space: nowrap;
             text-overflow: ellipsis;
             overflow: hidden;
-            font-size: 80%;
 
             .redirects-table__single-column-row & {
                 padding: 1rem;
@@ -46,6 +53,23 @@
                     &:not(:hover) {
                         background-color: #{$alternatingBackgroundColor} !important;
                     }
+                }
+            }
+
+            .neos-label {
+                user-select: none;
+                font-weight: bold !important;
+
+                &-info {
+                    background-color: #{$primaryColor} !important;
+                }
+
+                &-warning {
+                    background-color: #{$deletedColor} !important;
+                }
+
+                &-important {
+                    background-color: #{$warningColor} !important;
                 }
             }
         }
@@ -111,13 +135,6 @@
 
         &__column-creation-date-time {
             width: 90px;
-        }
-
-        &--inactive {
-            .redirects-table__row__column-start,
-            .redirects-table__row__column-end {
-                color: #{$warningColor};
-            }
         }
 
         .redirect__type {
