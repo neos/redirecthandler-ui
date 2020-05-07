@@ -90,7 +90,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      *
      * @param searchValue
      */
-    private handleUpdateSearch(searchValue: string): void {
+    private handleUpdateSearch = (searchValue: string): void => {
         const {
             redirects,
             filterStatusCode,
@@ -126,12 +126,12 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             filterType: validFilterTypeSelection,
             currentPage: Math.min(currentPage, RedirectList.getMaxPage(filteredRedirects)),
         });
-    }
+    };
 
     /**
      * Refreshes the list
      */
-    private refresh(): void {
+    private refresh = (): void => {
         const { redirects } = this.state;
         this.setState(
             {
@@ -235,7 +235,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * @param propertyName
      * @param sortDirection
      */
-    private sortRedirects(redirects: Redirect[], propertyName: string, sortDirection: SortDirection): Redirect[] {
+    private sortRedirects = (redirects: Redirect[], propertyName: string, sortDirection: SortDirection): Redirect[] => {
         const sortedRedirects = redirects.sort((a, b) => {
             let x = a[propertyName];
             if (typeof x === 'string') {
@@ -257,7 +257,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         }
 
         return sortedRedirects;
-    }
+    };
 
     /**
      * Asks for confirmation and then sends the deletion request to the backend.
