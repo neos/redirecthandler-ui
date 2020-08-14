@@ -7,7 +7,7 @@ import { DateTimeUtil, UrlUtil, Helpers } from '../util';
 import { RedirectContext } from '../providers';
 import { Tooltip } from './index';
 
-const MAX_INPUT_LENGTH = 255;
+const MAX_INPUT_LENGTH = 500;
 
 export interface RedirectFormProps {
     translate: (id: string, label: string, args?: any[]) => string;
