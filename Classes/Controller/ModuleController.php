@@ -151,8 +151,10 @@ class ModuleController extends AbstractModuleController
         // Serialize redirects for the filterable list in the frontend
         // TODO: Provide the list via a json action to the frontend for async loading
         $redirectsJson = '';
+        $redirectCount = 0;
         /** @var RedirectInterface $redirect */
         foreach ($redirects as $redirect) {
+            $redirectCount++;
             $usedHostOptions[] = $redirect->getHost();
             $redirectsJson .= json_encode($redirect) . ',';
         }
@@ -166,6 +168,7 @@ class ModuleController extends AbstractModuleController
         sort($hostOptions);
 
         $this->view->assignMultiple([
+            'redirectCount' => $redirectCount,
             'redirectsJson' => $redirectsJson,
             'hostOptions' => $hostOptions,
             'flashMessages' => $flashMessages,

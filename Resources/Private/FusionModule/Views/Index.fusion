@@ -1,4 +1,5 @@
 prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Component) {
+    redirectCount = 0
     redirectsJson = '[]'
     hostOptions = '[]'
     csrfToken = ''
@@ -14,9 +15,11 @@ prototype(Neos.RedirectHandler.Ui:Module.Index) < prototype(Neos.Fusion:Componen
         <div class="neos-content neos-container-fluid">
             <div class="neos-row-fluid">
                 <Neos.RedirectHandler.Ui:Component.Redirect.List
-                        redirectsJson={props.redirectsJson}
-                        hostOptions={props.hostOptions}
-                        csrfToken={props.csrfToken}/>
+                    redirectCount={props.redirectCount}
+                    redirectsJson={props.redirectsJson}
+                    hostOptions={props.hostOptions}
+                    csrfToken={props.csrfToken}
+                />
             </div>
 
             <div class="neos-footer">

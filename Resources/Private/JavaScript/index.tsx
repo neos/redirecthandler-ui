@@ -48,21 +48,41 @@ window.onload = async (): Promise<void> => {
         return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
 
-    ReactDOM.render(
-        <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
-            <IntlProvider translate={translate}>
-                <RedirectList
-                    redirects={redirects}
-                    actions={actions}
-                    translate={translate}
-                    showHitCount={showHitCount}
-                    validSourceUriPathPattern={validSourceUriPathPattern}
-                    notificationHelper={Notification}
-                    initialTypeFilter={initialTypeFilter}
-                    initialStatusCodeFilter={initialStatusCodeFilter}
-                />
-            </IntlProvider>
-        </RedirectProvider>,
-        redirectsList,
-    );
+    if (redirectsList.hasChildNodes()) {
+        ReactDOM.hydrate(
+            <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
+                <IntlProvider translate={translate}>
+                    <RedirectList
+                        redirects={redirects}
+                        actions={actions}
+                        translate={translate}
+                        showHitCount={showHitCount}
+                        validSourceUriPathPattern={validSourceUriPathPattern}
+                        notificationHelper={Notification}
+                        initialTypeFilter={initialTypeFilter}
+                        initialStatusCodeFilter={initialStatusCodeFilter}
+                    />
+                </IntlProvider>
+            </RedirectProvider>,
+            redirectsList,
+        );
+    } else {
+        ReactDOM.render(
+            <RedirectProvider value={{ hostOptions, statusCodes, csrfToken, defaultStatusCode }}>
+                <IntlProvider translate={translate}>
+                    <RedirectList
+                        redirects={redirects}
+                        actions={actions}
+                        translate={translate}
+                        showHitCount={showHitCount}
+                        validSourceUriPathPattern={validSourceUriPathPattern}
+                        notificationHelper={Notification}
+                        initialTypeFilter={initialTypeFilter}
+                        initialStatusCodeFilter={initialStatusCodeFilter}
+                    />
+                </IntlProvider>
+            </RedirectProvider>,
+            redirectsList,
+        );
+    }
 };

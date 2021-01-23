@@ -1,4 +1,5 @@
 prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusion:Component) {
+    redirectCount = 0
     redirectsJson = '[]'
     showHitCount = ${Configuration.setting('Neos.RedirectHandler.features.hitCounter')}
     csrfToken = null
@@ -25,6 +26,8 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
         }
     }
 
+    i18n = ${I18n.id('').package('Neos.RedirectHandler.Ui').source('Modules')}
+
     renderer = afx`
         <div id="redirects-list-app"
              data-show-hit-count={props.showHitCount ? 'true' : 'false'}
@@ -36,8 +39,68 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
              data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
              data-status-codes={Json.stringify(props.statusCodes)}
              data-host-options={Json.stringify(props.hostOptions)}
-             data-redirects-json={props.redirectsJson}>
-            <p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:list.loading')}</p>
+             data-redirects-json={props.redirectsJson}
+        >
+            <button class="neos-button neos-button-primary">{props.i18n.id('action.create')}</button>
+            <h2 class="redirects-list__header">{props.i18n.id('header.manageRedirects')}</h2>
+            <div class="redirects-filter">
+                <div class="row">
+                    <div class="neos-control-group neos-control-group--large">
+                        <label for="redirects-search">{props.i18n.id('filter.search')}</label>
+                        <input id="redirects-search" placeholder={props.i18n.id('filter.search.placeholder')} type="text"/>
+                    </div>
+                    <div class="neos-control-group">
+                        <label for="redirects-filter-status-code">{props.i18n.id('filter.statusCode')}</label>
+                        <select id="redirects-filter-status-code">
+                            <option value="-1">All</option>
+                        </select>
+                    </div>
+                    <div class="neos-control-group">
+                        <label for="redirects-filter-type">{props.i18n.id('filter.type')}</label>
+                        <select id="redirects-filter-type">
+                            <option value="">All</option>
+                        </select>
+                    </div>
+                    <div class="neos-control-group neos-control-group--right neos-control-group--fill">
+                        <div class="redirects-filter__pagination">
+                            <span>{props.i18n.id('pagination.noResults')}</span>
+                        </div>
+                    </div>
+                    <div class="neos-control-group align--right">
+                        <label class="redirects-filter-switch" for="redirects-filter-details">
+                            <span>{props.i18n.id('filter.showDetails')}</span>
+                            <input id="redirects-filter-details" type="checkbox"/>
+                            <div class="redirects-filter-switch__slider"></div>
+                        </label>
+                    </div>
+                </div>
+            </div>
+            <div class="redirects-table-wrap">
+                <table class="neos-table redirects-table">
+                    <thead>
+                        <tr>
+                            <th class="">Code </th>
+                            <th class="">Origin domain </th>
+                            <th class="active">Source path <i class="fas fa-sort-amount-down"></i></th>
+                            <th class="">Target uri or path </th>
+                            <th class="">Active from </th>
+                            <th class="">Active until </th>
+                            <th class="redirect-table__heading-actions">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <Neos.Fusion:Loop items={Array.range(1, props.redirectCount)}>
+                            <tr class={'redirects-table__row ' + (iterator.index % 2 ? '' : 'odd')}>
+                                <td>
+                                    <div class="redirects-table__column--loading">
+                                        {props.i18n.id('list.loading')}
+                                    </div>
+                                </td>
+                            </tr>
+                        </Neos.Fusion:Loop>
+                    </tbody>
+                </table>
+            </div>
         </div>
     `
 }
