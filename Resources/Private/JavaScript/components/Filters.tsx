@@ -27,7 +27,7 @@ export enum Pagination {
     End,
 }
 
-export default function Filters({
+const Filters: React.FC<FiltersProps> = ({
     handleUpdateSearch,
     handleUpdateFilterStatusCode,
     handleUpdateFilterType,
@@ -42,7 +42,7 @@ export default function Filters({
     redirectCountByType,
     pagingParameters,
     hasMorePages,
-}: FiltersProps) {
+}) => {
     const { translate } = useIntl();
 
     return (
@@ -143,4 +143,6 @@ export default function Filters({
             </div>
         </div>
     );
-}
+};
+
+export default React.memo(Filters);

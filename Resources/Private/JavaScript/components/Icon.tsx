@@ -4,6 +4,8 @@ interface IconProps {
     icon: string;
 }
 
-export default function Icon({ icon }: IconProps) {
+const Icon = ({ icon }: IconProps) => {
     return <i className={`fas fa-${icon}`} />;
-}
+};
+
+export default React.memo(Icon);

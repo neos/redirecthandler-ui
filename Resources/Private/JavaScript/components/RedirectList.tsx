@@ -3,10 +3,8 @@ import { FormEvent } from 'react';
 
 import { Helpers } from '../util';
 import { Redirect, NeosNotification } from '../interfaces';
-import { RedirectListItem } from './RedirectListItem';
-import { RedirectForm } from './RedirectForm';
+import { RedirectForm, RedirectListItem, Filters, Pagination } from './index';
 import { RedirectContext } from '../providers';
-import Filters, { Pagination } from './Filters';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -82,6 +80,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         if (this.props.initialStatusCodeFilter) {
             this.handleUpdateSearch('');
         }
+        this.forceUpdate();
     }
 
     /**
@@ -140,7 +139,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             },
             () => this.handleUpdateSearch(this.state.searchValue),
         );
-    }
+    };
 
     /**
      * Counts each type of status code over all given redirects and returns them
