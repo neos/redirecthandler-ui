@@ -9,3 +9,24 @@
         padding-top: 1.5rem;
     }
 }
+
+.redirects-table__column--loading {
+    position: relative;
+    column-span: all;
+}
+.redirects-table__column--loading:after {
+    content: "";
+    display: block;
+    position: absolute;
+    top:0;
+    width: 100%;
+    height: 100%;
+    transform: translateX(-100%);
+    background: linear-gradient(90deg, transparent, rgba(200,200,200,0.4), transparent);
+    animation: row-loading 1.5s infinite;
+}
+@keyframes row-loading {
+    100% {
+        transform: translateX(100%);
+    }
+}
