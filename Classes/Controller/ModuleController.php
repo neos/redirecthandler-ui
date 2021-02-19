@@ -582,7 +582,7 @@ class ModuleController extends AbstractModuleController
             $existingRedirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath,
                 $host ?: null, false);
             if ($existingRedirect !== null) {
-                $this->addFlashMessage('', 'error.redirectExists', Message::SEVERITY_ERROR);
+                $this->addFlashMessage('', $this->translateById('error.redirectExists'), Message::SEVERITY_ERROR);
                 return [];
             }
         }
