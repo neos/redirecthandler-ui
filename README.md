@@ -6,7 +6,7 @@ This package provides a backend module to manage [Neos.RedirectHandler](https://
 
 ## Compatibility and Maintenance
 
-This package is compatible with Neos 3.x, 4.x, 5.x and will be maintained for upcoming versions.
+This package is compatible with Neos 4.3, 5.x, 7.x and will be maintained for upcoming versions.
 
 ## Installation
 
