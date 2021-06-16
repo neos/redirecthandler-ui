@@ -8,7 +8,7 @@ import { RedirectProvider, IntlProvider } from './providers';
 import '../Styles/styles.scss';
 
 window.onload = async (): Promise<void> => {
-    while (!window.Typo3Neos || !window.Typo3Neos.I18n.initialized) {
+    while (!window.Typo3Neos || !window.Typo3Neos.I18n || !window.Typo3Neos.I18n.initialized) {
         await new Promise(resolve => setTimeout(resolve, 50));
     }
 
