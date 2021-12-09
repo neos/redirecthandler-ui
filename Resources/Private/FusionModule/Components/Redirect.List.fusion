@@ -35,9 +35,12 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
              data-actions={Json.stringify(props.actions)}
              data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
              data-status-codes={Json.stringify(props.statusCodes)}
-             data-host-options={Json.stringify(props.hostOptions)}
-             data-redirects-json={props.redirectsJson}>
+             data-host-options={Json.stringify(props.hostOptions)}>
             <p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:list.loading')}</p>
+
+            <script type="application/json" id="redirects-list-data">
+                {props.redirectsJson}
+            </script>
         </div>
     `
 }
