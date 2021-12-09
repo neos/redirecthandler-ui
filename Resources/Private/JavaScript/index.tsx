@@ -13,12 +13,13 @@ window.onload = async (): Promise<void> => {
     }
 
     const redirectsList: HTMLElement = document.getElementById('redirects-list-app');
+    const redirectsData: HTMLElement = document.getElementById('redirects-list-data');
 
-    if (!redirectsList) {
+    if (!redirectsList || !redirectsData) {
         return;
     }
 
-    const redirects: Redirect[] = JSON.parse(redirectsList.dataset.redirectsJson);
+    const redirects: Redirect[] = JSON.parse(redirectsData.innerText);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
     const actions: {
         delete: string;
