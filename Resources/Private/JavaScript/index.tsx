@@ -8,8 +8,11 @@ import { RedirectProvider, IntlProvider } from './providers';
 import '../Styles/styles.scss';
 
 window.onload = async (): Promise<void> => {
-    while (!window.Typo3Neos || !window.Typo3Neos.I18n || !window.Typo3Neos.I18n.initialized) {
-        await new Promise(resolve => setTimeout(resolve, 50));
+    let NeosAPI = window.Typo3Neos || window.NeosCMS;
+
+    while (!NeosAPI || !NeosAPI.I18n || !NeosAPI.I18n.initialized) {
+        NeosAPI = window.NeosCMS || window.Typo3Neos;
+        await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
     const redirectsList: HTMLElement = document.getElementById('redirects-list-app');
@@ -38,7 +41,7 @@ window.onload = async (): Promise<void> => {
         initialStatusCodeFilter = -1;
     }
 
-    const { I18n, Notification } = window.Typo3Neos;
+    const { I18n, Notification } = NeosAPI;
 
     /**
      * @param id
