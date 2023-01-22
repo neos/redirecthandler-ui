@@ -21,20 +21,17 @@ use League\Csv\Exception as CsvException;
 use League\Csv\Reader;
 use Neos\Error\Messages\Message;
 use Neos\Flow\Annotations as Flow;
-use Neos\Flow\I18n\Exception\IndexOutOfBoundsException;
-use Neos\Flow\I18n\Exception\InvalidFormatPlaceholderException;
 use Neos\Flow\I18n\Service as LocalizationService;
 use Neos\Flow\I18n\Translator;
 use Neos\Flow\Mvc\Exception\StopActionException;
 use Neos\Flow\Mvc\View\JsonView;
+use Neos\Flow\Persistence\PersistenceManagerInterface;
 use Neos\Flow\ResourceManagement\Exception as ResourceException;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
+use Neos\Flow\Security\Context as SecurityContext;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
-use Neos\Flow\Persistence\PersistenceManagerInterface;
-use Neos\Flow\Security\Context as SecurityContext;
-
 use Neos\Neos\Domain\Model\Domain;
 use Neos\Neos\Domain\Repository\DomainRepository;
 use Neos\RedirectHandler\RedirectInterface;
@@ -151,9 +148,7 @@ class ModuleController extends AbstractModuleController
         }
         $redirectsJson = '[' . trim($redirectsJson, ',') . ']';
 
-        $domainOptions = array_map(function (Domain $domain) {
-            return $domain->getHostname();
-        }, $this->domainRepository->findAll()->toArray());
+        $domainOptions = array_map(static fn(Domain $domain) => $domain->getHostname(), $this->domainRepository->findAll()->toArray());
 
         $hostOptions = array_filter(array_unique(array_merge($domainOptions, $usedHostOptions)));
         sort($hostOptions);
@@ -167,29 +162,24 @@ class ModuleController extends AbstractModuleController
         ]);
     }
 
-    /**
-     * @param string|null $startDateTime
-     * @param string|null $endDateTime
-     * @return array
-     */
-    protected function processRedirectStartAndEndDate(string $startDateTime = null, string $endDateTime = null): array
+    protected function processRedirectStartAndEndDate(string $startDateTimeString = null, string $endDateTimeString = null): array
     {
         $valid = true;
-        if (empty($startDateTime)) {
-            $startDateTime = null;
-        } else {
+        $startDateTime = null;
+        $endDateTime = null;
+
+        if ($startDateTimeString) {
             try {
-                $startDateTime = new \DateTime($startDateTime);
+                $startDateTime = new \DateTime($startDateTimeString);
             } catch (Exception $e) {
                 $valid = false;
                 $this->addFlashMessage('', $this->translateById('error.invalidStartDateTime'), Message::SEVERITY_ERROR);
             }
         }
-        if (empty($endDateTime)) {
-            $endDateTime = null;
-        } else {
+
+        if ($endDateTimeString) {
             try {
-                $endDateTime = new \DateTime($endDateTime);
+                $endDateTime = new \DateTime($endDateTimeString);
             } catch (Exception $e) {
                 $valid = false;
                 $this->addFlashMessage('', $this->translateById('error.invalidEndDateTime'), Message::SEVERITY_ERROR);
@@ -202,7 +192,6 @@ class ModuleController extends AbstractModuleController
     /**
      * Creates a single redirect and goes back to the list
      *
-     * @return void
      * @throws StopActionException
      */
     public function createAction(): void
@@ -225,13 +214,12 @@ class ModuleController extends AbstractModuleController
             $changedRedirects = $this->addRedirect(
                 $sourceUriPath, $targetUriPath, $statusCode, $host, $comment, $startDateTime, $endDateTime
             );
-            $creationStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+            $creationStatus = count($changedRedirects) > 0;
         } else {
             $changedRedirects = [];
         }
 
         if (!$creationStatus) {
-            $messageTitle = '';
             $message = $this->translateById('error.redirectNotCreated');
             $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         } else {
@@ -267,7 +255,6 @@ class ModuleController extends AbstractModuleController
     /**
      * Updates a single redirect and goes back to the list
      *
-     * @return void
      * @throws StopActionException
      */
     public function updateAction(): void
@@ -293,7 +280,7 @@ class ModuleController extends AbstractModuleController
                 $originalSourceUriPath, $originalHost, $sourceUriPath, $targetUriPath, $statusCode, $host, $comment,
                 $startDateTime, $endDateTime
             );
-            $updateStatus = is_array($changedRedirects) && count($changedRedirects) > 0;
+            $updateStatus = count($changedRedirects) > 0;
         } else {
             $changedRedirects = [];
         }
@@ -336,7 +323,6 @@ class ModuleController extends AbstractModuleController
     /**
      * Deletes a single redirect and goes back to the list
      *
-     * @return void
      * @throws StopActionException
      */
     public function deleteAction(): void
@@ -405,8 +391,7 @@ class ModuleController extends AbstractModuleController
         $csvWriter = $this->redirectExportService->exportCsv(
             $host,
             !$includeInactiveRedirects,
-            $includeGeneratedRedirects ? null : RedirectInterface::REDIRECT_TYPE_MANUAL,
-            true
+            $includeGeneratedRedirects ? null : RedirectInterface::REDIRECT_TYPE_MANUAL
         );
         $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
 
@@ -426,8 +411,6 @@ class ModuleController extends AbstractModuleController
     /**
      * Tries to import redirects from the given CSV file and then shows a protocol
      *
-     * @param PersistentResource $csvFile
-     * @param string $delimiter
      * @throws StopActionException
      */
     public function importCsvAction(PersistentResource $csvFile = null, string $delimiter = ','): void
@@ -445,7 +428,7 @@ class ModuleController extends AbstractModuleController
             $reader->setDelimiter($delimiter);
 
             $protocol = $this->redirectImportService->import($reader->getIterator());
-            $protocolErrors = array_filter($protocol, function ($entry) {
+            $protocolErrors = array_filter($protocol, static function ($entry) {
                 return $entry['type'] === RedirectImportService::REDIRECT_IMPORT_MESSAGE_TYPE_ERROR;
             });
 
@@ -477,27 +460,17 @@ class ModuleController extends AbstractModuleController
         ]);
     }
 
-    /**
-     * @param string $sourceUriPath
-     * @param string $targetUriPath
-     * @param integer $statusCode
-     * @param string|null $host
-     * @param string|null $comment
-     * @param DateTime|null $startDateTime
-     * @param DateTime|null $endDateTime
-     * @param bool $force
-     * @return array
-     */
     protected function addRedirect(
-        string $sourceUriPath,
-        string $targetUriPath,
-        int $statusCode,
-        ?string $host = null,
-        ?string $comment = null,
+        string   $sourceUriPath,
+        string   $targetUriPath,
+        int      $statusCode,
+        ?string  $host = null,
+        ?string  $comment = null,
         DateTime $startDateTime = null,
         DateTime $endDateTime = null,
-        bool $force = false
-    ): array {
+        bool     $force = false
+    ): array
+    {
         $sourceUriPath = trim($sourceUriPath);
         $targetUriPath = trim($targetUriPath);
 
@@ -505,7 +478,7 @@ class ModuleController extends AbstractModuleController
             return [];
         }
 
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null, false);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ?: null, false);
         $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
         $go = true;
 
@@ -546,17 +519,18 @@ class ModuleController extends AbstractModuleController
      * @return array
      */
     protected function updateRedirect(
-        string $originalSourceUriPath,
-        ?string $originalHost,
-        string $sourceUriPath,
-        string $targetUriPath,
-        int $statusCode,
-        ?string $host = null,
-        ?string $comment = null,
+        string   $originalSourceUriPath,
+        ?string  $originalHost,
+        string   $sourceUriPath,
+        string   $targetUriPath,
+        int      $statusCode,
+        ?string  $host = null,
+        ?string  $comment = null,
         DateTime $startDateTime = null,
         DateTime $endDateTime = null,
-        bool $force = false
-    ): array {
+        bool     $force = false
+    ): array
+    {
         $sourceUriPath = trim($sourceUriPath);
         $targetUriPath = trim($targetUriPath);
 
@@ -594,14 +568,9 @@ class ModuleController extends AbstractModuleController
         return [];
     }
 
-    /**
-     * @param string $sourceUriPath
-     * @param string|null $host
-     * @return bool
-     */
     protected function deleteRedirect(string $sourceUriPath, ?string $host = null): bool
     {
-        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ? $host : null);
+        $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ?: null);
         if ($redirect === null) {
             return false;
         }
@@ -611,12 +580,6 @@ class ModuleController extends AbstractModuleController
         return true;
     }
 
-    /**
-     * @param string|null $host
-     * @param string $sourceUriPath
-     * @param string $targetUriPath
-     * @return bool
-     */
     protected function validateRedirectAttributes(?string $host, string $sourceUriPath, string $targetUriPath): bool
     {
         if ($sourceUriPath === $targetUriPath) {
@@ -632,21 +595,14 @@ class ModuleController extends AbstractModuleController
         return false;
     }
 
-    /**
-     * @param string $sourceUriPath
-     * @param string $targetUriPath
-     * @param string|null $host
-     * @param int $statusCode
-     * @param RedirectInterface|null $redirect
-     * @return bool
-     */
     protected function isSame(
-        string $sourceUriPath,
-        string $targetUriPath,
-        ?string $host,
-        int $statusCode,
+        string            $sourceUriPath,
+        string            $targetUriPath,
+        ?string           $host,
+        int               $statusCode,
         RedirectInterface $redirect = null
-    ): bool {
+    ): bool
+    {
         if ($redirect === null) {
             return false;
         }
@@ -654,21 +610,16 @@ class ModuleController extends AbstractModuleController
         return $redirect->getSourceUriPath() === $sourceUriPath
             && $redirect->getTargetUriPath() === $targetUriPath
             && $redirect->getHost() === $host
-            && $redirect->getStatusCode() === (integer)$statusCode;
+            && $redirect->getStatusCode() === $statusCode;
     }
 
     /**
      * Shorthand to translate labels for this package
-     *
-     * @param string|null $id
-     * @param array $arguments
-     * @return string
      */
     protected function translateById(string $id, array $arguments = []): ?string
     {
         try {
-            return $this->translator->translateById($id, $arguments, null, null, 'Modules',
-                'Neos.RedirectHandler.Ui');
+            return $this->translator->translateById($id, $arguments, null, null, 'Modules', 'Neos.RedirectHandler.Ui');
         } catch (\Exception $e) {
             return $id;
         }
@@ -678,14 +629,12 @@ class ModuleController extends AbstractModuleController
      * Creates a html list of changed redirects
      *
      * @param array<RedirectInterface> $changedRedirects
-     * @return string
      */
     protected function createChangedRedirectList(array $changedRedirects): string
     {
-        $list = array_reduce($changedRedirects, function ($carry, RedirectInterface $redirect) {
+        $list = array_reduce($changedRedirects, static function ($carry, RedirectInterface $redirect) {
             return $carry . '<li>' . $redirect->getHost() . '/' . $redirect->getSourceUriPath() . ' &rarr; /' . $redirect->getTargetUriPath() . '</li>';
         }, '');
-        $list = $list ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $list . '</ul>' : '';
-        return $list;
+        return $list ? '<p>' . $this->translateById('message.relatedChanges') . '</p><ul>' . $list . '</ul>' : '';
     }
 }
