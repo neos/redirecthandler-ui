@@ -360,7 +360,7 @@ class ModuleController extends AbstractModuleController
             $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         } else {
             $message = $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]);
-            $this->addFlashMessage('', $message, Message::SEVERITY_OK);
+            $this->addFlashMessage('', $message);
         }
 
         if ($this->request->getFormat() === 'json') {
@@ -442,8 +442,7 @@ class ModuleController extends AbstractModuleController
         $protocol = [];
 
         if (!$csvFile) {
-            $this->addFlashMessage('', $this->translateById('error.csvFileNotSet'),
-                Message::SEVERITY_ERROR);
+            $this->addFlashMessage($this->translateById('error.csvFileNotSet'), '', Message::SEVERITY_ERROR);
             $this->redirect('import');
         }
 
@@ -464,21 +463,17 @@ class ModuleController extends AbstractModuleController
             }
 
             if (count($protocol) === 0) {
-                $this->addFlashMessage('', $this->translateById('error.importCsvEmpty'), Message::SEVERITY_OK);
+                $this->addFlashMessage($this->translateById('error.importCsvEmpty'));
             } elseif (count($protocolErrors) > 0) {
-                $this->addFlashMessage('', $this->translateById('message.importCsvSuccessWithErrors'),
-                    Message::SEVERITY_WARNING);
+                $this->addFlashMessage($this->translateById('message.importCsvSuccessWithErrors'), '', Message::SEVERITY_WARNING);
             } else {
-                $this->addFlashMessage('', $this->translateById('message.importCsvSuccess'),
-                    Message::SEVERITY_OK);
+                $this->addFlashMessage($this->translateById('message.importCsvSuccess'));
             }
         } catch (CsvException $e) {
-            $this->addFlashMessage('', $this->translateById('error.importCsvFailed'),
-                Message::SEVERITY_ERROR);
+            $this->addFlashMessage($this->translateById('error.importCsvFailed'), '', Message::SEVERITY_ERROR);
             $this->redirect('import');
         } catch (ResourceException $e) {
-            $this->addFlashMessage('', $this->translateById('error.importResourceFailed'),
-                Message::SEVERITY_ERROR);
+            $this->addFlashMessage($this->translateById('error.importResourceFailed'), '', Message::SEVERITY_ERROR);
             $this->redirect('import');
         }
 
@@ -573,7 +568,7 @@ class ModuleController extends AbstractModuleController
         $targetUriPath = trim($targetUriPath);
 
         if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
-            $this->addFlashMessage('', $this->translateById('error.redirectNotValid'), Message::SEVERITY_ERROR);
+            $this->addFlashMessage($this->translateById('error.redirectNotValid'), '', Message::SEVERITY_ERROR);
             return [];
         }
 
@@ -582,7 +577,7 @@ class ModuleController extends AbstractModuleController
             $existingRedirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath,
                 $host ?: null, false);
             if ($existingRedirect !== null) {
-                $this->addFlashMessage('', $this->translateById('error.redirectExists'), Message::SEVERITY_ERROR);
+                $this->addFlashMessage($this->translateById('error.redirectExists'), '', Message::SEVERITY_ERROR);
                 return [];
             }
         }
