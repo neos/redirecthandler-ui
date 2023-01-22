@@ -30,7 +30,6 @@ use Neos\Flow\Mvc\View\JsonView;
 use Neos\Flow\ResourceManagement\Exception as ResourceException;
 use Neos\Flow\ResourceManagement\PersistentResource;
 use Neos\Flow\ResourceManagement\ResourceManager;
-use Neos\Flow\Utility\Environment;
 use Neos\Fusion\View\FusionView;
 use Neos\Neos\Controller\Module\AbstractModuleController;
 use Neos\Flow\Persistence\PersistenceManagerInterface;
@@ -112,12 +111,6 @@ class ModuleController extends AbstractModuleController
      * @var RedirectImportService
      */
     protected $redirectImportService;
-
-    /**
-     * @Flow\Inject
-     * @var Environment
-     */
-    protected $environment;
 
     /**
      * @Flow\Inject
