@@ -87,14 +87,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      * The result is stored in the state, so it doesn't need to be recomputed for pagination or sorting.
      */
     private handleUpdateSearch = (searchValue: string): void => {
-        const {
-            redirects,
-            filterStatusCode,
-            filterType,
-            redirectCountByStatusCode,
-            redirectCountByType,
-            currentPage,
-        } = this.state;
+        const { redirects, filterStatusCode, filterType, redirectCountByStatusCode, redirectCountByType, currentPage } =
+            this.state;
         let filteredRedirects: Redirect[] = redirects;
 
         const cleanSearchValue = searchValue.trim().toLowerCase();
@@ -103,7 +97,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         // Filter by search value
         if (cleanSearchValue || validStatusCodeSelection || validFilterTypeSelection) {
-            filteredRedirects = filteredRedirects.filter(redirect => {
+            filteredRedirects = filteredRedirects.filter((redirect) => {
                 return (
                     (validStatusCodeSelection <= 0 || redirect.statusCode === validStatusCodeSelection) &&
                     (!validFilterTypeSelection || redirect.type === validFilterTypeSelection) &&
@@ -134,9 +128,9 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                 redirectCountByStatusCode: RedirectList.calculateRedirectCountByStatusCode(redirects),
                 redirectCountByType: RedirectList.calculateRedirectCountByType(redirects),
             },
-            () => this.handleUpdateSearch(this.state.searchValue),
+            () => this.handleUpdateSearch(this.state.searchValue)
         );
-    }
+    };
 
     /**
      * Counts each type of status code over all given redirects and returns them
@@ -253,7 +247,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             !confirm(
                 this.props.translate('list.action.confirmDelete', 'Delete the redirect "{0}"?', [
                     (redirect.host || '') + '/' + redirect.sourceUriPath,
-                ]),
+                ])
             )
         ) {
             return;
@@ -275,24 +269,24 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             },
             body: JSON.stringify(data),
         })
-            .then(response => response.json())
-            .then(data => {
+            .then((response) => response.json())
+            .then((data) => {
                 const { success, messages } = data;
                 if (success) {
                     const { redirects } = this.state;
-                    const filteredRedirects = redirects.filter(storedRedirect => redirect !== storedRedirect);
+                    const filteredRedirects = redirects.filter((storedRedirect) => redirect !== storedRedirect);
                     this.setState(
                         {
                             redirects: filteredRedirects,
                         },
-                        this.refresh,
+                        this.refresh
                     );
                 }
                 messages.forEach(({ title, message, severity }) => {
                     notificationHelper[severity.toLowerCase()](title || message, message);
                 });
             })
-            .catch(error => {
+            .catch((error) => {
                 notificationHelper.error(error);
             });
     };
@@ -333,8 +327,8 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         let { redirects } = this.state;
 
         redirects.forEach((redirect, index, list) => {
-            const changedRedirectIndex = changedRedirects.findIndex(changedRedirect =>
-                Helpers.isSameRedirectAs(changedRedirect, redirect),
+            const changedRedirectIndex = changedRedirects.findIndex((changedRedirect) =>
+                Helpers.isSameRedirectAs(changedRedirect, redirect)
             );
             if (changedRedirectIndex >= 0) {
                 list[index] = changedRedirects[changedRedirectIndex];
@@ -350,7 +344,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                 redirects,
                 editedRedirect: null,
             },
-            this.refresh,
+            this.refresh
         );
     };
 
@@ -359,7 +353,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
      */
     private handleUpdatedRedirect = (changedRedirects: Redirect[], oldRedirect: Redirect): void => {
         let { redirects } = this.state;
-        redirects = redirects.filter(redirect => redirect !== oldRedirect);
+        redirects = redirects.filter((redirect) => redirect !== oldRedirect);
         this.setState({ redirects }, () => this.handleNewRedirect(changedRedirects));
     };
 

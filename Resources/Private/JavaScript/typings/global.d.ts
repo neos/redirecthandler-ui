@@ -22,10 +22,10 @@ interface Window {
     };
 }
 
-interface Navigator extends Navigator{
+interface Navigator extends Navigator {
     clipboard: {
         writeText: (text: string) => void;
-    }
+    };
 }
 
 interface Redirect {
@@ -48,4 +48,4 @@ type Endpoints = {
     delete: string;
     create: string;
     update: string;
-}
+};

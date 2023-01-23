@@ -21,7 +21,7 @@ export function statusCodeSupportsTarget(statusCode: number): boolean {
 }
 
 /**
- * Replaces middle parts of a url path with ellipses when it's too long.
+ * Replaces middle parts of an url path with ellipses when it's too long.
  */
 export function shortenPath(path: string, maxLength: number): string {
     if (path.length <= maxLength) {
@@ -55,7 +55,7 @@ export function highlight(text: string, keyword: string): string {
  * Replace html special characters
  */
 export function escapeHtml(text: string): string {
-    return text.replace(/[&<>"']/g, m => HTML_ESCAPE_MAP[m]);
+    return text.replace(/[&<>"']/g, (m) => HTML_ESCAPE_MAP[m]);
 }
 
 /**

@@ -158,7 +158,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
                     <button
                         type="button"
                         className="neos-button"
-                        onClick={e => handleEditAction(e, redirect)}
+                        onClick={(e) => handleEditAction(e, redirect)}
                         title={translate('list.action.edit', 'Edit')}
                         data-edit-redirect-id={identifier}
                     >
@@ -167,7 +167,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
                     <button
                         type="submit"
                         className="neos-button neos-button-danger"
-                        onClick={e => handleDeleteAction(e, redirect)}
+                        onClick={(e) => handleDeleteAction(e, redirect)}
                         title={translate('list.action.delete', 'Delete')}
                     >
                         <Icon icon="trash-alt" />

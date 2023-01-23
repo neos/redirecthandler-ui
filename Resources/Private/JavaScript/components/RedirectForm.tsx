@@ -34,7 +34,7 @@ type RedirectFormState = {
     comment: string;
     isSendingData: boolean;
     activeHelpMessage: string;
-}
+};
 
 const initialState: RedirectFormState = {
     host: '',
@@ -78,14 +78,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     private handleSubmit = (event: React.FormEvent<HTMLFormElement>): void => {
         event.preventDefault();
 
-        const {
-            redirect,
-            notificationHelper,
-            actions,
-            handleNewRedirect,
-            handleUpdatedRedirect,
-            translate,
-        } = this.props;
+        const { redirect, notificationHelper, actions, handleNewRedirect, handleUpdatedRedirect, translate } =
+            this.props;
 
         const { csrfToken, defaultStatusCode } = this.context;
 
@@ -101,7 +95,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             const parsedTargetUrl: URL = UrlUtil.parseURL(targetUriPath, location.origin);
             if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
                 notificationHelper.warning(
-                    translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same'),
+                    translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same')
                 );
                 return;
             }
@@ -130,7 +124,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         this.setState({ isSendingData: true });
 
         this.postRedirect(redirect ? actions.update : actions.create, data)
-            .then(data => {
+            .then((data) => {
                 const { messages, changedRedirects } = data;
 
                 // Depending on whether an existing redirect was edited handle the list of changes but keep the original
@@ -175,8 +169,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             },
             body: body && JSON.stringify(body),
         })
-            .then(res => res.json())
-            .then(async data => {
+            .then((res) => res.json())
+            .then(async (data) => {
                 if (data.success) {
                     return data;
                 }
@@ -239,7 +233,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                 placeholderText={placeholder}
                 selected={dateTime}
                 timeCaption={translate('datepicker.time', 'Time')}
-                onChange={value => this.handleDatePickerChange(property, value)}
+                onChange={(value) => this.handleDatePickerChange(property, value)}
             />
         );
     };
@@ -256,8 +250,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
             <ul>
                 ${changedRedirects
                     .map(
-                        redirect =>
-                            `<li>${redirect.host || ''}/${redirect.sourceUriPath}&rarr;${redirect.targetUriPath}</li>`,
+                        (redirect) =>
+                            `<li>${redirect.host || ''}/${redirect.sourceUriPath}&rarr;${redirect.targetUriPath}</li>`
                     )
                     .join('')}
             </ul>`;
@@ -291,7 +285,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         } = this.state;
 
         return (
-            <form onSubmit={e => this.handleSubmit(e)} className="add-redirect-form">
+            <form onSubmit={(e) => this.handleSubmit(e)} className="add-redirect-form">
                 <div className="row">
                     <div className="neos-control-group">
                         <label className="neos-control-label" htmlFor={idPrefix + 'host'}>
@@ -364,7 +358,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                             value={statusCode}
                             onChange={this.handleInputChange}
                         >
-                            {Object.keys(statusCodes).map(code => (
+                            {Object.keys(statusCodes).map((code) => (
                                 <option
                                     value={code}
                                     key={code}
@@ -408,7 +402,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                         {this.renderDatePicker(
                             'startDateTime',
                             startDateTime,
-                            translate('startDateTime.placeholder', 'Enter start date'),
+                            translate('startDateTime.placeholder', 'Enter start date')
                         )}
                     </div>
                     <div className="neos-control-group neos-control-group--half">
@@ -416,7 +410,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                         {this.renderDatePicker(
                             'endDateTime',
                             endDateTime,
-                            translate('endDateTime.placeholder', 'Enter end date'),
+                            translate('endDateTime.placeholder', 'Enter end date')
                         )}
                     </div>
                     <div className="neos-control-group">
