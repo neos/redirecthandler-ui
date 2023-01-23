@@ -7,10 +7,11 @@
     "allowSyntheticDefaultImports": true,
     "experimentalDecorators": true,
     "jsx": "react",
+    "rootDir": "./Resources/Private/JavaScript",
     "typeRoots": ["./Resources/Private/JavaScript/typings"]
   },
   "include": [
-    "Resources/Private/JavaScript/**/*"
+    "./Resources/Private/JavaScript/**/*"
   ],
   "exclude": [
     "node_modules"

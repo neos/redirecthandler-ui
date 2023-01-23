@@ -1,0 +1,20 @@
+{
+  "name": "@neos-project/redirecthandler-ui-app",
+  "version": "1.0.0",
+  "license": "GNU GPLv3",
+  "private": true,
+  "source": "index.tsx",
+  "app": "../../Public/Assets/main.bundle.js",
+  "targets": {
+    "app": {}
+  },
+  "scripts": {
+    "watch": "parcel watch",
+    "build": "parcel build"
+  },
+  "dependencies": {
+    "react": "^18.2.0",
+    "react-datepicker": "^2.10.1",
+    "react-dom": "^18.2.0"
+  }
+}

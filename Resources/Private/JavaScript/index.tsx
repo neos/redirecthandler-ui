@@ -1,5 +1,5 @@
 import React from 'react';
-import ReactDOM from 'react-dom';
+import { createRoot } from 'react-dom/client';
 
 import { RedirectList } from './components';
 import { RedirectProvider, IntlProvider } from './providers';
@@ -44,7 +44,8 @@ window.addEventListener(
             return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
         };
 
-        ReactDOM.render(
+        const root = createRoot(redirectsList);
+        root.render(
             <RedirectProvider
                 value={{
                     hostOptions,
@@ -65,8 +66,7 @@ window.addEventListener(
                         initialStatusCodeFilter={initialStatusCodeFilter}
                     />
                 </IntlProvider>
-            </RedirectProvider>,
-            redirectsList
+            </RedirectProvider>
         );
     },
     true
