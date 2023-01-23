@@ -1,14 +1,12 @@
-import * as React from 'react';
-import { FormEvent } from 'react';
+import React, { FormEvent } from 'react';
 
-import { Redirect } from '../interfaces';
 import { highlight, shortenPath, escapeHtml } from '../util/helpers';
 import { Icon } from './index';
 
 const EMPTY_VALUE = '–';
 const URI_PATH_MAX_LENGTH = 80;
 
-export interface RedirectListItemProps {
+type RedirectListItemProps = {
     redirect: Redirect;
     translate: (id: string, label: string, args?: any[]) => string;
     rowClassNames: string[];
@@ -18,13 +16,11 @@ export interface RedirectListItemProps {
     handleDeleteAction: (event: FormEvent, redirect: Redirect) => void;
     handleCopyPathAction: (text: string) => void;
     showDetails: boolean;
-}
+};
 
-export class RedirectListItem extends React.PureComponent<RedirectListItemProps, {}> {
+export class RedirectListItem extends React.PureComponent<RedirectListItemProps> {
     /**
      * Highlights and shortens the given path to nicely display in the table.
-     *
-     * @param path
      */
     private renderPath = (path: string): string => {
         return highlight(shortenPath(escapeHtml(path), URI_PATH_MAX_LENGTH), this.props.searchValue);
@@ -42,10 +38,6 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
         return EMPTY_VALUE;
     };
 
-    /**
-     *
-     * @param date
-     */
     private formatDate = (date: string): string => {
         if (date) {
             return new Date(date).toLocaleString([], {

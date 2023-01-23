@@ -1,9 +1,9 @@
-import * as React from 'react';
+import React from 'react';
 
-interface TooltipProps {
+type TooltipProps = {
     caption: string;
     onClick: () => void;
-}
+};
 
 export default function renderTooltip({ caption, onClick }: TooltipProps): React.ReactElement {
     return (

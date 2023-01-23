@@ -1,8 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
-interface IconProps {
+type IconProps = {
     icon: string;
-}
+};
 
 export default function Icon({ icon }: IconProps) {
     return <i className={`fas fa-${icon}`} />;

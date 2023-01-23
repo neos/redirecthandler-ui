@@ -1,9 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
 import { useIntl } from '../providers';
-import { Redirect } from '../interfaces';
 
-interface FiltersProps {
+type FiltersProps = {
     handleUpdateSearch: (searchWord: string) => void;
     currentPage: number;
     filterStatusCode: number;
@@ -18,7 +17,7 @@ interface FiltersProps {
     handleUpdateFilterStatusCode: (statusCode: number) => void;
     handleUpdateFilterType: (filterType: string) => void;
     handleToggleDetails: () => void;
-}
+};
 
 export enum Pagination {
     Left,

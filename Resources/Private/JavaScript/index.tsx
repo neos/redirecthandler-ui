@@ -1,17 +1,16 @@
-import * as React from 'react';
-import * as ReactDOM from 'react-dom';
+import React from 'react';
+import ReactDOM from 'react-dom';
 
 import { RedirectList } from './components';
-import { Redirect } from './interfaces';
 import { RedirectProvider, IntlProvider } from './providers';
 
 import '../Styles/styles.scss';
 
-window.onload = async (): Promise<void> => {
-    let NeosAPI = window.Typo3Neos || window.NeosCMS;
+window.addEventListener('load', async (): Promise<void> => {
+    let NeosAPI = window.NeosCMS;
 
     while (!NeosAPI || !NeosAPI.I18n || !NeosAPI.I18n.initialized) {
-        NeosAPI = window.NeosCMS || window.Typo3Neos;
+        NeosAPI = window.NeosCMS;
         await new Promise((resolve) => setTimeout(resolve, 50));
     }
 
@@ -24,11 +23,7 @@ window.onload = async (): Promise<void> => {
 
     const redirects: Redirect[] = JSON.parse(redirectsData.innerText);
     const showHitCount: boolean = JSON.parse(redirectsList.dataset.showHitCount || 'false');
-    const actions: {
-        delete: string;
-        create: string;
-        update: string;
-    } = JSON.parse(redirectsList.dataset.actions);
+    const actions: Endpoints = JSON.parse(redirectsList.dataset.actions);
     const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
     const hostOptions: string[] = JSON.parse(redirectsList.dataset.hostOptions);
 
@@ -43,11 +38,6 @@ window.onload = async (): Promise<void> => {
 
     const { I18n, Notification } = NeosAPI;
 
-    /**
-     * @param id
-     * @param label
-     * @param args
-     */
     const translate = (id: string, label = '', args = []): string => {
         return I18n.translate(id, label, 'Neos.RedirectHandler.Ui', 'Modules', args);
     };
@@ -69,4 +59,4 @@ window.onload = async (): Promise<void> => {
         </RedirectProvider>,
         redirectsList,
     );
-};
+}, true);

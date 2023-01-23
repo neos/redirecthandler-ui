@@ -1,15 +1,13 @@
-import * as React from 'react';
-import { ChangeEvent, PureComponent } from 'react';
+import React, { ChangeEvent, PureComponent } from 'react';
 import DatePicker from 'react-datepicker';
 
-import { NeosNotification, Redirect } from '../interfaces';
 import { DateTimeUtil, UrlUtil, Helpers } from '../util';
 import { RedirectContext } from '../providers';
 import { Tooltip } from './index';
 
 const MAX_INPUT_LENGTH = 500;
 
-export interface RedirectFormProps {
+type RedirectFormProps = {
     translate: (id: string, label: string, args?: any[]) => string;
     notificationHelper: NeosNotification;
     actions: {
@@ -22,9 +20,9 @@ export interface RedirectFormProps {
     handleNewRedirect: (changedRedirects: Redirect[]) => void;
     handleUpdatedRedirect: (changedRedirects: Redirect[], oldRedirect: Redirect) => void;
     handleCancelAction: () => void;
-}
+};
 
-export interface RedirectFormState {
+type RedirectFormState = {
     [index: string]: any;
 
     host: string;

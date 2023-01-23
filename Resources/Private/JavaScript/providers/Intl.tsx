@@ -1,14 +1,14 @@
-import * as React from 'react';
+import React from 'react';
 import { createContext, useContext } from 'react';
 
-interface ProviderProps {
+type ProviderProps = {
     children: React.ReactElement;
     translate: (id: string, fallback?: string, parameters?: any[]) => string;
-}
+};
 
-interface ProviderValues {
+type ProviderValues = {
     translate: (id: string, fallback?: string, parameters?: any[]) => string;
-}
+};
 
 export const IntlContext = createContext(null);
 export const useIntl = (): ProviderValues => useContext(IntlContext);

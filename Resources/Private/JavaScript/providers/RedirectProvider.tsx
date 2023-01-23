@@ -1,12 +1,11 @@
-import * as React from 'react';
-import { useContext, createContext } from 'react';
+import React, { useContext, createContext } from 'react';
 
-export interface RedirectContextInterface {
+type RedirectContextInterface = {
     statusCodes: { [index: string]: string };
     hostOptions: string[];
     csrfToken: string;
     defaultStatusCode: number;
-}
+};
 
 export const RedirectContext = createContext({});
 export const useRedirects = () => useContext(RedirectContext);
