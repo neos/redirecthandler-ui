@@ -19,12 +19,12 @@ prototype(Neos.RedirectHandler.Ui:Component.FlashMessages.Message) < prototype(N
 
     renderer = afx`
         <div class={'neos-notification neos-notification-' + props.severity}>
-            <div class={'neos-notification-content' + (props.message.message ? ' expandable' : '')}>
+            <div class={'neos-notification-content' + (props.message.message && props.message.title ? ' expandable' : '')}>
                 <i class={'fas fa-' + props.severity}></i>
-                <div class="neos-notification-heading" @if.hasTitle={props.message.title}>
-                    {props.message.title}
+                <div class="neos-notification-heading">
+                    {props.message.title || props.message.message}
                 </div>
-                <div class="neos-expand-content">{props.message.message}</div>
+                <div class="neos-expand-content" @if.hasMessageAndTitle={props.message.message && props.message.title}>{props.message.message}</div>
             </div>
         </div>
     `

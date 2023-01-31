@@ -21,3 +21,31 @@ interface Window {
         Notification: NeosNotification;
     };
 }
+
+interface Navigator extends Navigator {
+    clipboard: {
+        writeText: (text: string) => void;
+    };
+}
+
+interface Redirect {
+    [key: string]: any; // Generic accessor to get property via its name
+    host: string;
+    sourceUriPath: string;
+    targetUriPath: string;
+    statusCode: number;
+    startDateTime: string;
+    endDateTime: string;
+    comment: string;
+    creator: string;
+    type: string;
+    hitCount: number;
+    lastHit: string;
+    creationDateTime: string;
+}
+
+type Endpoints = {
+    delete: string;
+    create: string;
+    update: string;
+};

@@ -40,8 +40,9 @@ Neos:
             icon: 'fas fa-share'
             resource: 'Neos.RedirectHandler.Ui:Backend.Module'
             privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
+            mainStylesheet: 'Lite'
             additionalResources:
               styleSheets:
-                - 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.css'
+                main: 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.css'
               javaScripts:
-                - 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.js'
+                main: 'resource://Neos.RedirectHandler.Ui/Public/Assets/main.bundle.js'

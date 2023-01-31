@@ -1,9 +1,8 @@
-import * as React from 'react';
+import React from 'react';
 
 import { useIntl } from '../providers';
-import { Redirect } from '../interfaces';
 
-interface FiltersProps {
+type FiltersProps = {
     handleUpdateSearch: (searchWord: string) => void;
     currentPage: number;
     filterStatusCode: number;
@@ -18,7 +17,7 @@ interface FiltersProps {
     handleUpdateFilterStatusCode: (statusCode: number) => void;
     handleUpdateFilterType: (filterType: string) => void;
     handleToggleDetails: () => void;
-}
+};
 
 export enum Pagination {
     Left,
@@ -54,7 +53,7 @@ export default function Filters({
                         id="redirects-search"
                         type="text"
                         placeholder={translate('filter.search.placeholder', 'Search for a redirect')}
-                        onChange={e => handleUpdateSearch(e.target.value)}
+                        onChange={(e) => handleUpdateSearch(e.target.value)}
                     />
                 </div>
 
@@ -63,7 +62,7 @@ export default function Filters({
                     <select
                         id="redirects-filter-status-code"
                         defaultValue={filterStatusCode.toString()}
-                        onChange={e => handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}
+                        onChange={(e) => handleUpdateFilterStatusCode(parseInt(e.target.value, 10))}
                     >
                         <option value="-1">All</option>
                         {redirectCountByStatusCode.map((numberOfRedirects, statusCode) => {
@@ -83,10 +82,10 @@ export default function Filters({
                     <select
                         id="redirects-filter-type"
                         defaultValue={filterType}
-                        onChange={e => handleUpdateFilterType(e.target.value)}
+                        onChange={(e) => handleUpdateFilterType(e.target.value)}
                     >
                         <option value="">All</option>
-                        {Object.keys(redirectCountByType).map(type => {
+                        {Object.keys(redirectCountByType).map((type) => {
                             return (
                                 <option key={type} value={type}>
                                     {translate('filter.type.' + type, type)}
