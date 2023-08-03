@@ -20,9 +20,9 @@ prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fus
                         <i class="fas fa-equals" @if.type={entry.type == 'unchanged'}></i>
                     </td>
                     <td class={props.className + '-entry__label'}>
-                        {entry.message}
+                        {String.htmlSpecialChars(entry.message)}
                         <span @if.hasRedirect={entry.redirect}>
-                            {entry.redirect.host}/{entry.redirect.sourceUriPath} &rarr; {entry.redirect.targetUriPath} ({entry.redirect.statusCode})
+                            {String.htmlSpecialChars(entry.redirect.host)}/{String.htmlSpecialChars(entry.redirect.sourceUriPath)} &rarr; {String.htmlSpecialChars(entry.redirect.targetUriPath)} ({String.htmlSpecialChars(entry.redirect.statusCode)})
                         </span>
                     </td>
                     <td>
@@ -37,7 +37,7 @@ prototype(Neos.RedirectHandler.Ui:Component.ImportProtocol) < prototype(Neos.Fus
                     </td>
                     <td title={entry.redirect.comment}>
                         <span @if.comment={entry.redirect.comment}>
-                            {String.crop(entry.redirect.comment, 25, '&#8230;') || '&ndash;'}
+                            {String.crop(String.htmlSpecialChars(entry.redirect.comment), 25, '&#8230;') || '&ndash;'}
                         </span>
                     </td>
                 </tr>
