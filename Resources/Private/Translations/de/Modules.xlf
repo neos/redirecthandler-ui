@@ -393,6 +393,10 @@
                 <source>The 451 HTTP status code shows that the requested content has been deleted because of legal reasons.</source>
         <target>Der HTTP-Statuscode 451 zeigt an, dass der angeforderte Inhalt aus rechtlichen Gründen gelöscht wurde.</target>
       </trans-unit>
+      <trans-unit id="clipBoardCopyLabel" xml:space="preserve">
+        <source>Copy</source>
+        <target>Kopieren</target>
+      </trans-unit>
     </body>
   </file>
 </xliff>

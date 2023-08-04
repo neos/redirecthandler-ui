@@ -304,6 +304,9 @@
             <trans-unit id="statusCodes.451.tooltip" xml:space="preserve">
                 <source>The 451 HTTP status code shows that the requested content has been deleted because of legal reasons.</source>
             </trans-unit>
+            <trans-unit id="clipBoardCopyLabel" xml:space="preserve">
+                <source>Copy</source>
+            </trans-unit>
         </body>
     </file>
 </xliff>
