@@ -97,6 +97,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
                             role="button"
                             className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.sourceUriPath)}
+                            title={translate('clipBoardCopyLabel', 'Copy')}
                         >
                             <Icon icon="clipboard" />
                         </span>
@@ -109,6 +110,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
                             role="button"
                             className="copy-path"
                             onClick={() => handleCopyPathAction(redirect.targetUriPath)}
+                            title={translate('clipBoardCopyLabel', 'Copy')}
                         >
                             <Icon icon="clipboard" />
                         </span>
