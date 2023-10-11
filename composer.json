@@ -8,7 +8,7 @@
     },
     "require": {
         "php": ">=7.4",
-        "neos/redirecthandler": "~5.0 || dev-master",
+        "neos/redirecthandler": "~5.0 || dev-main",
         "neos/neos": "~7.3 || ~8.0 || ~9.0 || dev-master",
         "ext-json": "*"
     },
