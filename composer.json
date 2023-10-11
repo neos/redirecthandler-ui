@@ -7,9 +7,9 @@
         "webexcess/redirecthandler-backend": "*"
     },
     "require": {
-        "php": ">=7.4",
-        "neos/redirecthandler": "~5.0 || dev-main",
-        "neos/neos": "~7.3 || ~8.0 || ~9.0 || dev-master",
+        "php": ">= 8.2",
+        "neos/redirecthandler": "~6.0 || dev-main",
+        "neos/neos": "~9.0 || dev-master",
         "ext-json": "*"
     },
     "autoload": {
