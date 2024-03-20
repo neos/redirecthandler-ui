@@ -484,7 +484,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                         <>
                                             {this.renderColumnHeader('comment', 'Comment')}
                                             {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
-                                            {this.renderColumnHeader('creationDate', 'Created')}
+                                            {this.renderColumnHeader('creationDateTime', 'Created')}
                                             {this.renderColumnHeader('creator', 'Creator')}
                                         </>
                                     )}
