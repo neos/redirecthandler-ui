@@ -17,6 +17,7 @@ type RedirectFormProps = {
     redirect: Redirect;
     idPrefix: string;
     validSourceUriPathPattern: string;
+    validTargetUriPathPattern: string;
     handleNewRedirect: (changedRedirects: Redirect[]) => void;
     handleUpdatedRedirect: (changedRedirects: Redirect[], oldRedirect: Redirect) => void;
     handleCancelAction: () => void;
@@ -268,7 +269,8 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
     };
 
     public render(): React.ReactElement {
-        const { translate, redirect, idPrefix, validSourceUriPathPattern, handleCancelAction } = this.props;
+        const { translate, redirect, idPrefix, validSourceUriPathPattern, validTargetUriPathPattern, handleCancelAction } = this.props;
+        console.log({validTargetUriPathPattern});
 
         const { statusCodes, hostOptions } = this.context;
 
@@ -391,6 +393,7 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
                                 autoCapitalize="off"
                                 spellCheck={false}
                                 value={targetUriPath || ''}
+                                pattern={validTargetUriPathPattern}
                                 onChange={this.handleInputChange}
                             />
                         </div>

@@ -6,6 +6,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
     initialStatusCodeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialStatusCodeFilter')}
     initialTypeFilter = ${Configuration.setting('Neos.RedirectHandler.Ui.initialTypeFilter')}
     validSourceUriPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.sourceUriPath')}
+    validTargetUriPathPattern = ${Configuration.setting('Neos.RedirectHandler.Ui.validation.targetUriPath')}
     // Don't render disabled status codes
     statusCodes = ${Array.filter(Configuration.setting('Neos.RedirectHandler.Ui.statusCodes'), x => !!x)}
     hostOptions = ${hostOptions}
@@ -34,6 +35,7 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
              data-default-status-code={props.defaultStatusCode}
              data-actions={Json.stringify(props.actions)}
              data-valid-source-uri-path-pattern={props.validSourceUriPathPattern}
+             data-valid-target-uri-path-pattern={props.validTargetUriPathPattern}
              data-status-codes={Json.stringify(props.statusCodes)}
              data-host-options={Json.stringify(props.hostOptions)}>
             <p>{I18n.translate('Neos.RedirectHandler.Ui:Modules:list.loading')}</p>

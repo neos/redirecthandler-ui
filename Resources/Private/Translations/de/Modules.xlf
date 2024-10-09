@@ -160,8 +160,16 @@
         <target>In der CSV Datei konnten keine Einträge gefunden werden</target>
       </trans-unit>
       <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
-                <source>The source path doesn't match the expression {0}</source>
-        <target>Der Quellpfad entspricht nicht dem Muster {0}</target>
+                <source>The source path doesn't match the expression "{0}"</source>
+        <target>Der Quellpfad entspricht nicht dem Muster "{0}"</target>
+      </trans-unit>
+      <trans-unit id="error.targetUriPathNotValid" xml:space="preserve">
+        <source>The target path doesn't match the expression "{0}"</source>
+        <target>Der Zielpfad entspricht nicht dem Muster "{0}"</target>
+      </trans-unit>
+      <trans-unit id="error.hostNotValid" xml:space="preserve">
+        <source>The host doesn't match the expression "{0}"</source>
+        <target>Der Host entspricht nicht dem Muster "{0}"</target>
       </trans-unit>
       <trans-unit id="host" xml:space="preserve">
                 <source>Origin domain</source>

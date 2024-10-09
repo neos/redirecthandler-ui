@@ -582,17 +582,30 @@ class ModuleController extends AbstractModuleController
 
     protected function validateRedirectAttributes(?string $host, string $sourceUriPath, string $targetUriPath): bool
     {
+        $valid = true;
+
         if ($sourceUriPath === $targetUriPath) {
-            $this->addFlashMessage('', $this->translateById('error.sameSourceAndTarget'),
-                Message::SEVERITY_WARNING);
-        } elseif (!preg_match($this->validationOptions['sourceUriPath'], $sourceUriPath)) {
-            $this->addFlashMessage('',
-                $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['sourceUriPath']]),
-                Message::SEVERITY_WARNING);
-        } else {
-            return true;
+            $valid = false;
+            $errorMessages[] = $this->translateById('error.sameSourceAndTarget');
         }
-        return false;
+        if (isset($this->validationOptions['host']) && !preg_match($this->validationOptions['host'], $host)) {
+            $valid = false;
+            $errorMessages[] = $this->translateById('error.hostNotValid');
+        }
+        if (isset($this->validationOptions['sourceUriPath']) && !preg_match($this->validationOptions['sourceUriPath'], $sourceUriPath)) {
+            $valid = false;
+            $errorMessages[] = $this->translateById('error.sourceUriPathNotValid', [$this->validationOptions['sourceUriPath']]);
+        }
+        if (isset($this->validationOptions['targetUriPath']) && !preg_match($this->validationOptions['targetUriPath'], $targetUriPath)) {
+            $valid = false;
+            $errorMessages[] = $this->translateById('error.targetUriPathNotValid', [$this->validationOptions['targetUriPath']]);
+        }
+
+        if (!$valid) {
+            $this->addFlashMessage('', implode('<br>', $errorMessages), Message::SEVERITY_WARNING);
+        }
+
+        return $valid;
     }
 
     protected function isSame(
