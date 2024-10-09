@@ -29,7 +29,7 @@ window.addEventListener(
         const statusCodes: { [index: string]: string } = JSON.parse(redirectsList.dataset.statusCodes);
         const hostOptions: string[] = JSON.parse(redirectsList.dataset.hostOptions);
 
-        const { csrfToken, validSourceUriPathPattern } = redirectsList.dataset;
+        const { csrfToken, validSourceUriPathPattern, validTargetUriPathPattern } = redirectsList.dataset;
 
         const initialTypeFilter = redirectsList.dataset.initialTypeFilter || '';
         const defaultStatusCode = parseInt(redirectsList.dataset.defaultStatusCode, 10);
@@ -61,6 +61,7 @@ window.addEventListener(
                         translate={translate}
                         showHitCount={showHitCount}
                         validSourceUriPathPattern={validSourceUriPathPattern}
+                        validTargetUriPathPattern={validTargetUriPathPattern}
                         notificationHelper={Notification}
                         initialTypeFilter={initialTypeFilter}
                         initialStatusCodeFilter={initialStatusCodeFilter}
