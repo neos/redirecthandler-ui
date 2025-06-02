@@ -162,7 +162,7 @@ class ModuleController extends AbstractModuleController
         ]);
     }
 
-    protected function processRedirectStartAndEndDate(string $startDateTimeString = null, string $endDateTimeString = null): array
+    protected function processRedirectStartAndEndDate(?string $startDateTimeString = null, ?string $endDateTimeString = null): array
     {
         $valid = true;
         $startDateTime = null;
@@ -413,7 +413,7 @@ class ModuleController extends AbstractModuleController
      *
      * @throws StopActionException
      */
-    public function importCsvAction(PersistentResource $csvFile = null, string $delimiter = ','): void
+    public function importCsvAction(?PersistentResource $csvFile = null, string $delimiter = ','): void
     {
         $protocol = [];
 
@@ -466,8 +466,8 @@ class ModuleController extends AbstractModuleController
         int      $statusCode,
         ?string  $host = null,
         ?string  $comment = null,
-        DateTime $startDateTime = null,
-        DateTime $endDateTime = null,
+        ?DateTime $startDateTime = null,
+        ?DateTime $endDateTime = null,
         bool     $force = false
     ): array
     {
@@ -526,8 +526,8 @@ class ModuleController extends AbstractModuleController
         int      $statusCode,
         ?string  $host = null,
         ?string  $comment = null,
-        DateTime $startDateTime = null,
-        DateTime $endDateTime = null,
+        ?DateTime $startDateTime = null,
+        ?DateTime $endDateTime = null,
         bool     $force = false
     ): array
     {
@@ -600,7 +600,7 @@ class ModuleController extends AbstractModuleController
         string            $targetUriPath,
         ?string           $host,
         int               $statusCode,
-        RedirectInterface $redirect = null
+        ?RedirectInterface $redirect = null
     ): bool
     {
         if ($redirect === null) {
