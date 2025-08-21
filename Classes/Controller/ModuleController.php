@@ -353,6 +353,58 @@ class ModuleController extends AbstractModuleController
     }
 
     /**
+     * Deletes multiple redirects and goes back to the list
+     *
+     * @throws StopActionException
+     */
+    public function bulkDeleteAction(): void
+    {
+        if (!$this->request->hasArgument("redirects") || empty($this->request->getArgument("redirects"))) {
+            $message = $this->translateById('error.redirectsMissing');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            $this->response->setStatusCode(400);
+        }
+
+        $redirects = $this->request->getArgument("redirects");
+
+        if (!is_array($redirects)) {
+            $message = $this->translateById('error.redirectBadDataFormat');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+            $this->response->setStatusCode(400);
+        }
+
+        $deleted = [];
+        $issueOccured = false;
+        foreach ($redirects as $redirect) {
+            $sourceUriPath = $redirect["sourceUriPath"];
+            $host = $redirect["host"];
+
+            $status = $this->deleteRedirect($sourceUriPath, $host ?? null);
+
+            if ($status === true) {
+                array_push($deleted, $host . "/" . $sourceUriPath);
+                $message = $this->translateById('message.redirectDeleted', [$host, $sourceUriPath]);
+                $this->addFlashMessage('', $message);
+
+            } else {
+                $message = $this->translateById('error.redirectNotDeleted');
+                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
+                $issueOccured = true;
+            }
+        }
+
+        if ($this->request->getFormat() === 'json') {
+            $this->view->assign('value', [
+                'success' => !$issueOccured,
+                'messages' => $this->controllerContext->getFlashMessageContainer()->getMessagesAndFlush(),
+                'deleted' => $deleted,
+            ]);
+        } else {
+            $this->redirect('index');
+        }
+    }
+
+    /**
      * Shows the import interface with its options, actions and a protocol after an action
      */
     public function importAction(): void

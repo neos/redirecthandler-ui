@@ -47,9 +47,29 @@
         <target>Zeige {0}-{1} von {2}</target>
       </trans-unit>
       <trans-unit id="pagination.noResults" xml:space="preserve">
-                <source>No redirects match your search</source>
+        <source>No redirects match your search</source>
         <target>Keine Weiterleitungen passen zu den Suchparametern</target>
       </trans-unit>
+      <trans-unit id="bulkedit.actions.head" xml:space="preserve">
+        <source>Bulk Actions</source>
+        <target>Massenbearbeitung</target>
+      </trans-unit>
+      <trans-unit id="bulkedit.actions.delete" xml:space="preserve">
+        <source>Delete</source>
+        <target>Löschen</target>
+      </trans-unit>
+      <trans-unit id="bulkedit.actions.confirmBulkDelete" xml:space="preserve">
+        <source>Are you sure you want to delete all selected redirects?</source>
+        <target>Sind Sie sich sicher, dass sie alle ausgewählten Weiterleitungen löschen wollen?</target>
+      </trans-unit>
+    <trans-unit id="error.redirectsMissing" xml:space="preserve">
+      <source>No redirects found</source>
+      <target>Keine Weiterleitungen gefunden</target>
+    </trans-unit>
+    <trans-unit id="error.redirectBadDataFormat" xml:space="preserve">
+      <source>The redirect data format is invalid</source>
+      <target>Das Format der Weiterleitungsdaten ist ungültig</target>
+    </trans-unit>
       <trans-unit id="list.neverHit" xml:space="preserve">
                 <source>Never hit</source>
         <target>Niemals aufgerufen</target>

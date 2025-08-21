@@ -33,14 +33,27 @@
             <trans-unit id="filter.showDetails" xml:space="preserve">
                 <source>Show details</source>
             </trans-unit>
-
             <trans-unit id="pagination.position" xml:space="preserve">
                 <source>Showing {0}-{1} of {2}</source>
             </trans-unit>
             <trans-unit id="pagination.noResults" xml:space="preserve">
                 <source>No redirects match your search</source>
             </trans-unit>
-
+            <trans-unit id="bulkedit.actions.head" xml:space="preserve">
+                <source>Bulk Actions</source>
+            </trans-unit>
+            <trans-unit id="bulkedit.actions.delete" xml:space="preserve">
+                <source>Delete</source>
+            </trans-unit>
+            <trans-unit id="bulkedit.actions.confirmBulkDelete" xml:space="preserve">
+                <source>Are you sure you want to delete all selected redirects?</source>
+            </trans-unit>
+            <trans-unit id="error.redirectsMissing" xml:space="preserve">
+                <source>No redirects found</source>
+            </trans-unit>
+            <trans-unit id="error.redirectBadDataFormat" xml:space="preserve">
+                <source>The redirect data format is invalid</source>
+            </trans-unit>
             <trans-unit id="list.neverHit" xml:space="preserve">
                 <source>Never hit</source>
             </trans-unit>

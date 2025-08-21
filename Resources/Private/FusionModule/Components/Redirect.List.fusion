@@ -23,6 +23,10 @@ prototype(Neos.RedirectHandler.Ui:Component.Redirect.List) < prototype(Neos.Fusi
             action = 'create'
             format = 'json'
         }
+        bulkDelete = Neos.Fusion:UriBuilder {
+            action = 'bulkDelete'
+            format = 'json'
+        }
     }
 
     renderer = afx`
