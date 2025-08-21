@@ -89,6 +89,7 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
                         name={identifier}
                         id={`${identifier}__column-select-checkbox`}
                         checked={selected}
+                        className="neos-checkbox"
                     />
                 </td>
                 <td
