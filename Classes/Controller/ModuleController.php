@@ -387,10 +387,12 @@ class ModuleController extends AbstractModuleController
                 $this->addFlashMessage('', $message);
 
             } else {
-                $message = $this->translateById('error.redirectNotDeleted');
-                $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
                 $issueOccured = true;
             }
+        }
+        if($issueOccured) {
+            $message = $this->translateById(id: 'error.xDeletionsFailed');
+            $this->addFlashMessage('', $message, Message::SEVERITY_ERROR);
         }
 
         if ($this->request->getFormat() === 'json') {

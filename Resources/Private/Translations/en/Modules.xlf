@@ -54,6 +54,9 @@
             <trans-unit id="error.redirectBadDataFormat" xml:space="preserve">
                 <source>The redirect data format is invalid</source>
             </trans-unit>
+            <trans-unit id="error.xDeletionsFailed" xml:space="preserve">
+                <source>At least one deletion failed, please reload the Page and try again.</source>
+            </trans-unit>
             <trans-unit id="list.neverHit" xml:space="preserve">
                 <source>Never hit</source>
             </trans-unit>

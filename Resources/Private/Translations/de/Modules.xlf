@@ -70,6 +70,10 @@
       <source>The redirect data format is invalid</source>
       <target>Das Format der Weiterleitungsdaten ist ungültig</target>
     </trans-unit>
+    <trans-unit id="error.xDeletionsFailed" xml:space="preserve">
+      <source>At least one deletion failed, please reload the Page and try again.</source>
+      <target>Mindestens eine Löschung ist fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.</target>
+    </trans-unit>
       <trans-unit id="list.neverHit" xml:space="preserve">
                 <source>Never hit</source>
         <target>Niemals aufgerufen</target>
