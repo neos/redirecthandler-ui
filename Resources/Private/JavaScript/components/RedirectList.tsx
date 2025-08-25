@@ -587,6 +587,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                             <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
                                 <thead>
                                     <tr>
+                                        <th className="redirect-table__heading-select" />
                                         {this.renderColumnHeader('statusCode', 'Code')}
                                         {this.renderColumnHeader('host', 'Origin domain')}
                                         {this.renderColumnHeader('sourceUriPath', 'Source path')}

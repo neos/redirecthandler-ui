@@ -82,15 +82,17 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps,
 
         return (
             <tr className={rowClassNames.join(' ')}>
-                <td className={`${rowBaseClass} + __column-select-checkbox`}>
-                    <input
-                        onChange={onSelectChange}
-                        type="checkbox"
-                        name={identifier}
-                        id={`${identifier}__column-select-checkbox`}
-                        checked={selected}
-                        className="neos-checkbox"
-                    />
+                <td className={`${rowBaseClass}__column-select-checkbox`}>
+                    <label className="neos-checkbox">
+                        <input
+                            onChange={onSelectChange}
+                            type="checkbox"
+                            name={identifier}
+                            id={`${identifier}__column-select-checkbox`}
+                            checked={selected}
+                        />
+                        <span></span>
+                    </label>
                 </td>
                 <td
                     className={rowBaseClass + '__column-status-code'}
