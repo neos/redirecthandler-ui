@@ -6,6 +6,8 @@ privilegeTargets:
   'Neos\Neos\Security\Authorization\Privilege\ModulePrivilege':
     'Neos.RedirectHandler.Ui:Backend.Module.Management.Redirects':
       matcher: 'management/redirects'
+    'Neos.RedirectHandler.Ui:Backend.Module.Management':
+      matcher: 'management'
 
 roles:
   'Neos.Neos:Administrator':
@@ -19,6 +21,10 @@ roles:
     label: 'Redirect Administrator'
     description: 'Allows managing redirects'
     privileges:
+      - privilegeTarget: 'Neos.Neos:Backend.GeneralAccess'
+        permission: GRANT
+      - privilegeTarget: 'Neos.RedirectHandler.Ui:Backend.Module.Management'
+        permission: GRANT
       - privilegeTarget: 'Neos.RedirectHandler.Ui:Backend.Module.Management.Redirects'
         permission: GRANT
       - privilegeTarget: 'Neos.RedirectHandler.Ui:Module'
