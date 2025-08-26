@@ -20,6 +20,7 @@ type RedirectListProps = {
     initialTypeFilter: string;
     initialStatusCodeFilter: number;
     validSourceUriPathPattern: string;
+    validTargetUriPathPattern: string;
     showHitCount: boolean;
     actions: {
         delete: string;
@@ -389,7 +390,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     }
 
     public render(): JSX.Element {
-        const { showHitCount, translate, actions, validSourceUriPathPattern, notificationHelper } = this.props;
+        const { showHitCount, translate, actions, validSourceUriPathPattern, validTargetUriPathPattern, notificationHelper } = this.props;
 
         const {
             redirects,
@@ -447,6 +448,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                             handleCancelAction={this.handleToggleForm}
                             idPrefix=""
                             validSourceUriPathPattern={validSourceUriPathPattern}
+                            validTargetUriPathPattern={validTargetUriPathPattern}
                         />
                     </>
                 )}
@@ -521,6 +523,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                                         handleCancelAction={this.handleCancelAction}
                                                         idPrefix={'redirect-' + index + '-'}
                                                         validSourceUriPathPattern={validSourceUriPathPattern}
+                                                        validTargetUriPathPattern={validTargetUriPathPattern}
                                                     />
                                                 </td>
                                             </tr>

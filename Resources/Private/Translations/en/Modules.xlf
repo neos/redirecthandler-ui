@@ -126,7 +126,13 @@
                 <source>No entries were found in the CSV file</source>
             </trans-unit>
             <trans-unit id="error.sourceUriPathNotValid" xml:space="preserve">
-                <source>The source path doesn't match the expression {0}</source>
+                <source>The source path doesn't match the expression "{0}"</source>
+            </trans-unit>
+            <trans-unit id="error.targetUriPathNotValid" xml:space="preserve">
+                <source>The target path doesn't match the expression "{0}"</source>
+            </trans-unit>
+            <trans-unit id="error.hostNotValid" xml:space="preserve">
+                <source>The host doesn't match the expression "{0}"</source>
             </trans-unit>
 
             <trans-unit id="host" xml:space="preserve">
