@@ -249,7 +249,7 @@
                 <source>Export CSV file</source>
             </trans-unit>
             <trans-unit id="action.export" xml:space="preserve">
-                <source>Export redirect rules</source>
+                <source>Export all redirect rules</source>
             </trans-unit>
             <trans-unit id="action.import" xml:space="preserve">
                 <source>Import redirect rules</source>

@@ -324,7 +324,7 @@
         <target>CSV Datei exportieren</target>
       </trans-unit>
       <trans-unit id="action.export" xml:space="preserve">
-                <source>Export redirect rules</source>
+        <source>Export all redirect rules</source>
         <target>Weiterleitungsregeln exportieren</target>
       </trans-unit>
       <trans-unit id="action.import" xml:space="preserve">
