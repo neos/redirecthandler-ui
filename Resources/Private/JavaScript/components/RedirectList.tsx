@@ -571,18 +571,17 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                 />
                 {redirects.length > 0 ? (
                     <>
-                        {selectedRedirects.size > 0 && (
-                            <div className="redirects-bulk-actions">
-                                <p>{translate('bulkedit.actions.head', 'Bulk Actions')}</p>
-                                <button
-                                    className="redirects-bulk-delete neos-button"
-                                    title={translate('bulkedit.actions.delete', 'Delete')}
-                                    onClick={this.handleBulkDeleteAction}
-                                >
-                                    <i className="fas fa-trash" />
-                                </button>
-                            </div>
-                        )}
+                        <div className="redirects-bulk-actions">
+                            <p>{translate('bulkedit.actions.head', 'Bulk Actions')}</p>
+                            <button
+                                disabled={selectedRedirects.size <= 0}
+                                className="redirects-bulk-delete neos-button"
+                                title={translate('bulkedit.actions.delete', 'Delete')}
+                                onClick={this.handleBulkDeleteAction}
+                            >
+                                <i className="fas fa-trash" />
+                            </button>
+                        </div>
                         <div className="redirects-table-wrap">
                             <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
                                 <thead>
