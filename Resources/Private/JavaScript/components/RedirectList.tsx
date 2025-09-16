@@ -4,7 +4,10 @@ import { Helpers } from '../util';
 import { RedirectListItem } from './RedirectListItem';
 import { RedirectForm } from './RedirectForm';
 import { RedirectContext } from '../providers';
-import Filters, { Pagination } from './Filters';
+import Filters from './Filters';
+import BulkActions from './BulkActions';
+import Pagination, { PaginationDirection } from './Pagination';
+import ToggleDetails from './ToggleDetails';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -25,6 +28,7 @@ type RedirectListProps = {
         delete: string;
         update: string;
         create: string;
+        bulkDelete: string;
     };
 };
 
@@ -42,6 +46,7 @@ type RedirectListState = {
     editedRedirect: Redirect;
     showDetails: boolean;
     showForm: boolean;
+    selectedRedirects: Set<string>;
 };
 
 const initialState: RedirectListState = {
@@ -58,6 +63,7 @@ const initialState: RedirectListState = {
     editedRedirect: null,
     showDetails: false,
     showForm: false,
+    selectedRedirects: new Set(),
 };
 
 export class RedirectList extends React.Component<RedirectListProps, RedirectListState> {
@@ -107,6 +113,12 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                         (redirect.comment || '').toLowerCase().includes(cleanSearchValue))
                 );
             });
+            filteredRedirects = filteredRedirects.map((redirect) => {
+                if (this.state.selectedRedirects.has(redirect.host + '/' + redirect.sourceUriPath)) {
+                    redirect.checked = true;
+                }
+                return redirect;
+            });
         }
 
         this.setState({
@@ -118,6 +130,23 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         });
     };
 
+    /**
+     * Updates the list of selected Redirects
+     */
+    private handleSelectRedirectAction = (identifier: string, value: boolean) => {
+        this.setState((prevState) => {
+            const newSelected = new Set(prevState.selectedRedirects);
+
+            if (value) {
+                newSelected.add(identifier);
+            } else {
+                newSelected.delete(identifier);
+            }
+
+            // Remove the filteredRedirects mapping - not needed
+            return { selectedRedirects: newSelected };
+        });
+    };
     /**
      * Refreshes the list
      */
@@ -182,21 +211,94 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
         });
     };
 
+    private handleBulkDeleteAction = async () => {
+        const { notificationHelper, actions } = this.props;
+        const { csrfToken } = this.context;
+
+        if (!confirm(this.props.translate('bulkedit.actions.confirmBulkDelete', 'Delete all redirects?'))) {
+            return;
+        }
+
+        const deletableRedirects = this.state.redirects.filter((redirect) =>
+            this.state.selectedRedirects.has(redirect.host + '/' + redirect.sourceUriPath)
+        );
+
+        const data = {
+            __csrfToken: csrfToken,
+            moduleArguments: {
+                redirects: deletableRedirects.map((redirect) => {
+                    return {
+                        host: redirect.host,
+                        sourceUriPath: redirect.sourceUriPath,
+                    };
+                }),
+            },
+        };
+
+        fetch(actions.bulkDelete, {
+            method: 'POST',
+            credentials: 'include',
+            headers: {
+                'Content-Type': 'application/json; charset=UTF-8',
+            },
+            body: JSON.stringify(data),
+        })
+            .then((response) => response.json())
+            .then((data) => {
+                const { success, messages, deleted } = data;
+                const { redirects, selectedRedirects } = this.state;
+                if (success) {
+                    const filteredRedirects = redirects.filter(
+                        (storedRedirect) =>
+                            !selectedRedirects.has(storedRedirect.host + '/' + storedRedirect.sourceUriPath)
+                    );
+                    this.setState(
+                        {
+                            redirects: filteredRedirects,
+                            selectedRedirects: new Set(),
+                        },
+                        this.refresh
+                    );
+                } else {
+                    if (deleted.length > 0) {
+                        const filteredRedirects = redirects.filter(
+                            (storedRedirect) =>
+                                !deleted.includes(storedRedirect.host + '/' + storedRedirect.sourceUriPath)
+                        );
+
+                        this.setState(
+                            {
+                                redirects: filteredRedirects,
+                                selectedRedirects: new Set(),
+                            },
+                            this.refresh
+                        );
+                    }
+                }
+                messages.forEach(({ title, message, severity }) => {
+                    notificationHelper[severity.toLowerCase()](title || message, message);
+                });
+            })
+            .catch((error) => {
+                notificationHelper.error(error);
+            });
+    };
+
     /**
      * Updates the pagination state based on the pagination action
      */
-    private handlePagination = (action: Pagination): void => {
+    private handlePagination = (action: PaginationDirection): void => {
         const { currentPage } = this.state;
 
         switch (action) {
-            case Pagination.Left:
+            case PaginationDirection.Left:
                 if (currentPage > 0) {
                     this.setState({
                         currentPage: currentPage - 1,
                     });
                 }
                 break;
-            case Pagination.Right:
+            case PaginationDirection.Right:
                 this.setState({
                     currentPage: currentPage + 1,
                 });
@@ -405,6 +507,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
             editedRedirect,
             showDetails,
             showForm,
+            selectedRedirects,
         } = this.state;
 
         const pagingParameters = [
@@ -425,6 +528,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         const columnCount = showHitCount ? 11 : 10;
 
+        // @ts-ignore
         return (
             <React.Fragment>
                 {!showForm && (
@@ -455,25 +559,36 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
                 <Filters
                     handleUpdateSearch={this.handleUpdateSearch}
-                    currentPage={currentPage}
-                    showDetails={showDetails}
-                    filteredRedirects={filteredRedirects}
                     filterStatusCode={filterStatusCode}
                     filterType={filterType}
-                    handlePagination={this.handlePagination}
                     handleUpdateFilterStatusCode={this.handleUpdateFilterStatusCode}
                     handleUpdateFilterType={this.handleUpdateFilterType}
-                    handleToggleDetails={this.handleToggleDetails}
-                    hasMorePages={hasMorePages}
-                    pagingParameters={pagingParameters}
                     redirectCountByStatusCode={redirectCountByStatusCode}
                     redirectCountByType={redirectCountByType}
                 />
+
+                <div className="redirects-table-toolbar">
+                    <BulkActions
+                        selectedRedirects={selectedRedirects}
+                        handleBulkDeleteAction={this.handleBulkDeleteAction}
+                    />
+                    <ToggleDetails handleToggleDetails={this.handleToggleDetails} showDetails={showDetails} />
+                    {visibleRedirects.length > 0 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            filteredRedirects={filteredRedirects}
+                            handlePagination={this.handlePagination}
+                            hasMorePages={hasMorePages}
+                            pagingParameters={pagingParameters}
+                        />
+                    )}
+                </div>
                 {redirects.length > 0 ? (
                     <div className="redirects-table-wrap">
                         <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
                             <thead>
                                 <tr>
+                                    <th className="redirect-table__heading-select" />
                                     {this.renderColumnHeader('statusCode', 'Code')}
                                     {this.renderColumnHeader('host', 'Origin domain')}
                                     {this.renderColumnHeader('sourceUriPath', 'Source path')}
@@ -494,39 +609,52 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                 </tr>
                             </thead>
                             <tbody>
-                                {visibleRedirects.map((redirect, index) => (
-                                    <React.Fragment key={index}>
-                                        <RedirectListItem
-                                            redirect={redirect}
-                                            rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
-                                            translate={translate}
-                                            handleDeleteAction={this.handleDeleteAction}
-                                            handleEditAction={this.handleEditAction}
-                                            handleCopyPathAction={this.handleCopyPathAction}
-                                            searchValue={searchValue}
-                                            showHitCount={showHitCount}
-                                            showDetails={showDetails}
-                                        />
-                                        {editedRedirect === redirect && (
-                                            <tr className="redirects-table__single-column-row">
-                                                <td colSpan={columnCount}>
-                                                    <h6>{translate('header.editRedirect', 'Edit redirect')}</h6>
-                                                    <RedirectForm
-                                                        translate={translate}
-                                                        actions={actions}
-                                                        redirect={redirect}
-                                                        notificationHelper={notificationHelper}
-                                                        handleNewRedirect={this.handleNewRedirect}
-                                                        handleUpdatedRedirect={this.handleUpdatedRedirect}
-                                                        handleCancelAction={this.handleCancelAction}
-                                                        idPrefix={'redirect-' + index + '-'}
-                                                        validSourceUriPathPattern={validSourceUriPathPattern}
-                                                    />
-                                                </td>
-                                            </tr>
-                                        )}
-                                    </React.Fragment>
-                                ))}
+                                {visibleRedirects.length > 0 ? (
+                                    visibleRedirects.map((redirect, index) => (
+                                        <React.Fragment key={index}>
+                                            <RedirectListItem
+                                                redirect={redirect}
+                                                rowClassNames={['redirects-table__row', index % 2 ? '' : 'odd']}
+                                                translate={translate}
+                                                handleDeleteAction={this.handleDeleteAction}
+                                                handleEditAction={this.handleEditAction}
+                                                handleCopyPathAction={this.handleCopyPathAction}
+                                                handleSelectChangeAction={this.handleSelectRedirectAction}
+                                                searchValue={searchValue}
+                                                showHitCount={showHitCount}
+                                                showDetails={showDetails}
+                                                selected={this.state.selectedRedirects.has(
+                                                    redirect.host + '/' + redirect.sourceUriPath
+                                                )} // ✅ Calculate from Set
+                                                key={redirect.host + '/' + redirect.sourceUriPath}
+                                            />
+                                            {editedRedirect === redirect && (
+                                                <tr className="redirects-table__single-column-row">
+                                                    <td colSpan={columnCount}>
+                                                        <h6>{translate('header.editRedirect', 'Edit redirect')}</h6>
+                                                        <RedirectForm
+                                                            translate={translate}
+                                                            actions={actions}
+                                                            redirect={redirect}
+                                                            notificationHelper={notificationHelper}
+                                                            handleNewRedirect={this.handleNewRedirect}
+                                                            handleUpdatedRedirect={this.handleUpdatedRedirect}
+                                                            handleCancelAction={this.handleCancelAction}
+                                                            idPrefix={'redirect-' + index + '-'}
+                                                            validSourceUriPathPattern={validSourceUriPathPattern}
+                                                        />
+                                                    </td>
+                                                </tr>
+                                            )}
+                                        </React.Fragment>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="100%">
+                                            {translate('pagination.noResults', 'No redirects match your search')}
+                                        </td>
+                                    </tr>
+                                )}
                             </tbody>
                         </table>
                     </div>
