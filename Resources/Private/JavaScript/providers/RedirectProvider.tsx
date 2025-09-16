@@ -7,7 +7,7 @@ type RedirectContextInterface = {
     defaultStatusCode: number;
 };
 
-export const RedirectContext = createContext({});
+export const RedirectContext = createContext({} as RedirectContextInterface);
 export const useRedirects = () => useContext(RedirectContext);
 
 export const RedirectProvider = ({ value, children }: { value: RedirectContextInterface; children: any }) => {

@@ -4,7 +4,10 @@ import { Helpers } from '../util';
 import { RedirectListItem } from './RedirectListItem';
 import { RedirectForm } from './RedirectForm';
 import { RedirectContext } from '../providers';
-import Filters, { Pagination } from './Filters';
+import Filters from './Filters';
+import BulkActions from './BulkActions';
+import Pagination, { PaginationDirection } from './Pagination';
+import ToggleDetails from './ToggleDetails';
 
 const ITEMS_PER_PAGE = 20;
 
@@ -284,18 +287,18 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
     /**
      * Updates the pagination state based on the pagination action
      */
-    private handlePagination = (action: Pagination): void => {
+    private handlePagination = (action: PaginationDirection): void => {
         const { currentPage } = this.state;
 
         switch (action) {
-            case Pagination.Left:
+            case PaginationDirection.Left:
                 if (currentPage > 0) {
                     this.setState({
                         currentPage: currentPage - 1,
                     });
                 }
                 break;
-            case Pagination.Right:
+            case PaginationDirection.Right:
                 this.setState({
                     currentPage: currentPage + 1,
                 });
@@ -525,6 +528,7 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
         const columnCount = showHitCount ? 11 : 10;
 
+        // @ts-ignore
         return (
             <React.Fragment>
                 {!showForm && (
@@ -555,59 +559,58 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
 
                 <Filters
                     handleUpdateSearch={this.handleUpdateSearch}
-                    currentPage={currentPage}
-                    showDetails={showDetails}
-                    filteredRedirects={filteredRedirects}
                     filterStatusCode={filterStatusCode}
                     filterType={filterType}
-                    handlePagination={this.handlePagination}
                     handleUpdateFilterStatusCode={this.handleUpdateFilterStatusCode}
                     handleUpdateFilterType={this.handleUpdateFilterType}
-                    handleToggleDetails={this.handleToggleDetails}
-                    hasMorePages={hasMorePages}
-                    pagingParameters={pagingParameters}
                     redirectCountByStatusCode={redirectCountByStatusCode}
                     redirectCountByType={redirectCountByType}
                 />
+
+                <div className="redirects-table-toolbar">
+                    <BulkActions
+                        selectedRedirects={selectedRedirects}
+                        handleBulkDeleteAction={this.handleBulkDeleteAction}
+                    />
+                    <ToggleDetails handleToggleDetails={this.handleToggleDetails} showDetails={showDetails} />
+                    {visibleRedirects.length > 0 && (
+                        <Pagination
+                            currentPage={currentPage}
+                            filteredRedirects={filteredRedirects}
+                            handlePagination={this.handlePagination}
+                            hasMorePages={hasMorePages}
+                            pagingParameters={pagingParameters}
+                        />
+                    )}
+                </div>
                 {redirects.length > 0 ? (
-                    <>
-                        <div className="redirects-bulk-actions">
-                            <p>{translate('bulkedit.actions.head', 'Bulk Actions')}</p>
-                            <button
-                                disabled={selectedRedirects.size <= 0}
-                                className="redirects-bulk-delete neos-button"
-                                title={translate('bulkedit.actions.delete', 'Delete')}
-                                onClick={this.handleBulkDeleteAction}
-                            >
-                                <i className="fas fa-trash" />
-                            </button>
-                        </div>
-                        <div className="redirects-table-wrap">
-                            <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
-                                <thead>
-                                    <tr>
-                                        <th className="redirect-table__heading-select" />
-                                        {this.renderColumnHeader('statusCode', 'Code')}
-                                        {this.renderColumnHeader('host', 'Origin domain')}
-                                        {this.renderColumnHeader('sourceUriPath', 'Source path')}
-                                        {this.renderColumnHeader('targetUriPath', 'Target uri or path')}
-                                        {this.renderColumnHeader('startDateTime', 'Active from')}
-                                        {this.renderColumnHeader('endDateTime', 'Active until')}
-                                        {showDetails && (
-                                            <>
-                                                {this.renderColumnHeader('comment', 'Comment')}
-                                                {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
-                                                {this.renderColumnHeader('creationDateTime', 'Created')}
-                                                {this.renderColumnHeader('creator', 'Creator')}
-                                            </>
-                                        )}
-                                        <th className="redirect-table__heading-actions">
-                                            {translate('actions', 'Actions')}
-                                        </th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    {visibleRedirects.map((redirect, index) => (
+                    <div className="redirects-table-wrap">
+                        <table className={'neos-table redirects-table' + (showDetails ? ' detail-view' : '')}>
+                            <thead>
+                                <tr>
+                                    <th className="redirect-table__heading-select" />
+                                    {this.renderColumnHeader('statusCode', 'Code')}
+                                    {this.renderColumnHeader('host', 'Origin domain')}
+                                    {this.renderColumnHeader('sourceUriPath', 'Source path')}
+                                    {this.renderColumnHeader('targetUriPath', 'Target uri or path')}
+                                    {this.renderColumnHeader('startDateTime', 'Active from')}
+                                    {this.renderColumnHeader('endDateTime', 'Active until')}
+                                    {showDetails && (
+                                        <>
+                                            {this.renderColumnHeader('comment', 'Comment')}
+                                            {showHitCount && this.renderColumnHeader('hitCounter', 'Hits')}
+                                            {this.renderColumnHeader('creationDateTime', 'Created')}
+                                            {this.renderColumnHeader('creator', 'Creator')}
+                                        </>
+                                    )}
+                                    <th className="redirect-table__heading-actions">
+                                        {translate('actions', 'Actions')}
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {visibleRedirects.length > 0 ? (
+                                    visibleRedirects.map((redirect, index) => (
                                         <React.Fragment key={index}>
                                             <RedirectListItem
                                                 redirect={redirect}
@@ -644,11 +647,17 @@ export class RedirectList extends React.Component<RedirectListProps, RedirectLis
                                                 </tr>
                                             )}
                                         </React.Fragment>
-                                    ))}
-                                </tbody>
-                            </table>
-                        </div>
-                    </>
+                                    ))
+                                ) : (
+                                    <tr>
+                                        <td colSpan="100%">
+                                            {translate('pagination.noResults', 'No redirects match your search')}
+                                        </td>
+                                    </tr>
+                                )}
+                            </tbody>
+                        </table>
+                    </div>
                 ) : (
                     <div>{translate('list.empty', 'No redirects found')}</div>
                 )}

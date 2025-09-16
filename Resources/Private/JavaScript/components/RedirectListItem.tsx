@@ -20,7 +20,7 @@ type RedirectListItemProps = {
     selected: boolean;
 };
 
-export class RedirectListItem extends React.PureComponent<RedirectListItemProps, RedirectListItemState> {
+export class RedirectListItem extends React.PureComponent<RedirectListItemProps> {
     /**
      * Highlights and shortens the given path to nicely display in the table.
      */
