@@ -474,12 +474,14 @@ class ModuleController extends AbstractModuleController
         $sourceUriPath = trim($sourceUriPath);
         $targetUriPath = trim($targetUriPath);
 
+        $targetHost = parse_url($targetUriPath, PHP_URL_HOST);
+
         if (!$this->validateRedirectAttributes($host, $sourceUriPath, $targetUriPath)) {
             return [];
         }
 
         $redirect = $this->redirectStorage->getOneBySourceUriPathAndHost($sourceUriPath, $host ?: null, false);
-        $isSame = $this->isSame($sourceUriPath, $targetUriPath, $host, $statusCode, $redirect);
+        $isSame = $this->isSame($sourceUriPath, $targetUriPath, $targetHost, $statusCode, $redirect);
         $go = true;
 
         if ($redirect !== null && $isSame === false && $force === false) {
@@ -490,6 +492,7 @@ class ModuleController extends AbstractModuleController
         } elseif ($redirect !== null && $isSame === true) {
             $go = false; // Ignore.. Not valid.
         }
+
 
         if ($go) {
             $creator = $this->securityContext->getAccount()->getAccountIdentifier();
@@ -504,6 +507,7 @@ class ModuleController extends AbstractModuleController
 
         return [];
     }
+
 
     /**
      * @param string $originalSourceUriPath
@@ -596,10 +600,10 @@ class ModuleController extends AbstractModuleController
     }
 
     protected function isSame(
-        string            $sourceUriPath,
-        string            $targetUriPath,
-        ?string           $host,
-        int               $statusCode,
+        string             $sourceUriPath,
+        string             $targetUriPath,
+        ?string            $targetHost,
+        int                $statusCode,
         ?RedirectInterface $redirect = null
     ): bool
     {
@@ -609,7 +613,7 @@ class ModuleController extends AbstractModuleController
 
         return $redirect->getSourceUriPath() === $sourceUriPath
             && $redirect->getTargetUriPath() === $targetUriPath
-            && $redirect->getHost() === $host
+            && $redirect->getHost() === $targetHost
             && $redirect->getStatusCode() === $statusCode;
     }
 

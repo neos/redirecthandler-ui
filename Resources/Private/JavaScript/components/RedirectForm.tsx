@@ -90,15 +90,14 @@ export class RedirectForm extends PureComponent<RedirectFormProps, RedirectFormS
         // Replace a single asterisk with an empty value to match any domain
         host = host && host.trim() === '*' ? '' : host;
 
-        if (!host || host === location.host) {
-            const parsedSourceUrl: URL = UrlUtil.parseURL(sourceUriPath, location.origin);
-            const parsedTargetUrl: URL = UrlUtil.parseURL(targetUriPath, location.origin);
-            if (parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
-                notificationHelper.warning(
-                    translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same')
-                );
-                return;
-            }
+        const parsedSourceUrl: URL = UrlUtil.parseURL(sourceUriPath, location.origin);
+        const parsedTargetUrl: URL = UrlUtil.parseURL(targetUriPath, location.origin);
+
+        if ((!parsedSourceUrl.hostname || parsedSourceUrl.hostname === parsedTargetUrl.hostname) && parsedSourceUrl.pathname === parsedTargetUrl.pathname) {
+            notificationHelper.warning(
+                translate('error.sameSourceAndTarget', 'The source and target paths cannot be the same')
+            );
+            return;
         }
 
         const validStartDateTimeString =
