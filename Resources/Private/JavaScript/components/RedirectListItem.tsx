@@ -1,4 +1,4 @@
-import React, { FormEvent } from 'react';
+import React, { ChangeEvent, FormEvent } from 'react';
 
 import { highlight, shortenPath, escapeHtml } from '../util/helpers';
 import { Icon } from './index';
@@ -15,7 +15,9 @@ type RedirectListItemProps = {
     handleEditAction: (event: FormEvent, editedRedirect: Redirect) => void;
     handleDeleteAction: (event: FormEvent, redirect: Redirect) => void;
     handleCopyPathAction: (text: string) => void;
+    handleSelectChangeAction: (identifier: string, fieldChecked: boolean) => void;
     showDetails: boolean;
+    selected: boolean;
 };
 
 export class RedirectListItem extends React.PureComponent<RedirectListItemProps> {
@@ -60,7 +62,9 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
             handleDeleteAction,
             handleEditAction,
             handleCopyPathAction,
+            handleSelectChangeAction,
             showDetails,
+            selected,
         } = this.props;
         const identifier = redirect.host + '/' + redirect.sourceUriPath;
         const parsedStartDateTime = redirect.startDateTime ? Date.parse(redirect.startDateTime) : null;
@@ -72,8 +76,24 @@ export class RedirectListItem extends React.PureComponent<RedirectListItemProps>
 
         const rowBaseClass = rowClassNames[0];
 
+        const onSelectChange = (event: ChangeEvent<HTMLInputElement>) => {
+            handleSelectChangeAction(identifier, event.target.checked);
+        };
+
         return (
             <tr className={rowClassNames.join(' ')}>
+                <td className={`${rowBaseClass}__column-select-checkbox`}>
+                    <label className="neos-checkbox">
+                        <input
+                            onChange={onSelectChange}
+                            type="checkbox"
+                            name={identifier}
+                            id={`${identifier}__column-select-checkbox`}
+                            checked={selected}
+                        />
+                        <span></span>
+                    </label>
+                </td>
                 <td
                     className={rowBaseClass + '__column-status-code'}
                     title={translate('statusCodes.' + redirect.statusCode + '.tooltip', 'Code: ' + redirect.statusCode)}

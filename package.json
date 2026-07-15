@@ -30,9 +30,9 @@
   "devDependencies": {
     "@neos-project/eslint-config-neos": "^2.3.0",
     "@parcel/reporter-bundle-analyzer": "^2.8.3",
+    "@parcel/transformer-sass": "2.8.3",
     "@parcel/transformer-typescript-tsc": "^2.8.2",
     "@parcel/transformer-typescript-types": "2.8.3",
-    "@parcel/transformer-sass": "2.8.3",
     "@types/node": "^18.11.15",
     "@types/react": "^18.0.27",
     "@types/react-datepicker": "^2.9.5",
@@ -46,6 +46,7 @@
     "eslint-plugin-react-hooks": "^4.6.0",
     "parcel": "^2.8.3",
     "prettier": "^2.8.1",
+    "process": "^0.11.10",
     "stylelint": "^14.16.1",
     "stylelint-config-recommended-scss": "^8.0.0",
     "stylelint-prettier": "^2.0.0",

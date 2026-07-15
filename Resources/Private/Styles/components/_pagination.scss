@@ -1,0 +1,26 @@
+.redirects-pagination {
+    user-select: none;
+    display: flex;
+    align-items: center;
+    flex: 1;
+    justify-content: flex-end;
+
+    & > span {
+        margin: 0 .8rem;
+        white-space: nowrap;
+    }
+
+    i {
+        cursor: pointer;
+        transition: color .1s ease-in;
+
+        &:not(.disabled):hover {
+            color: #{$primaryColor};
+        }
+
+        &.disabled {
+            cursor: initial;
+            color: #{$inactiveColor};
+        }
+    }
+}

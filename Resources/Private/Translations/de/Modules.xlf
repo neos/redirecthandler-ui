@@ -50,6 +50,30 @@
         <source>No redirects match your search</source>
         <target state="translated">Keine Weiterleitungen passen zu den Suchparametern</target>
       </trans-unit>
+      <trans-unit id="bulkedit.actions.head" xml:space="preserve">
+        <source>Bulk Actions</source>
+        <target>Massenbearbeitung</target>
+      </trans-unit>
+      <trans-unit id="bulkedit.actions.delete" xml:space="preserve">
+        <source>Delete</source>
+        <target>Löschen</target>
+      </trans-unit>
+      <trans-unit id="bulkedit.actions.confirmBulkDelete" xml:space="preserve">
+        <source>Are you sure you want to delete all selected redirects?</source>
+        <target>Sind Sie sich sicher, dass sie alle ausgewählten Weiterleitungen löschen wollen?</target>
+      </trans-unit>
+    <trans-unit id="error.redirectsMissing" xml:space="preserve">
+      <source>No redirects found</source>
+      <target>Keine Weiterleitungen gefunden</target>
+    </trans-unit>
+    <trans-unit id="error.redirectBadDataFormat" xml:space="preserve">
+      <source>The redirect data format is invalid</source>
+      <target>Das Format der Weiterleitungsdaten ist ungültig</target>
+    </trans-unit>
+    <trans-unit id="error.xDeletionsFailed" xml:space="preserve">
+      <source>At least one deletion failed, please reload the Page and try again.</source>
+      <target>Mindestens eine Löschung ist fehlgeschlagen. Bitte laden Sie die Seite neu und versuchen Sie es erneut.</target>
+    </trans-unit>
       <trans-unit id="list.neverHit" xml:space="preserve">
         <source>Never hit</source>
         <target state="translated">Niemals aufgerufen</target>
@@ -300,8 +324,8 @@ Diese ignoriert Neos, wenn für eine aufgerufene Url geprüft wird, ob eine Weit
         <target state="translated">CSV Datei exportieren</target>
       </trans-unit>
       <trans-unit id="action.export" xml:space="preserve">
-        <source>Export redirect rules</source>
-        <target state="translated">Weiterleitungsregeln exportieren</target>
+        <source>Export all redirect rules</source>
+        <target>Alle Weiterleitungsregeln exportieren</target>
       </trans-unit>
       <trans-unit id="action.import" xml:space="preserve">
         <source>Import redirect rules</source>

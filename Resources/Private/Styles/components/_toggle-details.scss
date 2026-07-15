@@ -1,0 +1,11 @@
+.redirects-toggle-details {
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    display: flex;
+
+    .neos-checkbox {
+        flex: 1;
+        align-content: space-around;
+    }
+}

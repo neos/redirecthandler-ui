@@ -1,4 +1,4 @@
-.redirects-table {
+table.neos-table.redirects-table {
     margin-top: 1rem;
     border-collapse: separate;
 
@@ -12,6 +12,11 @@
         }
     }
 
+    & td:first-child,
+    & th:first-child {
+        padding-left: 8px !important;
+    }
+
     thead {
         th {
             padding: 0 4px 4px 0;
@@ -22,6 +27,11 @@
 
             &.redirect-table__heading-actions {
                 text-align: center;
+            }
+
+            &.redirect-table__heading-select {
+                padding: 0 !important;
+                width: 0;
             }
 
             &:hover {
@@ -84,7 +94,7 @@
         }
     }
 
-    &__row {
+    .redirects-table__row {
         mark {
             background-color: transparent;
             font-weight: bold;
@@ -92,17 +102,21 @@
             text-decoration: underline;
         }
 
-        &__column-status-code,
-        &__column-hit-count {
-            width: 80px;
-        }
-
-        &__column-status-code {
+        td:first-child {
             border-left: 3px solid #{$newColor};
 
             .redirects-table__row--inactive & {
                 border-left: 3px solid #{$inactiveColor};
             }
+        }
+
+        &__column-select-checkbox {
+            width: 0;
+        }
+
+        &__column-status-code,
+        &__column-hit-count {
+            width: 80px;
         }
 
         &__column-comment {

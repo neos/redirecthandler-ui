@@ -42,10 +42,12 @@ interface Redirect {
     hitCount: number;
     lastHit: string;
     creationDateTime: string;
+    checked?: boolean;
 }
 
 type Endpoints = {
     delete: string;
     create: string;
     update: string;
+    bulkDelete: string;
 };
