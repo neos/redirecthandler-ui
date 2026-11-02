@@ -449,7 +449,7 @@ class ModuleController extends AbstractModuleController
         );
         $filename = 'neos-redirects-' . (new DateTime())->format('Y-m-d-H-i-s') . '.csv';
 
-        $content = $csvWriter->getContent();
+        $content = $csvWriter->toString();
         header('Pragma: no-cache');
         header('Content-type: application/text');
         header('Content-Length: ' . strlen($content));
@@ -478,7 +478,7 @@ class ModuleController extends AbstractModuleController
 
         try {
             // Use temporary local copy as stream doesn't work reliably with cloud based storage
-            $reader = Reader::createFromPath($csvFile->createTemporaryLocalCopy());
+            $reader = Reader::from($csvFile->createTemporaryLocalCopy());
             $reader->setDelimiter($delimiter);
 
             $protocol = $this->redirectImportService->import($reader->getIterator());
